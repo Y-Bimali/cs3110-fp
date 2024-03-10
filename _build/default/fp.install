@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/fp/META"
+  "_build/install/default/lib/fp/dune-package"
+  "_build/install/default/lib/fp/opam"
+]
+bin: [
+  "_build/install/default/bin/fp"
+]

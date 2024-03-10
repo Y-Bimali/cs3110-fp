@@ -1,0 +1,5 @@
+(library
+ (inline_tests)
+ (name fp)
+ (preprocess
+  (pps ppx_inline_test)))
