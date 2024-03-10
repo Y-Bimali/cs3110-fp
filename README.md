@@ -1,6 +1,6 @@
 # cs3110-final-project
 
-Yinghui Bimali yb272 \
-Aruni Chenxi ac2552 \
-Malli Gutta mg2395 \
-Desmond Ababio dna35 \
+Yinghui Bimali yb272 <br>
+Aruni Chenxi ac2552 <br>
+Malli Gutta mg2395 <br>
+Desmond Ababio dna35 <br>
