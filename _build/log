@@ -1,9 +1,9 @@
-# dune exec bin/main.exe
+# dune build
 # OCAMLPARAM: unset
 # Shared cache: disabled
-# Shared cache location: /Users/Bimali/.cache/dune/db
-# Workspace root: /Users/Bimali/3110/Final-Project/fp
-# Auto-detected concurrency: 8
+# Shared cache location: /home/magu/.cache/dune/db
+# Workspace root: /home/magu/3110/cs3110-final-project
+# Auto-detected concurrency: 16
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -13,10 +13,11 @@
 #  ; build_dir = In_build_dir "default"
 #  ; installed_env =
 #      map
-#        { "INSIDE_DUNE" : "/Users/Bimali/3110/Final-Project/fp/_build/default"
+#        { "INSIDE_DUNE" :
+#            "/home/magu/3110/cs3110-final-project/_build/default"
 #        ; "OCAML_COLOR" : "always"
 #        ; "OPAMCOLOR" : "always"
 #        }
 #  ; instrument_with = []
 #  }
-$ /Users/Bimali/.opam/cs3110-2024sp/bin/ocamlc.opt -config > /var/folders/zz/_5443rfn2v1_n4x4gqlv6jxc0000gr/T/dune_ff42c0_output
+$ /home/magu/.opam/cs3110-2024sp/bin/ocamlc.opt -config > /tmp/dune_a782d4_output
