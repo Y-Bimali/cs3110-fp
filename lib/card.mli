@@ -1,11 +1,10 @@
-type t
-(**[t] is the data structure of a card*)
+
 
 type suit =
-  | Spade
-  | Heart
-  | Club
-  | Diamond  (**[suit] represents the suit of a card*)
+  | Spades
+  | Hearts
+  | Clubs
+  | Diamonds  (**[suit] represents the suit of a card*)
 
 type color = Red | Black  (**[color] represents the color of a card*)
 
@@ -23,7 +22,11 @@ type rank =
   | Jack
   | Queen
   | King
-  | Zero  (**[rank] represents the rank of the card*)
+  | Zero  
+  (**[rank] represents the rank of the card*)
+
+type t
+(**[t] is the data structure of a card*)
 
 val to_string : t -> string
 (**[to_string c] is the card represented as a string(SPECIFY WHEN IMPLEMENTED)*)
