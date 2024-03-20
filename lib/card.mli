@@ -2,7 +2,7 @@ type suit =
   | Spades
   | Hearts
   | Clubs
-  | Diamonds  (**[suit] represents the suit of a card*)
+  | Diamonds  (**[suit] represents the suit of a card deck*)
 
 type color =
   | Red
