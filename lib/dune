@@ -2,4 +2,6 @@
  (inline_tests)
  (name fp)
  (preprocess
-  (pps ppx_inline_test)))
+  (pps ppx_inline_test))
+  (instrumentation
+  (backend bisect_ppx)))
