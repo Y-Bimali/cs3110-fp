@@ -1,5 +1,6 @@
 open OUnit2
 open Fp.Card
+open Fp.Stockwaste
 
 let test_string_of_suit _ =
   assert_equal "♥" (string_of_suit Hearts);
@@ -55,6 +56,31 @@ let test_num_of _ =
   assert_equal 12 (num_of { rank = Queen; suit = Diamonds });
   assert_equal 13 (num_of { rank = King; suit = Clubs })
 
+let test_empty_stockwaste _ = assert_equal (0, 0) (size_sw empty_sw)
+
+let test_add_sw _ =
+  (*adding nothing*)
+  assert_equal (0, 0) (size_sw (add_sw [] empty_sw));
+  (*adding one card*)
+  assert_equal (1, 0) (size_sw (add_sw [ empty_card Clubs ] empty_sw));
+  (*adding multiple cards*)
+  assert_equal (4, 0)
+    (size_sw
+       (add_sw
+          [
+            empty_card Clubs;
+            empty_card Diamonds;
+            empty_card Hearts;
+            empty_card Spades;
+          ]
+          empty_sw))
+
+let test_top_sw _ =
+  (*nothing in the waste*)
+  assert_raises EmptyWaste (fun () -> top_sw empty_sw)
+(*one card in the waste*)
+(*multiple cards in the waste*)
+
 let tests =
   "test_tests"
   >::: [
@@ -66,6 +92,9 @@ let tests =
          "test_num_of" >:: test_num_of;
          "test_string_of_rank" >:: test_string_of_rank;
          "test_empty_card_two" >:: test_empty_card_two;
+         "test_empty_stockwaste" >:: test_empty_stockwaste;
+         "test_add_sw" >:: test_add_sw;
+         "test_top_sw" >:: test_top_sw;
        ]
 
 let () = run_test_tt_main tests

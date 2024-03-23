@@ -3,7 +3,9 @@ type t = {
   waste : Card.t list;
 }
 
-let empty = { stock = []; waste = [] }
+let empty_sw = { stock = []; waste = [] }
+let add_sw cards sw = { stock = cards @ sw.stock; waste = sw.waste }
+let size_sw sw = (List.length sw.stock, List.length sw.waste)
 
 exception EmptyWaste
 
@@ -13,7 +15,7 @@ let draw sw =
   if List.is_empty sw.stock then redraw sw
   else { stock = List.tl sw.stock; waste = List.hd sw.stock :: sw.waste }
 
-let top sw =
+let top_sw sw =
   match sw.waste with
   | [] -> raise EmptyWaste
   | h :: _ -> h

@@ -2,15 +2,22 @@ type t
 
 exception EmptyWaste
 
-val empty : t
-(**[empty] is the empty stock and the empty waste*)
+val empty_sw : t
+(**[empty_sw] is the empty stock and the empty waste*)
+
+val add_sw : Card.t list -> t -> t
+(**[add_sw] adds a card list to the stock*)
+
+val size_sw : t -> int * int
+(**[size_sw] is a pair where the first term is the size of the stock and the
+   second term is the size of the waste.*)
 
 val draw : t -> t
-(** [draw] sw is sw with the top card in stock removed and placed as the new top
-    card in waste. If the stock is empty, it will put the cards from waste back
-    into stock*)
+(** [draw sw] is [sw] with the top card in stock removed and placed as the new
+    top card in waste. If the stock is empty, it will put the cards from waste
+    back into stock*)
 
-val top : t -> Card.t
+val top_sw : t -> Card.t
 (**[top] is the top card in the waste pile. Raises EmptyWaste if the waste pile
    is empty.*)
 
