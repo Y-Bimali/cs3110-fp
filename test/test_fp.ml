@@ -56,6 +56,23 @@ let test_num_of _ =
   assert_equal 12 (num_of { rank = Queen; suit = Diamonds });
   assert_equal 13 (num_of { rank = King; suit = Clubs })
 
+let test_new_card _ =
+  assert_equal "0♠" (to_string (new_card Spades 0));
+  assert_equal "A♠" (to_string (new_card Spades 1));
+  assert_equal "2♠" (to_string (new_card Spades 2));
+  assert_equal "3♠" (to_string (new_card Spades 3));
+  assert_equal "4♠" (to_string (new_card Spades 4));
+  assert_equal "5♠" (to_string (new_card Spades 5));
+  assert_equal "6♠" (to_string (new_card Spades 6));
+  assert_equal "7♠" (to_string (new_card Spades 7));
+  assert_equal "8♠" (to_string (new_card Spades 8));
+  assert_equal "9♠" (to_string (new_card Spades 9));
+  assert_equal "10♠" (to_string (new_card Spades 10));
+  assert_equal "J♠" (to_string (new_card Spades 11));
+  assert_equal "Q♠" (to_string (new_card Spades 12));
+  assert_equal "K♠" (to_string (new_card Spades 13));
+  assert_raises UnusableRank (fun () -> new_card Spades 14)
+
 let test_empty_stockwaste _ = assert_equal (0, 0) (size_sw empty_sw)
 
 let test_add_sw _ =
@@ -176,6 +193,7 @@ let tests =
          "test_to_string" >:: test_to_string;
          "test_empty_card" >:: test_empty_card;
          "test_num_of" >:: test_num_of;
+         "test_new_card" >:: test_new_card;
          "test_string_of_rank" >:: test_string_of_rank;
          "test_empty_card_two" >:: test_empty_card_two;
          "test_empty_stockwaste" >:: test_empty_stockwaste;

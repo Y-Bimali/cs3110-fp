@@ -53,5 +53,11 @@ val to_string : t -> string
 (** [to_string card] returns a string representation of the given card. *)
 
 val empty_card : suit -> t
-(** [empty_card suit] returns an empty card with the specified suit.
-    [empty_card s] is a card of suit [s] and rank [Zero] *)
+(** [empty_card suit] is an [empty_card s] is an "empty" card of suit [s] and
+    rank [Zero] *)
+
+exception UnusableRank
+
+val new_card : suit -> int -> t
+(** [new_card s n] is a card of suit [s] and the rank corresponding to [n].
+    Raises [UnusableRank] if n is not a value between 0 and 13.*)
