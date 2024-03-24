@@ -75,11 +75,97 @@ let test_add_sw _ =
           ]
           empty_sw))
 
-let test_top_sw _ =
+let test_top_sw_empty _ =
   (*nothing in the waste*)
   assert_raises EmptyWaste (fun () -> top_sw empty_sw)
-(*one card in the waste*)
-(*multiple cards in the waste*)
+
+let test_top_sw_nonempty _ =
+  (*one card in the waste*)
+  let one_card = draw (add_sw [ empty_card Clubs ] empty_sw) in
+  assert_equal Clubs (suit_of (top_sw one_card));
+  (*multiple cards in the waste*)
+  let many_cards =
+    draw
+      (add_sw
+         [
+           empty_card Spades;
+           empty_card Diamonds;
+           empty_card Hearts;
+           empty_card Clubs;
+         ]
+         empty_sw)
+  in
+  assert_equal Spades (suit_of (top_sw many_cards));
+  (*multiple identical cards in the waste*)
+  let many_cards2 =
+    draw
+      (add_sw
+         [
+           empty_card Hearts;
+           empty_card Hearts;
+           empty_card Hearts;
+           empty_card Hearts;
+         ]
+         empty_sw)
+  in
+  assert_equal Hearts (suit_of (top_sw many_cards2))
+
+let test_draw _ =
+  (*draw one card from stock with one card*)
+  let one_card = draw (add_sw [ empty_card Clubs ] empty_sw) in
+  assert_equal (0, 1) (size_sw one_card);
+  (*draw multiple unique cards from stock with multiple cards*)
+  let many_cards =
+    draw
+      (draw
+         (draw
+            (add_sw
+               [
+                 empty_card Spades;
+                 empty_card Diamonds;
+                 empty_card Hearts;
+                 empty_card Clubs;
+               ]
+               empty_sw)))
+  in
+  assert_equal (1, 3) (size_sw many_cards);
+  (*draw multiple unique cards from stock with multiple cards*)
+  let many_cards2 =
+    draw
+      (draw
+         (add_sw
+            [
+              empty_card Spades;
+              empty_card Spades;
+              empty_card Spades;
+              empty_card Spades;
+            ]
+            empty_sw))
+  in
+  assert_equal (2, 2) (size_sw many_cards2);
+  (*draw as many cards as the stock has*)
+  let many_cards3 =
+    draw (draw (add_sw [ empty_card Spades; empty_card Diamonds ] empty_sw))
+  in
+  assert_equal (0, 2) (size_sw many_cards3);
+
+  (*draw more cards than the stack has - requires it to move cards back into
+    stock*)
+  let many_cards4 =
+    draw
+      (draw (draw (add_sw [ empty_card Hearts; empty_card Spades ] empty_sw)))
+  in
+  assert_equal (2, 0) (size_sw many_cards4);
+
+  (*draw more cards than the stack has and requires it to move cards back into
+    stock, then continues to draw*)
+  let many_cards4 =
+    draw
+      (draw
+         (draw
+            (draw (add_sw [ empty_card Hearts; empty_card Spades ] empty_sw))))
+  in
+  assert_equal (1, 1) (size_sw many_cards4)
 
 let tests =
   "test_tests"
@@ -94,7 +180,9 @@ let tests =
          "test_empty_card_two" >:: test_empty_card_two;
          "test_empty_stockwaste" >:: test_empty_stockwaste;
          "test_add_sw" >:: test_add_sw;
-         "test_top_sw" >:: test_top_sw;
+         "test_top_sw_empty" >:: test_top_sw_empty;
+         "test_top_sw_nonempty" >:: test_top_sw_nonempty;
+         "test_draw" >:: test_draw;
        ]
 
 let () = run_test_tt_main tests
