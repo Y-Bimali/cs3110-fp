@@ -254,7 +254,7 @@ let t3 =
 
 let test_init_tab _ =
   assert_equal (to_str_lst t1)
-    (let x = " 7♥" in
+    (let x = "7♥" in
      [
        [ x ];
        [ x; "XXX" ];
@@ -265,9 +265,9 @@ let test_init_tab _ =
        [ x; "XXX"; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
      ]);
   assert_equal (to_str_lst t2)
-    (let x = " A♥" in
+    (let x = "A♥" in
      let y = "10♦" in
-     let z = " Q♠" in
+     let z = "Q♠" in
      [
        [ z ];
        [ x; "XXX" ];
@@ -299,9 +299,9 @@ let test_cardmoves_tab _ =
     (let y = { rank = Queen; suit = Spades } in
      let z = { rank = Jack; suit = Hearts } in
      to_str_lst (card_to_col (card_to_col t3 5 y) 5 z))
-    (let x = " K♦" in
-     let y = " Q♠" in
-     let z = " J♥" in
+    (let x = "K♦" in
+     let y = "Q♠" in
+     let z = "J♥" in
      [
        [ z ];
        [ x; "XXX" ];
@@ -316,9 +316,9 @@ let test_cardmoves_tab _ =
        (move_col_to_col
           (move_col_to_col (move_col_to_col t3 0 6 1) 6 5 2)
           5 0 3))
-    (let x = " K♦" in
-     let y = " Q♠" in
-     let z = " J♥" in
+    (let x = "K♦" in
+     let y = "Q♠" in
+     let z = "J♥" in
      [
        [ z; y; x ];
        [ x; "XXX" ];

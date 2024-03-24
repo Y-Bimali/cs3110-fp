@@ -37,7 +37,7 @@ module Column = struct
     let col = rep_ok col in
     let l1, l2 = BatList.takedrop col.vis col.cards in
     List.map
-      (fun a -> if rank_of a = Ten then to_string a else " " ^ to_string a)
+      (fun a -> if rank_of a = Ten then to_string a else "" ^ to_string a)
       l1
     @ BatList.make (List.length l2) "XXX"
 end
