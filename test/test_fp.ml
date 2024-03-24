@@ -1,5 +1,7 @@
 open OUnit2
 open Fp.Card
+open Fp.Tableau
+open BatList
 
 let test_string_of_suit _ =
   assert_equal "♥" (string_of_suit Hearts);
@@ -55,8 +57,101 @@ let test_num_of _ =
   assert_equal 12 (num_of { rank = Queen; suit = Diamonds });
   assert_equal 13 (num_of { rank = King; suit = Clubs })
 
-let tests =
-  "test_tests"
+let t1 =
+  let x = { rank = Seven; suit = Hearts } in
+  init_tab (BatList.make 28 x)
+
+let t2 =
+  let x = { rank = Ace; suit = Hearts } in
+  let y = { rank = Ten; suit = Diamonds } in
+  let z = { rank = Queen; suit = Spades } in
+  init_tab (y :: List.flatten (BatList.make 9 [ x; y; z ]))
+
+let t3 =
+  let x = { rank = King; suit = Diamonds } in
+  let y = { rank = Queen; suit = Spades } in
+  let z = { rank = Jack; suit = Hearts } in
+  init_tab (y :: List.flatten (BatList.make 9 [ x; y; z ]))
+
+let test_init_tab _ =
+  assert_equal (to_str_lst t1)
+    (let x = " 7♥" in
+     [
+       [ x ];
+       [ x; "XXX" ];
+       [ x; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
+     ]);
+  assert_equal (to_str_lst t2)
+    (let x = " A♥" in
+     let y = "10♦" in
+     let z = " Q♠" in
+     [
+       [ z ];
+       [ x; "XXX" ];
+       [ x; "XXX"; "XXX" ];
+       [ z; "XXX"; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
+       [ y; "XXX"; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
+     ])
+
+let test_peekpop_tab _ =
+  assert_equal
+    (List.map (peek_col_card t1) [ 0; 3; 6 ])
+    (let x = { rank = Seven; suit = Hearts } in
+     [ Some x; Some x; Some x ]);
+  assert_equal
+    (List.map2
+       (fun (a, b) c ->
+         ( (match peek_col_card a c with
+           | None -> ""
+           | Some x -> to_string x),
+           to_string b ))
+       (List.map (pop_col_card t2) [ 0; 4; 6 ])
+       [ 0; 4; 6 ])
+    [ ("", "Q♠"); ("10♦", "A♥"); ("A♥", "10♦") ]
+
+let test_cardmoves_tab _ =
+  assert_equal
+    (let y = { rank = Queen; suit = Spades } in
+     let z = { rank = Jack; suit = Hearts } in
+     to_str_lst (card_to_col (card_to_col t3 5 y) 5 z))
+    (let x = " K♦" in
+     let y = " Q♠" in
+     let z = " J♥" in
+     [
+       [ z ];
+       [ x; "XXX" ];
+       [ x; "XXX"; "XXX" ];
+       [ z; "XXX"; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX"; "XXX" ];
+       [ z; y; x; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
+       [ y; "XXX"; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
+     ]);
+  assert_equal
+    (to_str_lst
+       (move_col_to_col
+          (move_col_to_col (move_col_to_col t3 0 6 1) 6 5 2)
+          5 0 3))
+    (let x = " K♦" in
+     let y = " Q♠" in
+     let z = " J♥" in
+     [
+       [ z; y; x ];
+       [ x; "XXX" ];
+       [ x; "XXX"; "XXX" ];
+       [ z; "XXX"; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX"; "XXX" ];
+       [ y; "XXX"; "XXX"; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
+     ])
+
+let card_tests =
+  "card_tests"
   >::: [
          "test_string_of_suit" >:: test_string_of_suit;
          "test_string_of_rank" >:: test_string_of_rank;
@@ -68,4 +163,13 @@ let tests =
          "test_empty_card_two" >:: test_empty_card_two;
        ]
 
-let () = run_test_tt_main tests
+let tab_tests =
+  "tab_tests"
+  >::: [
+         "test_init_tab" >:: test_init_tab;
+         "test_peekpop_tab" >:: test_peekpop_tab;
+         "test_cardmoves_tab" >:: test_cardmoves_tab;
+       ]
+
+let () = run_test_tt_main card_tests
+let () = run_test_tt_main tab_tests

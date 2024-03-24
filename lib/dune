@@ -1,7 +1,8 @@
 (library
  (inline_tests)
  (name fp)
+ (libraries batteries csv)
  (preprocess
   (pps ppx_inline_test))
-  (instrumentation
+ (instrumentation
   (backend bisect_ppx)))
