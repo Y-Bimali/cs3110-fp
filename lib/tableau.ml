@@ -36,11 +36,12 @@ module Column = struct
   let col_str_lst col =
     let col = rep_ok col in
     let l1, l2 = BatList.takedrop col.vis col.cards in
-    List.map
-      (* fixed error here *)
-        (fun a -> if rank_of a = Ten then to_string a else "" ^ to_string a)
-      l1
-    @ BatList.make (List.length l2) "XXX"
+    List.map to_string l1 @ BatList.make (List.length l2) "XXX"
+
+  let to_col_lst col =
+    let col = rep_ok col in
+    let l1, l2 = BatList.takedrop col.vis col.cards in
+    l1 @ BatList.make (List.length l2) (empty_card Spades)
 end
 
 open Column
@@ -129,3 +130,4 @@ let move_col_to_col tab c1 c2 i =
     put_n_col_card tab1 c2 (List.rev cd_lst)
 
 let to_str_lst tab = List.map col_str_lst tab
+let to_cd_lst tab = List.map to_col_lst tab

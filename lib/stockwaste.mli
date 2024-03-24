@@ -24,3 +24,10 @@ val top_sw : t -> Card.t
 val remove_top : t -> t
 (** [remove_top sw] is [sw] with [top sw] removed and with a new top card.
     Raises EmptyWaste if the waste pile is empty*)
+
+val check_stock_empty : t -> bool
+(**[check_stock_empty sw] is [true] if the stock is empty and [false] if it is
+   not*)
+
+val get_waste : t -> Card.t list
+(**[get_waste sw] is the waste pile represented as a Card.t list*)

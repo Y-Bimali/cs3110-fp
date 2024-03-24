@@ -77,6 +77,23 @@ let test_new_card _ =
 
 let test_empty_stockwaste _ = assert_equal (0, 0) (size_sw empty_sw)
 
+let test_check_stock_empty _ =
+  (*empty stock*)
+  assert_equal true (check_stock_empty empty_sw);
+  (*stock with one card*)
+  assert_equal false (check_stock_empty (add_sw [ empty_card Clubs ] empty_sw));
+  (*stock with multiple cards*)
+  assert_equal false
+    (check_stock_empty
+       (add_sw
+          [
+            empty_card Clubs;
+            empty_card Diamonds;
+            empty_card Hearts;
+            empty_card Spades;
+          ]
+          empty_sw))
+
 let test_add_sw _ =
   (*adding nothing*)
   assert_equal (0, 0) (size_sw (add_sw [] empty_sw));
@@ -353,6 +370,7 @@ let sw_tests =
          "test_draw" >:: test_draw;
          "test_remove_top_empty" >:: test_remove_top_empty;
          "test_remove_top_nonempty" >:: test_remove_top_nonempty;
+         "test_check_stock_empty" >:: test_check_stock_empty;
        ]
 
 let tab_tests =

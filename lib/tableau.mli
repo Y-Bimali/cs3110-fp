@@ -39,3 +39,6 @@ val move_col_to_col : t -> int -> int -> int -> t
 
 val to_str_lst : t -> string list list
 (**[to_string t] is the tableau represented as a string list.*)
+
+val to_cd_lst : t -> Card.t list list
+(** [to_cd_lst t] is the tableau represented as a card list list.*)

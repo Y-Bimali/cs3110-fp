@@ -23,3 +23,6 @@ let top_sw sw =
 let remove_top sw =
   if sw.waste = [] then raise EmptyWaste
   else { stock = sw.stock; waste = List.tl sw.waste }
+
+let check_stock_empty sw = sw.stock = []
+let get_waste sw = sw.waste
