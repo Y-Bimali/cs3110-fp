@@ -186,6 +186,56 @@ let test_draw _ =
   in
   assert_equal (1, 1) (size_sw many_cards4)
 
+let test_remove_top_empty _ =
+  (*nothing in the waste*)
+  assert_raises EmptyWaste (fun () -> remove_top empty_sw);
+  (*removing more cards than there are in the waste*)
+  let many_cards3 =
+    draw (draw (add_sw [ empty_card Spades; empty_card Hearts ] empty_sw))
+  in
+  assert_raises EmptyWaste (fun () ->
+      size_sw (remove_top (remove_top (remove_top many_cards3))))
+
+let test_remove_top_nonempty _ =
+  (*remove one card from the waste when waste has one card*)
+  let one_card = draw (add_sw [ empty_card Spades ] empty_sw) in
+  assert_equal (0, 0) (size_sw (remove_top one_card));
+  (*remove one card from the waste with multiple cards*)
+  let many_cards =
+    draw
+      (draw
+         (draw
+            (add_sw
+               [
+                 empty_card Spades;
+                 empty_card Diamonds;
+                 empty_card Hearts;
+                 empty_card Clubs;
+               ]
+               empty_sw)))
+  in
+  assert_equal (1, 2) (size_sw (remove_top many_cards));
+  (*remove multiple cards from the waste when the waste has multiple cards*)
+  let many_cards2 =
+    draw
+      (draw
+         (draw
+            (add_sw
+               [
+                 empty_card Spades;
+                 empty_card Hearts;
+                 empty_card Hearts;
+                 empty_card Clubs;
+               ]
+               empty_sw)))
+  in
+  assert_equal (1, 1) (size_sw (remove_top (remove_top many_cards2)));
+  (*remove all the cards from the waste with multiple cards*)
+  let many_cards3 =
+    draw (draw (add_sw [ empty_card Spades; empty_card Hearts ] empty_sw))
+  in
+  assert_equal (0, 0) (size_sw (remove_top (remove_top many_cards3)))
+
 let t1 =
   let x = { rank = Seven; suit = Hearts } in
   init_tab (BatList.make 28 x)
@@ -296,6 +346,8 @@ let tests =
          "test_top_sw_empty" >:: test_top_sw_empty;
          "test_top_sw_nonempty" >:: test_top_sw_nonempty;
          "test_draw" >:: test_draw;
+         "test_remove_top_empty" >:: test_remove_top_empty;
+         "test_remove_top_nonempty" >:: test_remove_top_nonempty;
        ]
 
 let tab_tests =
