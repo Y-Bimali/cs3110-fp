@@ -341,6 +341,11 @@ let tests =
          "test_new_card" >:: test_new_card;
          "test_string_of_rank" >:: test_string_of_rank;
          "test_empty_card_two" >:: test_empty_card_two;
+       ]
+
+let sw_tests =
+  "test_tests"
+  >::: [
          "test_empty_stockwaste" >:: test_empty_stockwaste;
          "test_add_sw" >:: test_add_sw;
          "test_top_sw_empty" >:: test_top_sw_empty;
@@ -360,3 +365,4 @@ let tab_tests =
 
 let () = run_test_tt_main tests
 let () = run_test_tt_main tab_tests
+let () = run_test_tt_main sw_tests
