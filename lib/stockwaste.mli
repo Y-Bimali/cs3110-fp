@@ -1,12 +1,26 @@
-(* open Card
+type t
 
-   type t
+exception EmptyWaste
 
-   val draw : t -> t (** [draw] sw is sw with the top card in stock removed and
-   placed as the new top card in waste*)
+val empty_sw : t
+(**[empty_sw] is the empty stock and the empty waste*)
 
-   val top : t -> Card.t (**[top] is the top card in the waste pile. Requires
-   that waste pile is not empty *) (** MAKE THIS AN OPTION or check (isempty)*)
+val add_sw : Card.t list -> t -> t
+(**[add_sw] adds a card list to the stock*)
 
-   val remove_top : t -> t (** [remove_top sw] is [sw] with [top sw] removed and
-   with a new top card.*) *)
+val size_sw : t -> int * int
+(**[size_sw] is a pair where the first term is the size of the stock and the
+   second term is the size of the waste.*)
+
+val draw : t -> t
+(** [draw sw] is [sw] with the top card in stock removed and placed as the new
+    top card in waste. If the stock is empty, it will put the cards from waste
+    back into stock*)
+
+val top_sw : t -> Card.t
+(**[top] is the top card in the waste pile. Raises EmptyWaste if the waste pile
+   is empty.*)
+
+val remove_top : t -> t
+(** [remove_top sw] is [sw] with [top sw] removed and with a new top card.
+    Raises EmptyWaste if the waste pile is empty*)
