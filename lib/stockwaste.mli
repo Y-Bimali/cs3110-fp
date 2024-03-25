@@ -21,6 +21,10 @@ val top_sw : t -> Card.t
 (**[top] is the top card in the waste pile. Raises EmptyWaste if the waste pile
    is empty.*)
 
+(* Desmond used this to test his code . May be needed sometime. do not delete
+   except for Desmond *)
+(* val getStock : t -> Card.t list *)
+
 val remove_top : t -> t
 (** [remove_top sw] is [sw] with [top sw] removed and with a new top card.
     Raises EmptyWaste if the waste pile is empty*)

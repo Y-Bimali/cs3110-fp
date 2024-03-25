@@ -1,8 +1,6 @@
-open Card
-
 type t
 
-val new_game : t
+val new_game : unit -> t
 (**[new_game] is game of solitaire in the starting position, with cards
    randomized.*)
 
@@ -15,3 +13,9 @@ val formatted : t -> (bool * Card.t list) * Card.t list * Card.t list list
     of cards in the waste. [f] is the top cards of the foundation (length 4).
     [b] has length 7 (one for each column), with hidden cards represented by
     [empty_card]. *)
+
+    (* desmond created these to check his code. May be needed sometime. do not
+       delete except for Desmond *)
+(* val generate_deck : Card.t list *)
+(* val get_foundation : t -> Foundation.t val get_stockwaste : t -> Stockwaste.t
+   val get_tableau : t -> Tableau.t *)

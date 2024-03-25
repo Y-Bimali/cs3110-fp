@@ -1,7 +1,9 @@
 open Foundation
 open Stockwaste
 open Tableau
-open Random
+
+(* open Random *)
+open Card
 
 type t = {
   f : Foundation.t;
@@ -9,10 +11,24 @@ type t = {
   b : Tableau.t;
 }
 
-let card_data = BatList.of_enum (BatFile.lines_of "data/card.txt")
+(* let card_data = BatList.of_enum (BatFile.lines_of "data/card.txt") *)
 
-(* let shuffle_list lst = let compare_random _ _ = Random.int 2 in let shuffled
-   = List.sort compare_random lst in shuffled *)
+let generate_deck =
+  let suits = [ Spades; Hearts; Clubs; Diamonds ] in
+  let ranks = [ 1; 2; 3; 4; 5; 6; 7; 8; 9; 10; 11; 12; 13 ] in
+  let rec generate_cards suits ranks acc =
+    match suits with
+    | [] -> acc
+    | suit :: rest_suits ->
+        let cards_of_suit = List.map (fun rank -> new_card suit rank) ranks in
+        generate_cards rest_suits ranks (acc @ cards_of_suit)
+  in
+  generate_cards suits ranks []
+
+let shuffle_list lst =
+  let compare_random _ _ = Random.int 2 in
+  let shuffled = List.sort compare_random lst in
+  shuffled
 
 let rec select_random_elements k lst acc =
   if k = 0 then (acc, lst)
@@ -28,12 +44,24 @@ let rec select_random_elements k lst acc =
         select_random_elements (k - 1) remaining_elements
           (selected_element :: acc)
 
-let selected_elements, remaining_elements =
-  select_random_elements 28 card_data []
+(**[new_game ()] initializes the game_state. foundation must be empty, and
+   tableau adds 28 cards and the rest goes to Stockwaste *)
 
-(** read csv file containing card names and initialize game. foundation must be
-    empty, and tableau adds 28 cards and the rest goes to Stockwaste *)
-(*let newgame game = game.f = f.initialize ; game.s = empty_sw ; game.b =b *)
+let new_game () =
+  let card_data = shuffle_list generate_deck in
+
+  (* Initialize Foundation *)
+  let foundation = Foundation.initialize in
+
+  (* Initialize Tableau *)
+  let selected_cards, remaining_cards =
+    select_random_elements 28 card_data []
+  in
+  let tableau = Tableau.init_tab (shuffle_list selected_cards) in
+
+  let a = add_sw (shuffle_list remaining_cards) empty_sw in
+
+  { f = foundation; s = a; b = tableau }
 
 (**[draw_card fsb] draws a card and moves it from the stock to the waste in
    stockwaste (s)*)
