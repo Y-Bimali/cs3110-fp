@@ -1,3 +1,19 @@
 (test
- (name test_fp)
- (libraries fp ounit2))
+ (name test_card)
+ (libraries fp ounit2)
+ (modules test_card))
+
+(test
+ (name test_foundation)
+ (libraries fp ounit2)
+ (modules test_foundation))
+
+(test
+ (name test_stockwaste)
+ (libraries fp ounit2)
+ (modules test_stockwaste))
+
+(test
+ (name test_tableau)
+ (libraries fp ounit2)
+ (modules test_tableau))

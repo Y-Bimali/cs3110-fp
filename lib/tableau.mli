@@ -19,15 +19,15 @@ val peek_col_card : t -> int -> Card.t option
     Raises: [InvalidColID] if [0 > [col] || [col] > 6].*)
 
 val pop_col_card : t -> int -> t * Card.t
-(* [pop_col_card tab col] is the pair of [tab] after removing the bottommost
-   card from [col] and the card itself. Must be called with corresponding
-   [Foundation.put] call. Raises: [InvalidColID] if [0 > [col] || [col] > 6].
-   [EmptyCol] if [col] has no cards. *)
+(** [pop_col_card tab col] is the pair of [tab] after removing the bottommost
+    card from [col] and the card itself. Must be called with corresponding
+    [Foundation.put] call. Raises: [InvalidColID] if [0 > [col] || [col] > 6].
+    [EmptyCol] if [col] has no cards. *)
 
 val card_to_col : t -> int -> Card.t -> t
-(* [card_to_col tab col card] is [tab] after putting [card] onto [col]. Raises:
-   [InvalidColID] if [0 > [col] || [col] > 6]. [IllegalMove] if this move is not
-   legal. *)
+(** [card_to_col tab col card] is [tab] after putting [card] onto [col]. Raises:
+    [InvalidColID] if [0 > [col] || [col] > 6]. [IllegalMove] if this move is
+    not legal. *)
 
 val move_col_to_col : t -> int -> int -> int -> t
 (**[move_col_to_col tab
