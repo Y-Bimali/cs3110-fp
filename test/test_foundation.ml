@@ -66,7 +66,11 @@ let test_remove _ =
 let test_set _ =
   assert_equal initialize
     (set (empty_card Spades) (empty_card Hearts) (empty_card Clubs)
-       (empty_card Diamonds))
+       (empty_card Diamonds));
+  assert_raises (Failure "RI") (fun () ->
+      set (empty_card Spades) (empty_card Spades) (empty_card Clubs)
+        (empty_card Diamonds))
+(* This tests the rep_ok failure.*)
 
 let tests =
   "test_tests"
