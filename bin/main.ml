@@ -8,4 +8,5 @@ let rec game_loop g =
   | true -> game_loop g2
   | false -> ()
 
+let () = Random.self_init ()
 let _ = game_loop (new_game ())
