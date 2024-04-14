@@ -10,7 +10,8 @@ val put : t -> Card.t -> t
 (**[put f c] adds [c] to [f]. Raises [InvalidMove] if [valid_move f c] is false.*)
 
 val top_cards : t -> Card.t list
-(**[top_cards f] is a list of the top cards in [f]*)
+(**[top_cards f] is a list of the top cards in [f]. This is always in the order
+   [spade; heart; club; diamond]*)
 
 val initialize : t
 (**[initialize] is an empty foundation*)
