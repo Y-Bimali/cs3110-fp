@@ -1,6 +1,7 @@
 type t
 
 exception EmptyWaste
+exception NoCards
 
 val empty_sw : t
 (**[empty_sw] is the empty stock and the empty waste*)
@@ -15,7 +16,8 @@ val size_sw : t -> int * int
 val draw : t -> t
 (** [draw sw] is [sw] with the top card in stock removed and placed as the new
     top card in waste. If the stock is empty, it will put the cards from waste
-    back into stock*)
+    back into stock. If the stock and the waste is empty, it will raise a
+    NoCards Exception*)
 
 val top_sw : t -> Card.t
 (**[top] is the top card in the waste pile. Raises EmptyWaste if the waste pile

@@ -224,8 +224,8 @@ let print_tab theme g =
 (*let board g = match Game.formatted g with ((s, w), f, t) -> let len = 10 +
   List.fold_left (fun acc x -> max acc (List.length x)) 0 t in;;*)
 
-(**[query p v e r] is a valid response to a prompted user interaction in the
-   terminal. The function prints [p] prompts a response from the command line,
+(**[query pg q v e r] is a valid response to a prompted user interaction in the
+   terminal. The function prints [q] prompts a response from the command line,
    validates the string response [the_input] with [v the_input], and prints [r]
    as a follow up to a valid response (no newline printed if [r] is the empty
    string). If the response is invalid, it describes the error using [e] and
@@ -247,16 +247,35 @@ let rec query pg q v e r =
         let () = print_endline e in
         query pg q v e r
 
-let commands = [ "NEW GAME"; "DRAW"; "D"; "QUIT" ]
-let validate s = List.mem s commands
+let commands = [ "NEW GAME"; "DRAW"; "D"; "QUIT"; "S TO F" ]
 
+(** Hint: split_on_char : char -> string -> string list, which char being a
+    space ' '.*)
+let validate s =
+  match s with
+  | "PATTERN MATCH YOUR MOVE HERE" -> failwith "Unimplemented"
+  | _ -> List.mem s commands
+
+let print_error e =
+  match e with
+  | None -> ()
+  | Some s -> print_endline s
+
+(**TODO: output tuple should be bool * game Functions called in Game should
+   return game * string option *)
 let round g =
   let q =
     query (true, g) "Enter an action: " validate "Unrecognizable Command."
       "Successful Command."
   in
-  match q with
-  | "DRAW" | "D" -> (true, Game.draw_card g)
-  | "NEW GAME" -> (true, Game.new_game ())
-  | "QUIT" -> (false, g)
-  | _ -> failwith "Incomplete Validation Function"
+  if q = "QUIT" then (false, g)
+  else
+    let g2, error =
+      match q with
+      | "DRAW" | "D" -> Game.draw_card g
+      | "NEW GAME" -> (Game.new_game (), None)
+      | "S TO F" -> Game.s_to_f g
+      | _ -> failwith "Incomplete Validation Function"
+    in
+    print_error error;
+    (true, g2)
