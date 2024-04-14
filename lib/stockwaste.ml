@@ -12,11 +12,13 @@ let size_sw sw = (List.length sw.stock, List.length sw.waste)
 (* let getStock w = w.stock *)
 
 exception EmptyWaste
+exception NoCards
 
 let redraw sw = { stock = List.rev sw.waste; waste = sw.stock }
 
 let draw sw =
-  if List.is_empty sw.stock then redraw sw
+  if List.is_empty sw.stock && List.is_empty sw.waste then raise NoCards
+  else if List.is_empty sw.stock then redraw sw
   else { stock = List.tl sw.stock; waste = List.hd sw.stock :: sw.waste }
 
 let top_sw sw =
