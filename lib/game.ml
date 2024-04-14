@@ -33,7 +33,8 @@ let selected_elements, remaining_elements =
 
 (** read csv file containing card names and initialize game. foundation must be
     empty, and tableau adds 28 cards and the rest goes to Stockwaste *)
-(*let newgame game = game.f = f.initialize ; game.s = empty_sw ; game.b =b *)
+(*let newgame game = let stockwaste_stock = empty_sw in game.f = f.initialize ;
+  game.s = stockwaste_stock ; game.b =b *)
 
 (**[draw_card fsb] draws a card and moves it from the stock to the waste in
    stockwaste (s)*)
