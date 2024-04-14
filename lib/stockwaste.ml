@@ -7,6 +7,10 @@ let empty_sw = { stock = []; waste = [] }
 let add_sw cards sw = { stock = cards @ sw.stock; waste = sw.waste }
 let size_sw sw = (List.length sw.stock, List.length sw.waste)
 
+(* (* Desmond used this to test his code . May be needed sometime. do not delete
+   except for Desmond *)*)
+(* let getStock w = w.stock *)
+
 exception EmptyWaste
 
 let redraw sw = { stock = List.rev sw.waste; waste = sw.stock }

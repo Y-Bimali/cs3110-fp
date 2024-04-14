@@ -1,0 +1,9 @@
+Ensure that you have the required libraries. Run the following commands in your command line:
+
+opam update
+opam upgrade
+opam install ansiterminal batteries csv
+
+To run the program, enter the following command in your command line.
+
+dune exec ./bin/main.exe

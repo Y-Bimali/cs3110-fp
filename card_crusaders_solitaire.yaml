@@ -1,0 +1,33 @@
+---
+# Members of your group.
+group:
+  - name: Desmond Ababio
+    netid: dna35
+  - name: Yinghui Bimali
+    netid: yb272
+  - name: Aruni Chenxi
+    netid: ac2552
+  - name: Malli Gutta
+    netid: mg2395
+# Your PM.
+pm:
+  name: Euna Lee
+  netid: ekl49
+# Set to false if you don't want your gallery entry to be public.
+publish: true
+# Pithy title
+title: "Klondike Solitaire"
+# OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.
+git-repo: "https://github.coecis.cornell.edu/yb272/cs3110-final-project"
+# If you have no demo screencast, replace the url string with an empty string ""
+demo-video-url: ""
+# Write a short, attention-grabbing description of your project.
+desc: >
+  Our project allows you to play a game of draw-one Klondike Solitaire to 
+  completion. It prints an easy-to-understand visual depiction of all 
+  components of the game, including the stock, foundation, and tableau. Users 
+  play by entering moves through terminal, which are executed if and only if 
+  they are legal.
+
+  Additional features may include variants such as draw-three, a cheat mode, 
+  an easy mode, customizable colors and decks, and audio feedback.
