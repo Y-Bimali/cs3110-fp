@@ -104,15 +104,15 @@ let move_matching_card_to_tableau game col_index =
   let rec find_and_move foundation_columns col_index =
     let cards = peek_col_card game.b col_index in
     match (foundation_columns, cards) with
-    | [], _ -> (game, Some "Invalid move")
-    | _ :: _, None -> (game, Some "Invalid move")
+    | [], _ -> (game, Some "empty foundation")
+    | _ :: _, None -> (game, Some "empty tableau column")
     | top_card :: rest, Some card ->
         if
           num_of top_card - num_of card = -1
           && color_of card <> color_of top_card
         then
           try
-            let updated_tableau = card_to_col game.b col_index card in
+            let updated_tableau = card_to_col game.b col_index top_card in
 
             let updated_foundation = remove game.f top_card in
             let updated_game =
