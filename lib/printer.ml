@@ -132,7 +132,7 @@ let found_app_mod theme c =
   if Card.num_of c = 0 then card_tagged theme NoneFull c
   else card_tagged theme Full c
 
-let found_app theme f = List.map (found_app_mod theme) f
+let found_app theme f = transpose (List.map (found_app_mod theme) f)
 
 let tab_app_mod theme booled_c =
   match booled_c with
@@ -276,12 +276,10 @@ let round g =
       | "NEW GAME" -> (Game.new_game (), None)
       | "S TO F" -> Game.s_to_f g
       | "T TO F" ->
-        
           let () = print_string "Enter the tableau column index: " in
           let col_index = read_int () in
           Game.move_card_to_foundation g col_index
       | "F TO T" ->
-          
           let () = print_string "Enter the tableau column index: " in
           let col_index = read_int () in
           Game.move_matching_card_to_tableau g col_index
@@ -289,5 +287,3 @@ let round g =
     in
     print_error error;
     (true, g2)
-
-    
