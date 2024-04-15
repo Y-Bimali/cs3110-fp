@@ -82,7 +82,7 @@ let formatted fsb =
 
 let s_to_f g = (g, Some "Hello")
 
-(* tentative functions for interacting with foundation and tableau *)
+
 let move_card_to_foundation game col_index =
   if col_index >= 0 && col_index <= 6 then
     match peek_col_card game.b col_index with
@@ -130,7 +130,7 @@ let move_matching_card_to_tableau game found_index tab_index =
               in
               (updated_game, None)
             with IllegalMove -> (game, Some "This move is illegal")
-          else (game, Some "Can not move King there")
+          else (game, Some "Can not move this card there")
       | top_card, Some c ->
           if num_of top_card = 0 then (game, Some "The index here is empty")
           else if
