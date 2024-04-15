@@ -100,27 +100,38 @@ let move_card_to_foundation game col_index =
       else (game, Some "Invalid move")
 
 (* in the future add case for adding king to empty tableau column *)
-let move_matching_card_to_tableau game col_index =
-  let rec find_and_move foundation_columns col_index =
-    let cards = peek_col_card game.b col_index in
-    match (foundation_columns, cards) with
-    | [], _ -> (game, Some "empty foundation")
-    | _ :: _, None -> (game, Some "empty tableau column")
-    | top_card :: rest, Some card ->
-        if
-          num_of top_card - num_of card = -1
-          && color_of card <> color_of top_card
+let move_matching_card_to_tableau game found_index tab_index =
+  let find_and_move foundation_columns found_index tab_index =
+    let card = peek_col_card game.b tab_index in
+
+    let foundation_card = List.nth foundation_columns found_index in
+
+    match (foundation_card, card) with
+    | top_c, None ->
+        if num_of top_c = 13 then
+          try
+            let updated_tableau = card_to_col game.b tab_index top_c in
+            let updated_foundation = remove game.f top_c in
+            let updated_game =
+              { f = updated_foundation; s = game.s; b = updated_tableau }
+            in
+            (updated_game, None)
+          with IllegalMove -> (game, Some "This move is illegal")
+        else (game, Some "Can not move King there")
+    | top_card, Some c ->
+        if num_of top_card = 0 then (game, Some "The index here is empty")
+        else if
+          num_of top_card - num_of c = -1 && color_of c <> color_of top_card
         then
           try
-            let updated_tableau = card_to_col game.b col_index top_card in
-
+            let updated_tableau = card_to_col game.b tab_index top_card in
             let updated_foundation = remove game.f top_card in
             let updated_game =
               { f = updated_foundation; s = game.s; b = updated_tableau }
             in
             (updated_game, None)
           with IllegalMove -> (game, Some "Illegal move")
-        else find_and_move rest col_index
+        else (game, Some "Error")
   in
 
-  find_and_move (top_cards game.f) col_index
+  find_and_move (top_cards game.f) found_index tab_index

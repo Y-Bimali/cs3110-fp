@@ -279,11 +279,28 @@ let round g =
           let () = print_string "Enter the tableau column index: " in
           let col_index = read_int () in
           Game.move_card_to_foundation g col_index
-      | "F TO T" ->
-          let () = print_string "Enter the tableau column index: " in
-          let col_index = read_int () in
-          Game.move_matching_card_to_tableau g col_index
-      | _ -> failwith "Incomplete Validation Function"
+      | "F TO T" -> (
+          print_endline
+            "Enter the foundation index <f> and column index <c> to put the \
+             card.";
+          print_endline "The two indices must be separated by a space.";
+
+          print_endline
+            "f is 0 for Spade column, 1 for Heart column, 2 for Club column \
+             and 3 for Diamond column. ";
+          print_newline ();
+          print_string "Enter f and c: ";
+          let input = read_line () in
+          match String.split_on_char ' ' input with
+          | [ x; y ] ->
+              Game.move_matching_card_to_tableau g (int_of_string x)
+                (int_of_string y)
+          | _ ->
+              ( g,
+                Some
+                  "Use proper indices: Must be in form <foundation index> \
+                   <tableau column index>" ))
+      | _ -> (g, Some "Not a proper command")
     in
     print_error error;
     (true, g2)
