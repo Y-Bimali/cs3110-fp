@@ -19,6 +19,12 @@ let t3 =
   let z = { rank = Jack; suit = Hearts } in
   init_tab (y :: List.flatten (BatList.make 9 [ x; y; z ]))
 
+let t4 =
+  let x = new_card Hearts 1 in
+  let y = new_card Spades 2 in
+  let z = new_card Diamonds 3 in
+  init_tab (y :: List.flatten (BatList.make 9 [ x; y; z ]))
+
 let test_init_tab _ =
   assert_equal (to_str_lst t1)
     (let x = "7♥" in
@@ -98,6 +104,22 @@ let test_cardmoves_tab _ =
        [ x; "XXX"; "XXX"; "XXX"; "XXX" ];
        [ y; "XXX"; "XXX"; "XXX"; "XXX" ];
        [ x; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
+     ]);
+  assert_equal
+    (to_str_lst
+       (let a, b = pop_col_card t4 1 in
+        card_to_col a 1 b))
+    (let x = "A♥" in
+     let y = "2♠" in
+     let z = "3♦" in
+     [
+       [ z ];
+       [ x; y ];
+       [ x; "XXX"; "XXX" ];
+       [ z; "XXX"; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX"; "XXX" ];
+       [ x; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
+       [ y; "XXX"; "XXX"; "XXX"; "XXX"; "XXX"; "XXX" ];
      ]);
   assert_raises IllegalMove (fun _ -> card_to_col t2 0 (new_card Hearts 0));
   assert_raises InvalidColID (fun _ -> card_to_col t2 10 (new_card Hearts 0));

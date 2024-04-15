@@ -1,0 +1,278 @@
+commit 248a2d52c78a96f1fd080559d8a9c86214144137
+Author: Yinghui Bimali <yb272@cornell.edu>
+Date:   Thu Mar 28 20:24:21 2024 -0400
+
+    Added instructions to demo in main.
+
+commit 0f38f40db580c3ba3aaf350ada6fe829563230d6
+Author: Yinghui Bimali <yb272@cornell.edu>
+Date:   Thu Mar 28 19:54:26 2024 -0400
+
+    Added INSTALL.txt file
+
+commit 61d1de6705a4ffb659d81998615fb9fd8d92c3e2
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Thu Mar 28 00:45:28 2024 -0400
+
+    fixed random lists
+
+commit 1dc5af512c7d7e4452b303de743e47ac4df52da8
+Author: Yinghui Bimali <yb272@cornell.edu>
+Date:   Thu Mar 28 00:11:02 2024 -0400
+
+    Implemented basic functionality of Printer, and edited main to match.
+    
+    - Running main prints the solitaire board to the terminal.
+    - Supported actions are drawing, new games, and quit
+    - Tableau cards are short, future work will address this
+    - Implementation of printer has a "theme" record being passed around. This will be implemented as a functor in a future refactor, and allow outside choice.
+    - Better separation of printer and main required. Current is functional, but possibly too much logic is in the printer module.
+
+commit 6a34892f3897324ed8a09e6cecd537100dc383bc
+Author: Aruni Chenxi <ac2552@cornell.edu>
+Date:   Wed Mar 27 22:27:25 2024 -0400
+
+    Create YAML file
+
+commit c517864616e176562df253210926a9ff6e40aebf
+Author: Aruni Chenxi <ac2552@cornell.edu>
+Date:   Wed Mar 27 01:23:05 2024 -0400
+
+    Separate test suites, Add test cases for Tableau
+    
+    - Separate out the four test suites for card, foundation, tableau, and stockwaste
+    - Add test cases to cover exceptions for tableau
+
+commit 67966ef81721e28f362b715d38fc985224d14d29
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Sun Mar 24 21:57:40 2024 -0400
+
+    removed data folder. no longer needed
+
+commit 61fdf099ed3cb773d3b93f749b9d58b43aa72360
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Sun Mar 24 21:54:56 2024 -0400
+
+    initialized game.ml
+
+commit 531659cffbcf4b9b60586334eb685a6c6cfd99b8
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Sun Mar 24 21:54:10 2024 -0400
+
+    initialized game.ml
+
+commit 040d9198e6c5761c3377c9f369d2d36776efa3c8
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Sun Mar 24 21:52:19 2024 -0400
+
+    initialized game.ml
+
+commit 5dfc03fe79bbd34e7523397a6a3b81ba6b1f7940
+Author: Malli Gutta <mg3295@cornell.edu>
+Date:   Sun Mar 24 18:55:03 2024 -0400
+
+    Created interfaces for game and printer
+    
+    -Began implementing game and printer
+
+commit 2f9825d79a107ba26412b0ccd5427a1fdbf54cb5
+Author: Malli Gutta <mg3295@cornell.edu>
+Date:   Sun Mar 24 16:57:07 2024 -0400
+
+    Rearranged test cases
+
+commit 72a18f74cb255b7df5bd1b95946ccda65a153481
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Sun Mar 24 15:54:39 2024 -0400
+
+    fixed indentation error and edited tests for it
+
+commit d416ec2734b0dce18a8e171498361525092a06bd
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Sun Mar 24 15:51:40 2024 -0400
+
+    fixed indenrarion error in tableau  col_str_lst
+
+commit 3b89ef540fff1de9371435589bca6c82952e815f
+Author: Malli Gutta <mg3295@cornell.edu>
+Date:   Sun Mar 24 15:15:56 2024 -0400
+
+    Added more tests for stockwaste.ml
+    
+    -Added tests for remove_top function
+
+commit f8426f9b686bd84ca7405b1cff3a85defd2c4b2b
+Merge: 036aa39 c0946d9
+Author: Aruni Chenxi <ac2552@cornell.edu>
+Date:   Sun Mar 24 14:53:45 2024 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:yb272/cs3110-final-project
+
+commit 036aa39ff46bf1ff8aab5e5b45b251f1f9e24bc8
+Author: Aruni Chenxi <ac2552@cornell.edu>
+Date:   Sun Mar 24 14:50:04 2024 -0400
+
+    Implement Tableau
+    
+    - Wrote function implementation
+    - Wrote test suite
+
+commit c0946d9983e5221f79117d5908fd5f298c184d65
+Author: Yinghui Bimali <yb272@cornell.edu>
+Date:   Sun Mar 24 02:09:45 2024 -0400
+
+    Implemented Foundation, added function to Card, full tests for Foundation
+    
+    - Can now create Card given Suit and numerical rank. New exception added in case bad number is given. Corresponding tests added.
+    - Implemented agreed upon functions for foundation, including valid_move, put, top_cards, initialize, is_complete, and remove.
+    - Additionally, implemented "set" to create an arbitrary foundation (useful for testing but possibly not in practice).
+    - Added an exception InvalidMove to accomodate put and remove.
+    - Added 100% bisect test coverage in test_foundation.ml. Unsure how to actually run it without manually changing the dune doc to have test_foundation instead of test_fp after name, so currently need to temporarily edit that in order to run it. But all test cases pass and coverage 100% when run.
+
+commit dc3b5814a7d815f7b437786dfc2fa1c97a07618d
+Author: Malli Gutta <mg3295@cornell.edu>
+Date:   Sat Mar 23 21:29:22 2024 -0400
+
+    Added test cases for stockwaste
+    
+    -Created test cases for top_sw and draw
+
+commit d16c103ec8bdb176a7e1606780512d76727d10ca
+Author: Malli Gutta <mg3295@cornell.edu>
+Date:   Sat Mar 23 15:00:38 2024 -0400
+
+    Added test cases for stockwaste
+    
+    - Tested top_sw, add_sw, and empty_sw
+    - Implemented size in stockwaste.ml
+
+commit 98171dd0dc6765a88562797f76d150ee59ff7218
+Author: Malli Gutta <mg3295@cornell.edu>
+Date:   Sat Mar 23 14:21:52 2024 -0400
+
+    Implemented stockwaste.ml
+    
+    - Designed type t
+    - Implemented empty, redraw, draw, top, and remove_top
+
+commit 5d0c0439620a5cc6117852455276ad84e3d3ad9b
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Wed Mar 20 10:23:39 2024 -0400
+
+    added bisect and achieved 100% coverage for card
+
+commit d1f93a130dbb215d73a875af2792e11371e0421c
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Wed Mar 20 10:06:24 2024 -0400
+
+    added ounit tests for card
+
+commit c3ee7054e29941e2a33249eddf31c1b826b9969b
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Wed Mar 20 10:04:07 2024 -0400
+
+    added ounit tests for card
+
+commit 233365953e62bd1c4fd9dd8b1dbf7a589420c1f3
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Sun Mar 17 20:57:07 2024 -0400
+
+    finished implementing card.ml
+
+commit 972fd422a00b006fa5cebbb9e343c3462638c46e
+Author: Aruni Chenxi <ac2552@cornell.edu>
+Date:   Sun Mar 17 19:27:35 2024 -0400
+
+    Clean unnecessary files
+    
+    - Removed .RHistory and _build
+
+commit 6d53283814b13f4adac8c939ce7583fbca3469d9
+Merge: 2059b4b ed19585
+Author: Malli Gutta <mg3295@cornell.edu>
+Date:   Sun Mar 17 19:21:45 2024 -0400
+
+    Merge remote-tracking branch 'refs/remotes/origin/main'
+
+commit 2059b4be50eca3712d88e3d3bbb45e890add0b8e
+Author: Malli Gutta <mg3295@cornell.edu>
+Date:   Sun Mar 17 19:12:22 2024 -0400
+
+    Implemeneted all the mli files
+
+commit ed19585f035e461e01c7c9a60f19cd8f711f89c4
+Author: Malli Gutta <mg3295@cornell.edu>
+Date:   Sun Mar 17 18:34:58 2024 -0400
+
+    Implemented all of the mli files
+
+commit 08d1ae3b53dc3b0b8a56e5f5ef5a3c5eae1828e8
+Author: Yinghui Bimali <yb272@cornell.edu>
+Date:   Sun Mar 10 19:51:29 2024 -0400
+
+    Merging.
+
+commit 61239e86ee3d2c27cba9c4c1b1798b503ec3fc8b
+Merge: 9ade9cf fb93b88
+Author: Yinghui Bimali <yb272@cornell.edu>
+Date:   Sun Mar 10 19:49:44 2024 -0400
+
+    Merge remote-tracking branch 'refs/remotes/origin/main'
+
+commit 9ade9cf252d380cb8efd1d0fc17f78bb6b13ad55
+Author: Yinghui Bimali <yb272@cornell.edu>
+Date:   Sun Mar 10 19:48:26 2024 -0400
+
+    Bring up to date.
+
+commit fb93b88dce60a01691271613e216f4ddb709351f
+Author: dna35 <dna35@cornell.edu>
+Date:   Sun Mar 10 19:47:49 2024 -0400
+
+    Update README.md
+    
+    Added break tags
+
+commit 2a214ffdeb78caafcf62f777e12fc9a83983dbc1
+Author: Yinghui Bimali <yb272@cornell.edu>
+Date:   Sun Mar 10 19:44:50 2024 -0400
+
+    Attempted adding newline characters.
+
+commit 71730674a4faba3c0f6ffbe58c6c561c21a778af
+Author: Desmond Ababio <dna35@cornell.edu>
+Date:   Sun Mar 10 19:43:04 2024 -0400
+
+    Added Name and Netid
+
+commit 78d5b6785fbabd217b29fbda16a29b1a6c61399b
+Merge: f9d2784 23952b3
+Author: Aruni Chenxi <ac2552@cornell.edu>
+Date:   Sun Mar 10 19:37:21 2024 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:yb272/cs3110-final-project
+    Add Aruni's name to Readme
+
+commit f9d2784891d2713ae009b78db10fc8f7fcb002da
+Author: Aruni Chenxi <ac2552@cornell.edu>
+Date:   Sun Mar 10 19:35:10 2024 -0400
+
+    Add Aruni's name to Readme
+
+commit 23952b32104318235104d6f7f27ebd096b267bcf
+Author: Malli Gutta <mg3295@cornell.edu>
+Date:   Sun Mar 10 19:33:24 2024 -0400
+
+    Updated README with netid
+
+commit 1c2a8c1a8fa47ec8f2d7bdd39adcb68f34f59588
+Author: yb272 <yb272@cornell.edu>
+Date:   Sun Mar 10 19:26:02 2024 -0400
+
+    Create README.md
+
+commit fc5e96ab33e3df53a4bf53dd56658170edec7a67
+Author: Yinghui Bimali <yb272@cornell.edu>
+Date:   Sun Mar 10 19:16:30 2024 -0400
+
+    Initial commit
