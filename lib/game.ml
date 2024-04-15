@@ -82,7 +82,6 @@ let formatted fsb =
 
 let s_to_f g = (g, Some "Hello")
 
-
 let move_card_to_foundation game col_index =
   if col_index >= 0 && col_index <= 6 then
     match peek_col_card game.b col_index with
@@ -101,7 +100,6 @@ let move_card_to_foundation game col_index =
         else (game, Some "Invalid move")
   else (game, Some (string_of_int col_index ^ " is not a valid index"))
 
-(* in the future add case for adding king to empty tableau column *)
 let move_matching_card_to_tableau game found_index tab_index =
   let find_and_move foundation_columns found_index tab_index =
     if found_index < 0 || found_index > 3 then
