@@ -97,7 +97,13 @@ let pop_col_card tab col =
         h )
 
 let card_to_col tab col cd =
+  print_endline
+    ("I am moving card " ^ to_string cd ^ " to column " ^ string_of_int col
+   ^ ".");
   let colv = get_col (rep_ok tab) col in
+  print_endline
+    ("comp_stack: "
+    ^ string_of_bool (comp_stack (cd :: BatList.take colv.vis colv.cards)));
   if
     comp_stack (cd :: BatList.take colv.vis colv.cards)
     && (colv.vis <> 0 || rank_of cd = King)
