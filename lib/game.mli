@@ -22,3 +22,6 @@ val formatted : t -> (bool * Card.t list) * Card.t list * Card.t list list
 
 val s_to_f : 't -> 't * string option
 (** [s_to_f g] is ???*)
+val move_card_to_foundation: t -> int -> t * string option
+
+val move_matching_card_to_tableau : t -> int -> t * string option

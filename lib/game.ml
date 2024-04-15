@@ -81,3 +81,46 @@ let formatted fsb =
   ((s_empty, s_cds), f_cds, b_cds)
 
 let s_to_f g = (g, Some "Hello")
+
+(* tentative functions for interacting with foundation and tableau *)
+let move_card_to_foundation game col_index =
+  match peek_col_card game.b col_index with
+  | None -> (game, None)
+  | Some card ->
+      let foundation = game.f in
+      let _ = suit_of card in
+      let valid_move_to_foundation = valid_move foundation card in
+      if valid_move_to_foundation then
+        let updated_foundation = put foundation card in
+
+        let t, _ = pop_col_card game.b col_index in
+
+        let final_game = { f = updated_foundation; s = game.s; b = t } in
+        (final_game, None)
+      else (game, Some "Invalid move")
+
+(* in the future add case for adding king to empty tableau column *)
+let move_matching_card_to_tableau game col_index =
+  let rec find_and_move foundation_columns col_index =
+    let cards = peek_col_card game.b col_index in
+    match (foundation_columns, cards) with
+    | [], _ -> (game, Some "Invalid move")
+    | _ :: _, None -> (game, Some "Invalid move")
+    | top_card :: rest, Some card ->
+        if
+          num_of top_card - num_of card = -1
+          && color_of card <> color_of top_card
+        then
+          try
+            let updated_tableau = card_to_col game.b col_index card in
+
+            let updated_foundation = remove game.f top_card in
+            let updated_game =
+              { f = updated_foundation; s = game.s; b = updated_tableau }
+            in
+            (updated_game, None)
+          with IllegalMove -> (game, Some "Illegal move")
+        else find_and_move rest col_index
+  in
+
+  find_and_move (top_cards game.f) col_index
