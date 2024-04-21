@@ -81,7 +81,28 @@ let formatted fsb =
   let b_cds = to_cd_lst fsb.b in
   ((s_empty, s_cds), f_cds, b_cds)
 
-let s_to_f (game : t) = (game, Some "Hello")
+let remove_opt opt =
+  match opt with
+  | Some h -> h
+  | None -> failwith "None"
+
+let s_to_f (game : t) =
+  match top_sw game.s with
+  | None ->
+      ( game,
+        Some
+          "The stock is empty, so it is not possible to move a \n\
+          \  card to the foundation from it." )
+  | Some card ->
+      let foundation = game.f in
+      if valid_move foundation card then
+        ( {
+            f = put foundation card;
+            s = remove_opt (remove_top game.s);
+            b = game.b;
+          },
+          None )
+      else (game, Some "This card cannot go in the foundation.")
 
 let move_card_to_foundation game col_index =
   if col_index >= 0 && col_index <= 6 then

@@ -2,13 +2,11 @@ open OUnit2
 open Fp.Card
 open Fp.Stockwaste
 
-exception Nothing
-
 (*[ro opt] is opt without the Some*)
 let ro opt =
   match opt with
   | Some h -> h
-  | None -> raise Nothing
+  | None -> failwith "None"
 
 let test_empty_stockwaste _ = assert_equal (0, 0) (size_sw empty_sw)
 
