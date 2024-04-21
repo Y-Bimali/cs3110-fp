@@ -66,12 +66,13 @@ let new_game () =
 (**[draw_card fsb] draws a card and moves it from the stock to the waste in
    stockwaste (s)*)
 let draw_card fsb =
-  try ({ f = fsb.f; s = draw fsb.s; b = fsb.b }, None)
-  with NoCards ->
-    ( fsb,
-      Some
-        "There are no cards in the waste or stock, \n\
-        \    so this move is not valid." )
+  match draw fsb.s with
+  | None ->
+      ( fsb,
+        Some
+          "There are no cards in the waste or stock, \n\
+          \    so this move is not valid." )
+  | Some h -> ({ f = fsb.f; s = h; b = fsb.b }, None)
 
 let formatted fsb =
   let s_empty = check_stock_empty fsb.s in
