@@ -80,7 +80,7 @@ let formatted fsb =
   let b_cds = to_cd_lst fsb.b in
   ((s_empty, s_cds), f_cds, b_cds)
 
-let s_to_f g = (g, Some "Hello")
+let s_to_f (game : t) = (game, Some "Hello")
 
 let move_card_to_foundation game col_index =
   if col_index >= 0 && col_index <= 6 then

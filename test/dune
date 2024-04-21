@@ -17,3 +17,8 @@
  (name test_tableau)
  (libraries fp ounit2)
  (modules test_tableau))
+
+(test
+ (name test_game)
+ (libraries fp ounit2)
+ (modules test_game))
