@@ -247,7 +247,8 @@ let rec query pg q v e r =
         let () = print_endline e in
         query pg q v e r
 
-let commands = [ "NEW GAME"; "DRAW"; "D"; "QUIT"; "S TO F"; "T TO F"; "F TO T" ]
+let commands =
+  [ "NEW GAME"; "DRAW"; "D"; "QUIT"; "S TO F"; "S TO T"; "T TO F"; "F TO T" ]
 
 (** Hint: split_on_char : char -> string -> string list, which char being a
     space ' '.*)
@@ -275,6 +276,10 @@ let round g =
       | "DRAW" | "D" -> Game.draw_card g
       | "NEW GAME" -> (Game.new_game (), None)
       | "S TO F" -> Game.s_to_f g
+      | "S TO T" ->
+          let () = print_string "Enter the tableau column index: " in
+          let tab_index = read_int () in
+          Game.s_to_t g tab_index
       | "T TO F" ->
           let () = print_string "Enter the tableau column index: " in
           let col_index = read_int () in

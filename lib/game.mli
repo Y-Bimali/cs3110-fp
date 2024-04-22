@@ -21,7 +21,18 @@ val formatted : t -> (bool * Card.t list) * Card.t list * Card.t list list
    val get_tableau : t -> Tableau.t *)
 
 val s_to_f : t -> t * string option
-(** [s_to_f g] is ???*)
+(** [s_to_f g] is (g, opt) where g is the game that could have been updated with
+    the top card of the stock moving to the foundation or the original game. opt
+    is the option where None means that the card successfully moved and Some h
+    means that the card did not successfully move and h is the reason why
+    represented as a string.*)
+
+val s_to_t : t -> int -> t * string option
+(** [s_to_t g tab_index] is (g, opt) where g is the game that could have been
+    updated with the top card of the stock moving to the tableau at index
+    tab_index or the original game. opt is the option where None means that the
+    card successfully moved and Some h means that the card did not successfully
+    move and h is the reason why represented as a string.*)
 
 val move_card_to_foundation : t -> int -> t * string option
 val move_matching_card_to_tableau : t -> int -> int -> t * string option

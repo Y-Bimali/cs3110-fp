@@ -104,6 +104,34 @@ let s_to_f (game : t) =
           None )
       else (game, Some "This card cannot go in the foundation.")
 
+let s_to_t (game : t) tab_index =
+  if tab_index < 0 || tab_index > 6 then
+    ( game,
+      Some
+        (string_of_int tab_index
+       ^ " is not a valid index in the tableau. Must be from 0 to 6") )
+  else
+    match top_sw game.s with
+    | None ->
+        ( game,
+          Some
+            "The stock is empty, so it is not possible to move a \n\
+            \  card to the foundation from it." )
+    | Some card -> (
+        let tableau = game.b in
+        try
+          ( {
+              f = game.f;
+              s = remove_opt (remove_top game.s);
+              b = card_to_col tableau tab_index card;
+            },
+            None )
+        with IllegalMove ->
+          ( game,
+            Some
+              ("This card cannot go in column " ^ string_of_int tab_index
+             ^ ". (Illegal Move)") ))
+
 let move_card_to_foundation game col_index =
   if col_index >= 0 && col_index <= 6 then
     match peek_col_card game.b col_index with
@@ -129,7 +157,7 @@ let move_matching_card_to_tableau game found_index tab_index =
         Some
           (string_of_int found_index
          ^ " is not a valid index in the foundation. Must be from 0 to 3") )
-    else if tab_index < 0 && tab_index > 6 then
+    else if tab_index < 0 || tab_index > 6 then
       ( game,
         Some
           (string_of_int tab_index
