@@ -132,6 +132,16 @@ let s_to_t (game : t) tab_index =
               ("This card cannot go in column " ^ string_of_int tab_index
              ^ ". (Illegal Move)") ))
 
+let update_game_with_move game tab_index foundation_card =
+  try
+    let updated_tableau = card_to_col game.b tab_index foundation_card in
+    let updated_foundation = remove game.f foundation_card in
+    let updated_game =
+      { f = updated_foundation; s = game.s; b = updated_tableau }
+    in
+    (updated_game, None)
+  with IllegalMove -> (game, Some "Illegal move")
+
 let move_card_to_foundation game col_index =
   if col_index >= 0 && col_index <= 6 then
     match peek_col_card game.b col_index with
@@ -150,44 +160,36 @@ let move_card_to_foundation game col_index =
         else (game, Some "Invalid move")
   else (game, Some (string_of_int col_index ^ " is not a valid index"))
 
+let validate_foundation_index game found_index =
+  ( game,
+    Some
+      (string_of_int found_index
+     ^ " is not a valid index in the foundation. Must be from 0 to 3") )
+
+let validate_tab_index game tab_index =
+  ( game,
+    Some
+      (string_of_int tab_index
+     ^ " is not a valid index in the tableau. Must be from 0 to 6") )
+
 let move_matching_card_to_tableau game found_index tab_index =
   let find_and_move foundation_columns found_index tab_index =
     if found_index < 0 || found_index > 3 then
-      ( game,
-        Some
-          (string_of_int found_index
-         ^ " is not a valid index in the foundation. Must be from 0 to 3") )
+      validate_foundation_index game tab_index
     else if tab_index < 0 || tab_index > 6 then
-      ( game,
-        Some
-          (string_of_int tab_index
-         ^ " is not a valid index in the tableau. Must be from 0 to 6") )
+      validate_tab_index game tab_index
     else
       let card = peek_col_card game.b tab_index in
-
       let foundation_card = List.nth foundation_columns found_index in
-      let try_block top =
-        let updated_tableau = card_to_col game.b tab_index top in
-        let updated_foundation = remove game.f top in
-        let updated_game =
-          { f = updated_foundation; s = game.s; b = updated_tableau }
-        in
-        (updated_game, None)
-      in
       match (foundation_card, card) with
       | top_c, None ->
-          if num_of top_c = 13 then
-            try try_block top_c
-            with IllegalMove -> (game, Some "This move is illegal")
+          if num_of top_c = 13 then update_game_with_move game tab_index top_c
           else (game, Some "Can not move this card there")
       | top_card, Some c ->
           if num_of top_card = 0 then (game, Some "The index here is empty")
           else if
             num_of top_card - num_of c = -1 && color_of c <> color_of top_card
-          then
-            try try_block top_card
-            with IllegalMove -> (game, Some "Illegal move")
+          then update_game_with_move game tab_index top_card
           else (game, Some "You can not make this move")
   in
-
   find_and_move (top_cards game.f) found_index tab_index
