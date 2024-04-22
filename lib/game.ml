@@ -166,17 +166,18 @@ let move_matching_card_to_tableau game found_index tab_index =
       let card = peek_col_card game.b tab_index in
 
       let foundation_card = List.nth foundation_columns found_index in
-
+      let try_block top =
+        let updated_tableau = card_to_col game.b tab_index top in
+        let updated_foundation = remove game.f top in
+        let updated_game =
+          { f = updated_foundation; s = game.s; b = updated_tableau }
+        in
+        (updated_game, None)
+      in
       match (foundation_card, card) with
       | top_c, None ->
           if num_of top_c = 13 then
-            try
-              let updated_tableau = card_to_col game.b tab_index top_c in
-              let updated_foundation = remove game.f top_c in
-              let updated_game =
-                { f = updated_foundation; s = game.s; b = updated_tableau }
-              in
-              (updated_game, None)
+            try try_block top_c
             with IllegalMove -> (game, Some "This move is illegal")
           else (game, Some "Can not move this card there")
       | top_card, Some c ->
@@ -184,13 +185,7 @@ let move_matching_card_to_tableau game found_index tab_index =
           else if
             num_of top_card - num_of c = -1 && color_of c <> color_of top_card
           then
-            try
-              let updated_tableau = card_to_col game.b tab_index top_card in
-              let updated_foundation = remove game.f top_card in
-              let updated_game =
-                { f = updated_foundation; s = game.s; b = updated_tableau }
-              in
-              (updated_game, None)
+            try try_block top_card
             with IllegalMove -> (game, Some "Illegal move")
           else (game, Some "You can not make this move")
   in
