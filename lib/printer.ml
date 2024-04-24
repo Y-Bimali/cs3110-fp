@@ -1,5 +1,4 @@
 
-
 type theme = {
   bg : ANSITerminal.style;
   red : ANSITerminal.style;
@@ -243,17 +242,12 @@ let print_error e =
   | None -> ()
   | Some s -> print_endline s
 
-(* helper function to convert character to int. You can ude this *)
-(* let char_to_int c =
-  let zero = Char.code '0' in
-  let c = Char.code c in
-  c - zero *)
 let slice_from_index_to_end str index =
   String.sub str index (String.length str - index)
-(* let char_list_to_string_list char_list =
-  List.map (String.make 1) char_list *)
-(**TODO: output tuple should be bool * game Functions called in Game should
-   return game * string option *)
+
+
+(*TODO: output tuple should be bool. Game Functions called in Game should
+  return game * string option *)
 let round g =
   let () = print_top dt g in
   print_tab dt g;
@@ -268,62 +262,52 @@ let round g =
       | "rules" -> (g, Some rules_str)
       | "draw" | "d" -> Game.draw_card g
       | "new game" -> (Game.new_game (), None)
-      | str -> 
-        let v = String.split_on_char ' ' str in 
-    match v with
-    | ["s"; "to"; "f"] -> Game.s_to_f g
-    | [ x; "to"; y ] -> 
-        (if (String.get x 0 = 'f' && String.get y 0 = 't') then 
-          try
-          let f_index = slice_from_index_to_end x 1 in
-          let t_index = slice_from_index_to_end y 1 in
-          Game.move_matching_card_to_tableau g (int_of_string f_index)
-            (int_of_string t_index)
-          with Failure _ -> (g, Some "Unrecognizable Command.")
-        else if String.get x 0 = 't' && String.get y 0 = 't' then
-          try
-          let c1 = slice_from_index_to_end x 1 in
-          let c2 = slice_from_index_to_end y 1 in
-          Game.t_to_t g c1 c2 "1"
-          with Failure _ -> (g, Some "Unrecognizable Command.")
-        else if
-          String.get x 0 = 't' && String.get y 0 = 'f' && String.length y = 1
-        then try
-          let col_index = slice_from_index_to_end x 1 in
-          Game.move_card_to_foundation g (int_of_string col_index)
-          with Failure _ -> (g, Some "Unrecognizable Command.")
-        else if
-          (String.get x 0 = 's' && String.length x = 1) && String.get y 0 = 't'
-        then try
-          let tab_index = slice_from_index_to_end y 1 in
-          Game.s_to_t g (int_of_string tab_index)
-          with Failure _ -> (g, Some "Unrecognizable Command.")
-        else (g, Some "Unrecognizable Command."))
-    
-        
-    | [ x; i; "to"; y ] -> 
-        if String.get x 0 = 't' && String.get y 0 = 't' then
-          let c1 = slice_from_index_to_end x 1 in
-          let c2 = slice_from_index_to_end y 1 in
-          Game.t_to_t g c1 c2 i
-        else (g, Some "Unrecognizable Command.")
-    | _ -> (g, Some "Unrecognizable Command.")
+      | str -> (
+          let v = String.split_on_char ' ' str in
+          match v with
+          | [ "s"; "to"; "f" ] -> Game.s_to_f g
+          | [ x; "to"; y ] ->
+              if String.get x 0 = 'f' && String.get y 0 = 't' then
+                try
+                  let f_index = slice_from_index_to_end x 1 in
+                  let t_index = slice_from_index_to_end y 1 in
+                  Game.move_matching_card_to_tableau g (int_of_string f_index)
+                    (int_of_string t_index)
+                with Failure _ -> (g, Some "Unrecognizable Command.")
+              else if String.get x 0 = 't' && String.get y 0 = 't' then
+                try
+                  let c1 = slice_from_index_to_end x 1 in
+                  let c2 = slice_from_index_to_end y 1 in
+                  Game.t_to_t g c1 c2 "1"
+                with Failure _ -> (g, Some "Unrecognizable Command.")
+              else if
+                String.get x 0 = 't'
+                && String.get y 0 = 'f'
+                && String.length y = 1
+              then
+                try
+                  let col_index = slice_from_index_to_end x 1 in
+                  Game.move_card_to_foundation g (int_of_string col_index)
+                with Failure _ -> (g, Some "Unrecognizable Command.")
+              else if
+                (String.get x 0 = 's' && String.length x = 1)
+                && String.get y 0 = 't'
+              then
+                try
+                  let tab_index = slice_from_index_to_end y 1 in
+                  Game.s_to_t g (int_of_string tab_index)
+                with Failure _ -> (g, Some "Unrecognizable Command.")
+              else (g, Some "Unrecognizable Command.")
+          | [ x; i; "to"; y ] ->
+              if String.get x 0 = 't' && String.get y 0 = 't' then
+                let c1 = slice_from_index_to_end x 1 in
+                let c2 = slice_from_index_to_end y 1 in
+                Game.t_to_t g c1 c2 i
+              else (g, Some "Unrecognizable Command.")
+          | _ -> (g, Some "Unrecognizable Command."))
     in
     if Game.check_win g2 then
       print_endline "You win! Type 'New Game' to play a new game.";
     print_error error;
     (true, g2)
 
-
-    (* | ["T";c1; " "; "T"; "O"; " "; "T";c2] -> Game.t_to_t g c1 c2 "1"
-          |   ["T";c1; " "; i; " "; "T"; "O"; " "; "T";c2]->
-              Game.t_to_t g c1 c2 i
-          | ["F"; x; " "; "T"; "O"; " "; "T";y] ->
-              Game.move_matching_card_to_tableau g (int_of_string x)
-                (int_of_string y)
-          | ["T"; col_index; " "; "T"; "O"; " "; "F"]->
-              Game.move_card_to_foundation g (int_of_string col_index)
-          | ["S"; " "; "T"; "O"; " "; "T"; tab_index]->
-              Game.s_to_t g (int_of_string tab_index)
-          | ["S"; " "; "T"; "O"; " "; "F"]-> Game.s_to_f g
-          | _ -> (g, Some "Unrecognizable Command.") *)
