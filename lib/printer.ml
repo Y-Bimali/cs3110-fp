@@ -274,24 +274,30 @@ let round g =
     | ["s"; "to"; "f"] -> Game.s_to_f g
     | [ x; "to"; y ] -> 
         (if (String.get x 0 = 'f' && String.get y 0 = 't') then 
+          try
           let f_index = slice_from_index_to_end x 1 in
           let t_index = slice_from_index_to_end y 1 in
           Game.move_matching_card_to_tableau g (int_of_string f_index)
             (int_of_string t_index)
+          with Failure _ -> (g, Some "Unrecognizable Command.")
         else if String.get x 0 = 't' && String.get y 0 = 't' then
+          try
           let c1 = slice_from_index_to_end x 1 in
           let c2 = slice_from_index_to_end y 1 in
           Game.t_to_t g c1 c2 "1"
+          with Failure _ -> (g, Some "Unrecognizable Command.")
         else if
           String.get x 0 = 't' && String.get y 0 = 'f' && String.length y = 1
-        then
+        then try
           let col_index = slice_from_index_to_end x 1 in
           Game.move_card_to_foundation g (int_of_string col_index)
+          with Failure _ -> (g, Some "Unrecognizable Command.")
         else if
           (String.get x 0 = 's' && String.length x = 1) && String.get y 0 = 't'
-        then
+        then try
           let tab_index = slice_from_index_to_end y 1 in
           Game.s_to_t g (int_of_string tab_index)
+          with Failure _ -> (g, Some "Unrecognizable Command.")
         else (g, Some "Unrecognizable Command."))
     
         
