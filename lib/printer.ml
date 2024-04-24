@@ -1,3 +1,5 @@
+open BatString
+
 type theme = {
   bg : ANSITerminal.style;
   red : ANSITerminal.style;
@@ -224,38 +226,9 @@ let print_tab theme g =
 (*let board g = match Game.formatted g with ((s, w), f, t) -> let len = 10 +
   List.fold_left (fun acc x -> max acc (List.length x)) 0 t in;;*)
 
-(**[query pg q v e r] is a valid response to a prompted user interaction in the
-   terminal. The function prints [q] prompts a response from the command line,
-   validates the string response [the_input] with [v the_input], and prints [r]
-   as a follow up to a valid response (no newline printed if [r] is the empty
-   string). If the response is invalid, it describes the error using [e] and
-   reprompts.*)
-let rec query pg q v e r =
-  match pg with
-  | b, g ->
-      if b then
-        let () = print_top dt g in
-        print_tab dt g
-      else ();
-      print_endline "";
-      print_string q;
-      let the_input = String.uppercase_ascii (read_line ()) in
-      if v the_input then (
-        if r = "" then () else print_endline r;
-        the_input)
-      else
-        let () = print_endline e in
-        query pg q v e r
+let help_str = BatEnum.fold (fun acc x -> acc ^ "\n" ^ x) "" (BatFile.lines_of "data/help.txt")
 
-let commands =
-  [ "NEW GAME"; "DRAW"; "D"; "QUIT"; "S TO F"; "S TO T"; "T TO F"; "F TO T" ]
-
-(** Hint: split_on_char : char -> string -> string list, which char being a
-    space ' '.*)
-let validate s =
-  match s with
-  | "PATTERN MATCH YOUR MOVE HERE" -> failwith "Unimplemented"
-  | _ -> List.mem s commands
+let rules_str = BatEnum.fold (fun acc x -> acc ^ "\n" ^ x) "" (BatFile.lines_of "data/rules.txt")
 
 let print_error e =
   match e with
@@ -265,14 +238,17 @@ let print_error e =
 (**TODO: output tuple should be bool * game Functions called in Game should
    return game * string option *)
 let round g =
-  let q =
-    query (true, g) "Enter an action: " validate "Unrecognizable Command."
-      "Successful Command."
-  in
+  let () = print_top dt g in
+        print_tab dt g;
+  print_endline "";
+  print_string "Enter an action: ";
+  let q = String.uppercase_ascii (read_line ()) in
   if q = "QUIT" then (false, g)
   else
     let g2, error =
       match q with
+      | "HELP" | "COMMANDS" -> (g, Some help_str)
+      | "RULES" -> (g, Some rules_str)
       | "DRAW" | "D" -> Game.draw_card g
       | "NEW GAME" -> (Game.new_game (), None)
       | "S TO F" -> Game.s_to_f g
@@ -305,7 +281,16 @@ let round g =
                 Some
                   "Use proper indices: Must be in form <foundation index> \
                    <tableau column index>" ))
-      | _ -> (g, Some "Not a proper command")
+      (** TODO: Desmond and Malli - alter the functions to be pattern 
+      matching by character (see below tableau to tableau example) to make it a
+       one line command that the user can enter.*)
+      | x -> (
+          match explode x with
+          | [ 'T'; c1; ' '; 'T'; 'O'; ' '; 'T'; c2 ] -> Game.t_to_t g c1 c2 '1'
+          | [ 'T'; c1; ' '; i; ' '; 'T'; 'O'; ' '; 'T'; c2 ] ->
+              Game.t_to_t g c1 c2 i
+          | _ -> (g, Some "Unrecognizable Command."))
     in
+    if Game.check_win g2 then print_endline "You win! Type 'New Game' to play a new game.";
     print_error error;
     (true, g2)

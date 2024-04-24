@@ -6,3 +6,6 @@ bisect:
 clean:
 	rm -rf _coverage
 	dune clean
+
+start:
+	dune exec ./bin/main.exe
