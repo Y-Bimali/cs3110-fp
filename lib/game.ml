@@ -194,7 +194,9 @@ let move_matching_card_to_tableau game found_index tab_index =
   in
   find_and_move (top_cards game.f) found_index tab_index
 
-let char_to_int c = int_of_string_opt (Char.escaped c)
+
+
+let char_to_int c = int_of_string_opt c
 
 let t_to_t g c1 c2 i =
   let nc1 = char_to_int c1 in

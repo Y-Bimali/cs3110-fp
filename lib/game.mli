@@ -37,7 +37,7 @@ val s_to_t : t -> int -> t * string option
 val move_card_to_foundation : t -> int -> t * string option
 val move_matching_card_to_tableau : t -> int -> int -> t * string option
 
-val t_to_t : t -> char -> char -> char -> t * string option
+val t_to_t : t -> string -> string -> string -> t * string option
 (** [t_to_t c1 c2 i] is (g, opt) where g is the game that could have been
     updated by moving the bottom [i] cards from column [c1] to column [c2] in
     the tableau. opt is the option where None means the card(s) successfully
