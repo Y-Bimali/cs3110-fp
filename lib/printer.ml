@@ -226,20 +226,34 @@ let print_tab theme g =
 (*let board g = match Game.formatted g with ((s, w), f, t) -> let len = 10 +
   List.fold_left (fun acc x -> max acc (List.length x)) 0 t in;;*)
 
-let help_str = BatEnum.fold (fun acc x -> acc ^ "\n" ^ x) "" (BatFile.lines_of "data/help.txt")
+let help_str =
+  BatEnum.fold
+    (fun acc x -> acc ^ "\n" ^ x)
+    ""
+    (BatFile.lines_of "data/help.txt")
 
-let rules_str = BatEnum.fold (fun acc x -> acc ^ "\n" ^ x) "" (BatFile.lines_of "data/rules.txt")
+let rules_str =
+  BatEnum.fold
+    (fun acc x -> acc ^ "\n" ^ x)
+    ""
+    (BatFile.lines_of "data/rules.txt")
 
 let print_error e =
   match e with
   | None -> ()
   | Some s -> print_endline s
 
+(* helper function to convert character to int *)
+let char_to_int c =
+  let zero = Char.code '0' in
+  let c = Char.code c in
+  c - zero
+
 (**TODO: output tuple should be bool * game Functions called in Game should
    return game * string option *)
 let round g =
   let () = print_top dt g in
-        print_tab dt g;
+  print_tab dt g;
   print_endline "";
   print_string "Enter an action: ";
   let q = String.uppercase_ascii (read_line ()) in
@@ -251,46 +265,22 @@ let round g =
       | "RULES" -> (g, Some rules_str)
       | "DRAW" | "D" -> Game.draw_card g
       | "NEW GAME" -> (Game.new_game (), None)
-      | "S TO F" -> Game.s_to_f g
-      | "S TO T" ->
-          let () = print_string "Enter the tableau column index: " in
-          let tab_index = read_int () in
-          Game.s_to_t g tab_index
-      | "T TO F" ->
-          let () = print_string "Enter the tableau column index: " in
-          let col_index = read_int () in
-          Game.move_card_to_foundation g col_index
-      | "F TO T" -> (
-          print_endline
-            "Enter the foundation index <f> and column index <c> to put the \
-             card.";
-          print_endline "The two indices must be separated by a space.";
-
-          print_endline
-            "f is 0 for Spade column, 1 for Heart column, 2 for Club column \
-             and 3 for Diamond column. ";
-          print_newline ();
-          print_string "Enter f and c: ";
-          let input = read_line () in
-          match String.split_on_char ' ' input with
-          | [ x; y ] ->
-              Game.move_matching_card_to_tableau g (int_of_string x)
-                (int_of_string y)
-          | _ ->
-              ( g,
-                Some
-                  "Use proper indices: Must be in form <foundation index> \
-                   <tableau column index>" ))
-      (** TODO: Desmond and Malli - alter the functions to be pattern 
-      matching by character (see below tableau to tableau example) to make it a
-       one line command that the user can enter.*)
       | x -> (
           match explode x with
           | [ 'T'; c1; ' '; 'T'; 'O'; ' '; 'T'; c2 ] -> Game.t_to_t g c1 c2 '1'
           | [ 'T'; c1; ' '; i; ' '; 'T'; 'O'; ' '; 'T'; c2 ] ->
               Game.t_to_t g c1 c2 i
+          | [ 'F'; x; ' '; 'T'; 'O'; ' '; 'T'; y ] ->
+              Game.move_matching_card_to_tableau g (char_to_int x)
+                (char_to_int y)
+          | [ 'T'; col_index; ' '; 'T'; 'O'; ' '; 'F' ] ->
+              Game.move_card_to_foundation g (char_to_int col_index)
+          | [ 'S'; ' '; 'T'; 'O'; ' '; 'T'; tab_index ] ->
+              Game.s_to_t g (char_to_int tab_index)
+          | [ 'S'; ' '; 'T'; 'O'; ' '; 'F' ] -> Game.s_to_f g
           | _ -> (g, Some "Unrecognizable Command."))
     in
-    if Game.check_win g2 then print_endline "You win! Type 'New Game' to play a new game.";
+    if Game.check_win g2 then
+      print_endline "You win! Type 'New Game' to play a new game.";
     print_error error;
     (true, g2)
