@@ -243,7 +243,7 @@ let print_error e =
   | None -> ()
   | Some s -> print_endline s
 
-(* helper function to convert character to int *)
+(* helper function to convert character to int. You can ude this *)
 let char_to_int c =
   let zero = Char.code '0' in
   let c = Char.code c in
