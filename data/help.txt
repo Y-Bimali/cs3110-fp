@@ -10,8 +10,8 @@ Draw/D: Draw a card from the stock to the waste, or return all cards in
   the waste back to the stock. The next draw will flip cards from top to 
   bottom again.
 S to F: Move the stock card to the foundation.
-S to T: Move the stock card to the tableau.
-T to F: Move a tableau card to the foundation.
-F to T: Move a foundation card to the tableau.
+S to T#: Move the stock card to the tableau at index #.
+T# to F: Move a tableau card at index # to the right index in foundation.
+F to T#: Move a foundation card to the tableau at index #.
 T# to T#: Move one tableau card from column (1st #) to column (2nd #).
 T# # to T#: Move (2nd #) tableau cards from column (1st #) to column (3rd #).
