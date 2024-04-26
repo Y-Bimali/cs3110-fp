@@ -1,5 +1,4 @@
 (library
- (inline_tests)
  (name fp)
  (libraries batteries csv ANSITerminal)
  (preprocess
