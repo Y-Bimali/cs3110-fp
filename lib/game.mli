@@ -4,6 +4,10 @@ val new_game : unit -> t
 (**[new_game] is game of solitaire in the starting position, with cards
    randomized.*)
 
+val game_from_parts : Foundation.t -> Stockwaste.t -> Tableau.t -> t
+(** [game_from_parts] is a game of solitaire initialized from a foundation,
+    stockwaste, and tableau.*)
+
 val draw_card : t -> t * string option
 (**[draw_card fsb] is a game with the draw function applied to the stockwaste.*)
 
@@ -42,7 +46,7 @@ val t_to_t : t -> string -> string -> string -> t * string option
     updated by moving the bottom [i] cards from column [c1] to column [c2] in
     the tableau. opt is the option where None means the card(s) successfully
     moved and Some h means that the card did not successfully move and h is the
-    reason why, representedas a string.*)
+    reason why, represented as a string.*)
 
 val check_win : t -> bool
 (** [check_win t] is true if t is in a winning state and false otherwise.*)

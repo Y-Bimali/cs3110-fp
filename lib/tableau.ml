@@ -125,6 +125,8 @@ let move_col_to_col tab c1 c2 i =
   let tab = rep_ok tab in
   let col1 = get_col tab c1 in
   if i > col1.vis || i < 0 then raise IllegalMove
+  else if i = col1.vis && c1 = c2 && List.length col1.cards <> col1.vis then
+    raise IllegalMove
   else
     let tab1, cd_lst = pop_n_col_card tab c1 i in
     put_n_col_card tab1 c2 (List.rev cd_lst)

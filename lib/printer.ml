@@ -1,4 +1,3 @@
-
 type theme = {
   bg : ANSITerminal.style;
   red : ANSITerminal.style;
@@ -245,9 +244,8 @@ let print_error e =
 let slice_from_index_to_end str index =
   String.sub str index (String.length str - index)
 
-
-(*TODO: output tuple should be bool. Game Functions called in Game should
-  return game * string option *)
+(*TODO: output tuple should be bool. Game Functions called in Game should return
+  game * string option *)
 let round g =
   let () = print_top dt g in
   print_tab dt g;
@@ -310,4 +308,3 @@ let round g =
       print_endline "You win! Type 'New Game' to play a new game.";
     print_error error;
     (true, g2)
-

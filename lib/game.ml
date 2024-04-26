@@ -63,6 +63,8 @@ let new_game () =
 
   { f = foundation; s = a; b = tableau }
 
+let game_from_parts fn sn bn = { f = fn; s = sn; b = bn }
+
 (**[draw_card fsb] draws a card and moves it from the stock to the waste in
    stockwaste (s)*)
 let draw_card fsb =
@@ -193,8 +195,6 @@ let move_matching_card_to_tableau game found_index tab_index =
           else (game, Some "You can not make this move")
   in
   find_and_move (top_cards game.f) found_index tab_index
-
-
 
 let char_to_int c = int_of_string_opt c
 
