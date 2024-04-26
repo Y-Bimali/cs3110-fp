@@ -147,7 +147,7 @@ let update_game_with_move game tab_index foundation_card =
 let move_card_to_foundation game col_index =
   if col_index >= 0 && col_index <= 6 then
     match peek_col_card game.b col_index with
-    | None -> (game, None)
+    | None -> (game, Some "No card is present here")
     | Some card ->
         let foundation = game.f in
         let _ = suit_of card in
