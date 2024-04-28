@@ -255,7 +255,7 @@ module MakePrinter (T : Theme.T) = struct
     print_tab g;
     print_endline "";
     print_string "Enter an action: ";
-    let q = String.lowercase_ascii (read_line ()) in
+    let q = String.trim (String.lowercase_ascii (read_line ())) in
     if q = "quit" then (false, theme, g)
     else if String.starts_with ~prefix:"theme" q then (
       try (true, Theme.theme_of_string (String.sub q 6 (String.length q - 6)), g)
