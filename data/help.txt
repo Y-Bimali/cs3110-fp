@@ -1,5 +1,5 @@
 Supported commands are listed below. Commands are case insensitive.
-Tableau columns are 0-indexed from left to right.
+Tableau columns are indexed from 1 to 7 from left to right.
 
 Rules: Show rules.
 Help/Commands: Show commands.

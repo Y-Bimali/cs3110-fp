@@ -1,3 +1,3 @@
 (** TODO: Write rules here.)
-Indices for tableau must be from 0 to 6
-Indices for foundations must be from 0 to 4
+Indices for tableau must be from 1 to 7
+Indices for foundations must be from 1 to 4

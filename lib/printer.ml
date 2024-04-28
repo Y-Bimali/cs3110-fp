@@ -279,15 +279,15 @@ module MakePrinter (T : Theme.T) = struct
                   try
                     let f_index = slice_from_index_to_end x 1 in
                     let t_index = slice_from_index_to_end y 1 in
-                    Game.move_matching_card_to_tableau g (int_of_string f_index)
-                      (int_of_string t_index)
-                  with Failure _ -> (g, Some "Unrecognizable Command.")
+                    Game.move_card_from_foundation_to_tableau g
+                      (int_of_string f_index) (int_of_string t_index)
+                  with Failure _ -> (g, Some "The last command is not valid.")
                 else if String.get x 0 = 't' && String.get y 0 = 't' then
                   try
                     let c1 = slice_from_index_to_end x 1 in
                     let c2 = slice_from_index_to_end y 1 in
                     Game.t_to_t g c1 c2 "1"
-                  with Failure _ -> (g, Some "Unrecognizable Command.")
+                  with Failure _ -> (g, Some "The last command is not valid.")
                 else if
                   String.get x 0 = 't'
                   && String.get y 0 = 'f'
@@ -295,8 +295,9 @@ module MakePrinter (T : Theme.T) = struct
                 then
                   try
                     let col_index = slice_from_index_to_end x 1 in
-                    Game.move_card_to_foundation g (int_of_string col_index)
-                  with Failure _ -> (g, Some "Unrecognizable Command.")
+                    Game.move_tableau_card_to_foundation g
+                      (int_of_string col_index)
+                  with Failure _ -> (g, Some "Invalid action")
                 else if
                   (String.get x 0 = 's' && String.length x = 1)
                   && String.get y 0 = 't'
@@ -304,15 +305,15 @@ module MakePrinter (T : Theme.T) = struct
                   try
                     let tab_index = slice_from_index_to_end y 1 in
                     Game.s_to_t g (int_of_string tab_index)
-                  with Failure _ -> (g, Some "Unrecognizable Command.")
-                else (g, Some "Unrecognizable Command.")
+                  with Failure _ -> (g, Some "Invalid action.")
+                else (g, Some "Invalid action.")
             | [ x; i; "to"; y ] ->
                 if String.get x 0 = 't' && String.get y 0 = 't' then
                   let c1 = slice_from_index_to_end x 1 in
                   let c2 = slice_from_index_to_end y 1 in
                   Game.t_to_t g c1 c2 i
-                else (g, Some "Unrecognizable Command.")
-            | _ -> (g, Some "Unrecognizable Command."))
+                else (g, Some "Invalid command.")
+            | _ -> (g, Some "Invalid command."))
       in
       if Game.check_win g2 then
         print_endline "You win! Type 'New Game' to play a new game.";
