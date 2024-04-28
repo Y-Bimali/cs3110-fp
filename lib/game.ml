@@ -111,7 +111,7 @@ let s_to_t (game : t) tab_index =
     ( game,
       Some
         (string_of_int tab_index
-       ^ " is not a valid index in the tableau. Must be from 1 to 7.") )
+       ^ " is not a valid index in the tableau. Must be from 0 to 6") )
   else
     match top_sw game.s with
     | None ->
@@ -131,9 +131,8 @@ let s_to_t (game : t) tab_index =
         with IllegalMove ->
           ( game,
             Some
-              ("This card cannot go in column "
-              ^ string_of_int (tab_index + 1)
-              ^ ". (Illegal Move)") ))
+              ("This card cannot go in column " ^ string_of_int tab_index
+             ^ ". (Illegal Move)") ))
 
 let update_game_with_move game tab_index foundation_card =
   try
@@ -177,39 +176,37 @@ let validate_tab_index game tab_index =
 
 let move_card_from_foundation_to_tableau game found_index tab_index =
   let find_and_move foundation_columns found_index tab_index =
-    if found_index < 1 || found_index > 4 then
+    if found_index < 0 || found_index > 3 then
       validate_foundation_index game tab_index
-    else if tab_index < 1 || tab_index > 7 then
+    else if tab_index < 0 || tab_index > 6 then
       validate_tab_index game tab_index
     else
       let card = peek_col_card game.b tab_index in
-      let foundation_card = List.nth foundation_columns (found_index - 1) in
+      let foundation_card = List.nth foundation_columns found_index in
       match (foundation_card, card) with
       | top_c, None ->
-          if num_of top_c = 13 then
-            update_game_with_move game (tab_index - 1) top_c
+          if num_of top_c = 13 then update_game_with_move game tab_index top_c
           else (game, Some "Can not move this card there")
       | top_card, Some c ->
           if num_of top_card = 0 then (game, Some "The index here is empty")
           else if
             num_of top_card - num_of c = -1 && color_of c <> color_of top_card
-          then update_game_with_move game (tab_index - 1) top_card
+          then update_game_with_move game tab_index top_card
           else (game, Some "You can not make this move")
   in
-  find_and_move (top_cards game.f) (found_index - 1) (tab_index - 1)
+  find_and_move (top_cards game.f) found_index tab_index
+
+let char_to_int c = int_of_string_opt c
 
 let t_to_t g c1 c2 i =
-  let nc1 = int_of_string_opt c1 in
-  let nc2 = int_of_string_opt c2 in
-  let ni = int_of_string_opt i in
+  let nc1 = char_to_int c1 in
+  let nc2 = char_to_int c2 in
+  let ni = char_to_int i in
   if nc1 = None || nc2 = None || ni = None then
     (g, Some "Unrecognizable Command.")
   else
     match
-      move_col_to_col g.b
-        (Option.get nc1 - 1)
-        (Option.get nc2 - 1)
-        (Option.get ni)
+      move_col_to_col g.b (Option.get nc1) (Option.get nc2) (Option.get ni)
     with
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception IllegalMove -> (g, Some "Illegal Move.")
