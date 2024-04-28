@@ -144,7 +144,7 @@ let update_game_with_move game tab_index foundation_card =
     (updated_game, None)
   with IllegalMove -> (game, Some "Illegal move")
 
-let move_card_to_foundation game col_index =
+let move_tableau_card_to_foundation game col_index =
   if col_index >= 0 && col_index <= 6 then
     match peek_col_card game.b col_index with
     | None -> (game, Some "No card is present here")
@@ -174,27 +174,28 @@ let validate_tab_index game tab_index =
       (string_of_int tab_index
      ^ " is not a valid index in the tableau. Must be from 0 to 6") )
 
-let move_matching_card_to_tableau game found_index tab_index =
+let move_card_from_foundation_to_tableau game found_index tab_index =
   let find_and_move foundation_columns found_index tab_index =
-    if found_index < 0 || found_index > 3 then
+    if found_index < 1 || found_index > 4 then
       validate_foundation_index game tab_index
-    else if tab_index < 0 || tab_index > 6 then
+    else if tab_index < 1 || tab_index > 7 then
       validate_tab_index game tab_index
     else
       let card = peek_col_card game.b tab_index in
-      let foundation_card = List.nth foundation_columns found_index in
+      let foundation_card = List.nth foundation_columns (found_index - 1) in
       match (foundation_card, card) with
       | top_c, None ->
-          if num_of top_c = 13 then update_game_with_move game tab_index top_c
+          if num_of top_c = 13 then
+            update_game_with_move game (tab_index - 1) top_c
           else (game, Some "Can not move this card there")
       | top_card, Some c ->
           if num_of top_card = 0 then (game, Some "The index here is empty")
           else if
             num_of top_card - num_of c = -1 && color_of c <> color_of top_card
-          then update_game_with_move game tab_index top_card
+          then update_game_with_move game (tab_index - 1) top_card
           else (game, Some "You can not make this move")
   in
-  find_and_move (top_cards game.f) found_index tab_index
+  find_and_move (top_cards game.f) (found_index - 1) (tab_index - 1)
 
 let t_to_t g c1 c2 i =
   let nc1 = int_of_string_opt c1 in
