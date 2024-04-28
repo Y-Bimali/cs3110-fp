@@ -245,6 +245,16 @@ module MakePrinter (T : Theme.T) = struct
     | None -> ()
     | Some s -> print_endline s
 
+  let remove_excess_whitespace str =
+    let rec trim_space acc = function
+      | [] -> List.rev acc
+      | "" :: tl -> trim_space acc tl
+      | hd :: tl -> trim_space (hd :: acc) tl
+    in
+    let words = String.split_on_char ' ' str in
+    let trimmed_words = trim_space [] words in
+    String.concat " " trimmed_words
+
   let slice_from_index_to_end str index =
     String.sub str index (String.length str - index)
 
@@ -255,7 +265,7 @@ module MakePrinter (T : Theme.T) = struct
     print_tab g;
     print_endline "";
     print_string "Enter an action: ";
-    let q = String.trim (String.lowercase_ascii (read_line ())) in
+    let q = remove_excess_whitespace (String.lowercase_ascii (read_line ())) in
     if q = "quit" then (false, theme, g)
     else if String.starts_with ~prefix:"theme" q then (
       try (true, Theme.theme_of_string (String.sub q 6 (String.length q - 6)), g)
