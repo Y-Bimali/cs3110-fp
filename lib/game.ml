@@ -196,17 +196,18 @@ let move_matching_card_to_tableau game found_index tab_index =
   in
   find_and_move (top_cards game.f) found_index tab_index
 
-let char_to_int c = int_of_string_opt c
-
 let t_to_t g c1 c2 i =
-  let nc1 = char_to_int c1 in
-  let nc2 = char_to_int c2 in
-  let ni = char_to_int i in
+  let nc1 = int_of_string_opt c1 in
+  let nc2 = int_of_string_opt c2 in
+  let ni = int_of_string_opt i in
   if nc1 = None || nc2 = None || ni = None then
     (g, Some "Unrecognizable Command.")
   else
     match
-      move_col_to_col g.b (Option.get nc1) (Option.get nc2) (Option.get ni)
+      move_col_to_col g.b
+        (Option.get nc1 - 1)
+        (Option.get nc2 - 1)
+        (Option.get ni)
     with
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception IllegalMove -> (g, Some "Illegal Move.")

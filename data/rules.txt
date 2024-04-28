@@ -1,3 +1,18 @@
-(** TODO: Write rules here.)
-Indices for tableau must be from 0 to 6
-Indices for foundations must be from 0 to 4
+The STOCK is in the upper left.
+The FOUNDATION is in the upper right.
+The TABLEAU is the seven columns at the bottom. 
+To WIN the game, you must build up stacks from Ace to King of each suit on The
+    FOUNDATION.
+
+You can flip through the STOCK with draw, and move the topmost card on the WASTE
+    to the FOUNDATION or TABLEAU. If the STOCK is empty and draw is performed,
+    all cards on the WASTE will be returned to the STOCK. 
+
+On the TABLEAU, a card can only be placed on another card if it is one index 
+    below and the opposite color. Only a King can be placed on an empty column. 
+    Multiple cards can be moved at the same time if they are all visible.
+
+On the FOUNDATION, a card can only be placed on another if it is one index above
+    and the same suit. Only an Ace can be placed on an empty column.
+
+For more information, see https://bicyclecards.com/how-to-play/solitaire.

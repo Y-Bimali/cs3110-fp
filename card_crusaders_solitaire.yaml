@@ -28,6 +28,6 @@ desc: >
   components of the game, including the stock, foundation, and tableau. Users 
   play by entering moves through terminal, which are executed if and only if 
   they are legal.
-
+  
   Additional features may include variants such as draw-three, a cheat mode, 
   an easy mode, customizable colors and decks, and audio feedback.

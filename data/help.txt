@@ -1,5 +1,5 @@
 Supported commands are listed below. Commands are case insensitive.
-Tableau columns are 0-indexed from left to right.
+Tableau and foundation columns are 1-indexed from left to right.
 
 Rules: Show rules.
 Help/Commands: Show commands.
@@ -9,8 +9,7 @@ Theme <theme name>: Change color theme of game to <theme name>. Supported themes
   include Classic, Spaceship, and Under the Sea
 
 Draw/D: Draw a card from the stock to the waste, or return all cards in 
-  the waste back to the stock. The next draw will flip cards from top to 
-  bottom again.
+  the waste back to the stock.
 S to F: Move the stock card to the foundation.
 S to T#: Move the stock card to the tableau at index #.
 T# to F: Move a tableau card at index # to the right index in foundation.
