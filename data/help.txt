@@ -5,6 +5,8 @@ Rules: Show rules.
 Help/Commands: Show commands.
 New Game: Start a new game.
 Quit: Quit program.
+Theme <theme name>: Change color theme of game to <theme name>. Supported themes
+  include Classic, Spaceship, and Under the Sea
 
 Draw/D: Draw a card from the stock to the waste, or return all cards in 
   the waste back to the stock. The next draw will flip cards from top to 

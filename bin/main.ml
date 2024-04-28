@@ -2,10 +2,10 @@
 open Fp.Game
 open Fp.Printer
 
-let rec game_loop g =
-  let b, g2 = round g in
+let rec game_loop theme g =
+  let b, t2, g2 = round theme g in
   match b with
-  | true -> game_loop g2
+  | true -> game_loop t2 g2
   | false -> ()
 
 let () = Random.self_init ()
@@ -17,4 +17,4 @@ let instructions () =
 
 let _ =
   instructions ();
-  game_loop (new_game ())
+  game_loop Spaceship (new_game ())
