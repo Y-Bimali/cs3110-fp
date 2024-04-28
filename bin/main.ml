@@ -17,4 +17,4 @@ let instructions () =
 
 let _ =
   instructions ();
-  game_loop Spaceship (new_game ())
+  game_loop Classic (new_game ())
