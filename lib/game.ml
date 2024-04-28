@@ -199,8 +199,8 @@ let move_card_from_foundation_to_tableau game found_index tab_index =
 let char_to_int c = int_of_string_opt c
 
 let t_to_t g c1 c2 i =
-  let nc1 = char_to_int c1 in
-  let nc2 = char_to_int c2 in
+  let nc1 = char_to_int (string_of_int (int_of_string c1 - 1)) in
+  let nc2 = char_to_int (string_of_int (int_of_string c2 - 1)) in
   let ni = char_to_int i in
   if nc1 = None || nc2 = None || ni = None then
     (g, Some "Unrecognizable Command.")
