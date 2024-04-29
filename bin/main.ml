@@ -2,10 +2,14 @@
 open Fp.Game
 open Fp.Printer
 
+let counter = ref 0
+
 let rec game_loop theme g =
-  let b, t2, g2 = round theme g in
+  let b, t2, g2= round theme g counter in
   match b with
-  | true -> game_loop t2 g2
+  | true ->
+      
+      game_loop t2 g2
   | false -> ()
 
 let () = Random.self_init ()

@@ -1,4 +1,4 @@
-val round : Theme.t -> Game.t -> bool * Theme.t * Game.t
+val round : Theme.t -> Game.t -> int ref -> bool * Theme.t * Game.t
 (** [round g] queries the player and returns the game after their next valid
     move (or the same game if they opt to quit). [b] indicates if they made a
     move or created a new game, and false means they would like to quit. Default

@@ -67,14 +67,16 @@ let game_from_parts fn sn bn = { f = fn; s = sn; b = bn }
 
 (**[draw_card fsb] draws a card and moves it from the stock to the waste in
    stockwaste (s)*)
-let draw_card fsb =
+let draw_card fsb counter =
   match draw fsb.s with
   | None ->
       ( fsb,
         Some
           "There are no cards in the waste or stock, \n\
           \    so this move is not valid." )
-  | Some h -> ({ f = fsb.f; s = h; b = fsb.b }, None)
+  | Some h ->
+      let () = incr counter in
+      ({ f = fsb.f; s = h; b = fsb.b }, None)
 
 let formatted fsb =
   let s_empty = check_stock_empty fsb.s in
@@ -88,7 +90,7 @@ let remove_opt opt =
   | Some h -> h
   | None -> failwith "None"
 
-let s_to_f (game : t) =
+let s_to_f (game : t) counter =
   match top_sw game.s with
   | None ->
       ( game,
@@ -98,6 +100,7 @@ let s_to_f (game : t) =
   | Some card ->
       let foundation = game.f in
       if valid_move foundation card then
+        let () = incr counter in
         ( {
             f = put foundation card;
             s = remove_opt (remove_top game.s);
@@ -106,7 +109,7 @@ let s_to_f (game : t) =
           None )
       else (game, Some "This card cannot go in the foundation.")
 
-let s_to_t (game : t) tab_index =
+let s_to_t (game : t) tab_index counter =
   if tab_index < 0 || tab_index > 6 then
     ( game,
       Some
@@ -122,6 +125,7 @@ let s_to_t (game : t) tab_index =
     | Some card -> (
         let tableau = game.b in
         try
+          let () = incr counter in
           ( {
               f = game.f;
               s = remove_opt (remove_top game.s);
@@ -144,7 +148,7 @@ let update_game_with_move game tab_index foundation_card =
     (updated_game, None)
   with IllegalMove -> (game, Some "Illegal move")
 
-let move_tableau_card_to_foundation game col_index =
+let move_tableau_card_to_foundation game col_index c =
   if col_index >= 0 && col_index <= 6 then
     match peek_col_card game.b col_index with
     | None -> (game, Some "No card is present here")
@@ -157,8 +161,11 @@ let move_tableau_card_to_foundation game col_index =
 
           let t, _ = pop_col_card game.b col_index in
 
-          let final_game = { f = updated_foundation; s = game.s; b = t } in
-          (final_game, None)
+          let final_game =
+            let () = incr c in
+            { f = updated_foundation; s = game.s; b = t }
+          in
+          (final_game, None) (* incr c; *)
         else (game, Some "Invalid move")
   else (game, Some (string_of_int col_index ^ " is not a valid index"))
 
@@ -174,8 +181,8 @@ let validate_tab_index game tab_index =
       (string_of_int tab_index
      ^ " is not a valid index in the tableau. Must be from 0 to 6") )
 
-let move_card_from_foundation_to_tableau game found_index tab_index =
-  let find_and_move foundation_columns found_index tab_index =
+let move_card_from_foundation_to_tableau game found_index tab_index counter =
+  let find_and_move foundation_columns found_index tab_index counter =
     if found_index < 0 || found_index > 3 then
       validate_foundation_index game tab_index
     else if tab_index < 0 || tab_index > 6 then
@@ -185,20 +192,24 @@ let move_card_from_foundation_to_tableau game found_index tab_index =
       let foundation_card = List.nth foundation_columns found_index in
       match (foundation_card, card) with
       | top_c, None ->
-          if num_of top_c = 13 then update_game_with_move game tab_index top_c
+          if num_of top_c = 13 then
+            let () = incr counter in
+            update_game_with_move game tab_index top_c
           else (game, Some "Can not move this card there")
       | top_card, Some c ->
           if num_of top_card = 0 then (game, Some "The index here is empty")
           else if
             num_of top_card - num_of c = -1 && color_of c <> color_of top_card
-          then update_game_with_move game tab_index top_card
+          then
+            let () = incr counter in
+            update_game_with_move game tab_index top_card
           else (game, Some "You can not make this move")
   in
-  find_and_move (top_cards game.f) found_index tab_index
+  find_and_move (top_cards game.f) found_index tab_index counter
 
 let char_to_int c = int_of_string_opt c
 
-let t_to_t g c1 c2 i =
+let t_to_t g c1 c2 i counter =
   let nc1 = char_to_int (string_of_int (int_of_string c1 - 1)) in
   let nc2 = char_to_int (string_of_int (int_of_string c2 - 1)) in
   let ni = char_to_int i in
@@ -210,6 +221,8 @@ let t_to_t g c1 c2 i =
     with
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception IllegalMove -> (g, Some "Illegal Move.")
-    | newb -> ({ f = g.f; s = g.s; b = newb }, None)
+    | newb ->
+        let () = incr counter in
+        ({ f = g.f; s = g.s; b = newb }, None)
 
 let check_win g = is_complete g.f

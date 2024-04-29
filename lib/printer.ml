@@ -260,7 +260,8 @@ module MakePrinter (T : Theme.T) = struct
 
   (*TODO: output tuple should be bool. Game Functions called in Game should
     return game * string option *)
-  let round theme g =
+
+  let round theme g c =
     let () = print_top g in
     print_tab g;
     print_endline "";
@@ -278,68 +279,71 @@ module MakePrinter (T : Theme.T) = struct
         match q with
         | "help" | "commands" -> (g, Some help_str)
         | "rules" -> (g, Some rules_str)
-        | "draw" | "d" -> Game.draw_card g
+        | "draw" | "d" -> Game.draw_card g c
         | "new game" -> (Game.new_game (), None)
         | str -> (
             let v = String.split_on_char ' ' str in
-            match v with
-            | [ "s"; "to"; "f" ] -> Game.s_to_f g
-            | [ x; "to"; y ] ->
-                if String.get x 0 = 'f' && String.get y 0 = 't' then
-                  try
+            try
+              match v with
+              | [ "s"; "to"; "f" ] -> Game.s_to_f g c
+              | [ x; "to"; y ] ->
+                  if String.get x 0 = 'f' && String.get y 0 = 't' then
                     let f_index = slice_from_index_to_end x 1 in
                     let t_index = slice_from_index_to_end y 1 in
+
                     Game.move_card_from_foundation_to_tableau g
                       (int_of_string f_index - 1)
                       (int_of_string t_index - 1)
-                  with Failure _ -> (g, Some "The last command is not valid.")
-                else if String.get x 0 = 't' && String.get y 0 = 't' then
-                  try
+                      c
+                  else if String.get x 0 = 't' && String.get y 0 = 't' then
                     let c1 = slice_from_index_to_end x 1 in
                     let c2 = slice_from_index_to_end y 1 in
-                    Game.t_to_t g c1 c2 "1"
-                  with Failure _ -> (g, Some "The last command is not valid.")
-                else if
-                  String.get x 0 = 't'
-                  && String.get y 0 = 'f'
-                  && String.length y = 1
-                then
-                  try
+
+                    Game.t_to_t g c1 c2 "1" c
+                  else if
+                    String.get x 0 = 't'
+                    && String.get y 0 = 'f'
+                    && String.length y = 1
+                  then
                     let col_index = slice_from_index_to_end x 1 in
+
                     Game.move_tableau_card_to_foundation g
                       (int_of_string col_index - 1)
-                  with Failure _ -> (g, Some "Invalid action")
-                else if
-                  (String.get x 0 = 's' && String.length x = 1)
-                  && String.get y 0 = 't'
-                then
-                  try
+                      c
+                  else if
+                    (String.get x 0 = 's' && String.length x = 1)
+                    && String.get y 0 = 't'
+                  then
                     let tab_index = slice_from_index_to_end y 1 in
-                    Game.s_to_t g (int_of_string tab_index - 1)
-                  with Failure _ -> (g, Some "Invalid action.")
-                else (g, Some "Invalid action.")
-            | [ x; i; "to"; y ] ->
-                if String.get x 0 = 't' && String.get y 0 = 't' then
-                  let c1 = slice_from_index_to_end x 1 in
-                  let c2 = slice_from_index_to_end y 1 in
-                  Game.t_to_t g c1 c2 i
-                else (g, Some "Invalid command.")
-            | _ -> (g, Some "Invalid command."))
+
+                    Game.s_to_t g (int_of_string tab_index - 1) c
+                  else (g, Some "Invalid action.")
+              | [ x; i; "to"; y ] ->
+                  if String.get x 0 = 't' && String.get y 0 = 't' then
+                    let c1 = slice_from_index_to_end x 1 in
+                    let c2 = slice_from_index_to_end y 1 in
+
+                    Game.t_to_t g c1 c2 i c
+                  else (g, Some "Invalid command.")
+              | _ -> (g, Some "Invalid command.")
+            with Failure _ -> (g, Some "The last command is not valid."))
       in
       if Game.check_win g2 then
         print_endline "You win! Type 'New Game' to play a new game.";
       print_error error;
+
+      print_endline ("Number of valid moves: " ^ string_of_int !c);
       (true, theme, g2)
 end
 
-let round theme g =
+let round theme g c =
   match theme with
   | Theme.Classic ->
       let module Current = MakePrinter (Theme.MClassic) in
-      Current.round theme g
+      Current.round theme g c
   | Theme.Spaceship ->
       let module Current = MakePrinter (Theme.MSpaceship) in
-      Current.round theme g
+      Current.round theme g c
   | Theme.UnderTheSea ->
       let module Current = MakePrinter (Theme.MUnderTheSea) in
-      Current.round theme g
+      Current.round theme g c
