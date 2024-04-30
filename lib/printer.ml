@@ -299,23 +299,31 @@ module MakePrinter (T : Theme.T) = struct
 
   let check_conditions_for_three_word_commands g x y c =
     if String.get x 0 = 'f' && String.get y 0 = 't' then
-      foundation_to_tableau_helper g x y c
+      if not (Game.check_win g) then foundation_to_tableau_helper g x y c
+      else (g, Some "Type New game!")
     else if String.get x 0 = 't' && String.get y 0 = 't' then
-      tableau_to_tableau_helper g x y c
+      if not (Game.check_win g) then tableau_to_tableau_helper g x y c
+      else (g, Some "Type New game!")
     else if String.get x 0 = 't' && String.get y 0 = 'f' && String.length y = 1
-    then tableau_to_foundation_helper g x c
+    then
+      if not (Game.check_win g) then tableau_to_foundation_helper g x c
+      else (g, Some "Type New game!")
     else if
       (String.get x 0 = 's' && String.length x = 1) && String.get y 0 = 't'
     then
       let tab_index = slice_from_index_to_end y 1 in
-      Game.s_to_t g (int_of_string tab_index - 1) c
+      if not (Game.check_win g) then
+        Game.s_to_t g (int_of_string tab_index - 1) c
+      else (g, Some "Type New game!")
     else (g, Some "Invalid action.")
 
   let match_statements q g c =
     match q with
     | "help" | "commands" -> (g, Some help_str)
     | "rules" -> (g, Some rules_str)
-    | "draw" | "d" -> Game.draw_card g c
+    | "draw" | "d" ->
+        if not (Game.check_win g) then Game.draw_card g c
+        else (g, Some "Type New game!")
     | "new game" -> (Game.new_game (), None)
     | str -> (
         let v = String.split_on_char ' ' str in
