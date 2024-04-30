@@ -68,7 +68,7 @@ let game_from_parts fn sn bn = { f = fn; s = sn; b = bn }
 (**[draw_card fsb] draws a card and moves it from the stock to the waste in
    stockwaste (s)*)
 let draw_card fsb counter =
-  match draw fsb.s with
+  match draw None fsb.s with
   | None ->
       ( fsb,
         Some

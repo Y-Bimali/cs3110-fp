@@ -10,10 +10,11 @@ val size_sw : t -> int * int
 (**[size_sw] is a pair where the first term is the size of the stock and the
    second term is the size of the waste.*)
 
-val draw : t -> t option
-(** [draw sw] is [Some sw] with the top card in stock removed and placed as the
-    new top card in waste. If the stock is empty, it will put the cards from
-    waste back into stock. If the stock and the waste is empty, it be None*)
+val draw : string option -> t -> t option
+(** [draw sw three_opt] is [Some sw] with the top card(s) in stock removed and
+    placed as the new top card(s) in waste. If the stock is empty, it will put
+    the cards from waste back into stock. If the stock and the waste are empty,
+    it be None*)
 
 val top_sw : t -> Card.t option
 (**[top] is Some top card in the waste pile. Is None if the waste pile is empty.*)

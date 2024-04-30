@@ -45,11 +45,11 @@ let test_top_sw_empty _ =
 
 let test_top_sw_nonempty _ =
   (*one card in the waste*)
-  let one_card = draw (add_sw [ empty_card Clubs ] empty_sw) in
+  let one_card = draw None (add_sw [ empty_card Clubs ] empty_sw) in
   assert_equal Clubs (suit_of (get (top_sw (get one_card))));
   (*multiple cards in the waste*)
   let many_cards =
-    draw
+    draw None
       (add_sw
          [
            empty_card Spades;
@@ -59,10 +59,11 @@ let test_top_sw_nonempty _ =
          ]
          empty_sw)
   in
+
   assert_equal Spades (suit_of (get (top_sw (get many_cards))));
   (*multiple identical cards in the waste*)
   let many_cards2 =
-    draw
+    draw None
       (add_sw
          [
            empty_card Hearts;
@@ -76,16 +77,16 @@ let test_top_sw_nonempty _ =
 
 let test_draw _ =
   (*draw one card fgetm stock with one card*)
-  let one_card = draw (add_sw [ empty_card Clubs ] empty_sw) in
+  let one_card = draw None (add_sw [ empty_card Clubs ] empty_sw) in
   assert_equal (0, 1) (size_sw (get one_card));
   (*draw multiple unique cards fgetm stock with multiple cards*)
   let many_cards =
     get
-      (draw
+      (draw None
          (get
-            (draw
+            (draw None
                (get
-                  (draw
+                  (draw None
                      (add_sw
                         [
                           empty_card Spades;
@@ -99,9 +100,9 @@ let test_draw _ =
   (*draw multiple unique cards fgetm stock with multiple cards*)
   let many_cards2 =
     get
-      (draw
+      (draw None
          (get
-            (draw
+            (draw None
                (add_sw
                   [
                     empty_card Spades;
@@ -115,33 +116,35 @@ let test_draw _ =
   (*draw as many cards as the stock has*)
   let many_cards3 =
     get
-      (draw
+      (draw None
          (get
-            (draw (add_sw [ empty_card Spades; empty_card Diamonds ] empty_sw))))
+            (draw None
+               (add_sw [ empty_card Spades; empty_card Diamonds ] empty_sw))))
   in
   assert_equal (0, 2) (size_sw many_cards3);
 
   (*draw more cards than the stack has - requires it to move cards back into
     stock*)
   let many_cards4 =
-    draw
+    draw None
       (get
-         (draw
+         (draw None
             (get
-               (draw (add_sw [ empty_card Hearts; empty_card Spades ] empty_sw)))))
+               (draw None
+                  (add_sw [ empty_card Hearts; empty_card Spades ] empty_sw)))))
   in
   assert_equal (2, 0) (size_sw (get many_cards4));
 
   (*draw more cards than the stack has and requires it to move cards back into
     stock, then continues to draw*)
   let many_cards4 =
-    draw
+    draw None
       (get
-         (draw
+         (draw None
             (get
-               (draw
+               (draw None
                   (get
-                     (draw
+                     (draw None
                         (add_sw
                            [ empty_card Hearts; empty_card Spades ]
                            empty_sw)))))))
@@ -154,22 +157,24 @@ let test_remove_top_empty _ =
   assert_equal None (remove_top empty_sw);
   (*removing more cards than there are in the waste*)
   let many_cards3 =
-    draw (get (draw (add_sw [ empty_card Spades; empty_card Hearts ] empty_sw)))
+    draw None
+      (get
+         (draw None (add_sw [ empty_card Spades; empty_card Hearts ] empty_sw)))
   in
   assert_equal None
     (remove_top (get (remove_top (get (remove_top (get many_cards3))))))
 
 let test_remove_top_nonempty _ =
   (*remove one card fgetm the waste when waste has one card*)
-  let one_card = draw (add_sw [ empty_card Spades ] empty_sw) in
+  let one_card = draw None (add_sw [ empty_card Spades ] empty_sw) in
   assert_equal (0, 0) (size_sw (get (remove_top (get one_card))));
   (*remove one card fgetm the waste with multiple cards*)
   let many_cards =
-    draw
+    draw None
       (get
-         (draw
+         (draw None
             (get
-               (draw
+               (draw None
                   (add_sw
                      [
                        empty_card Spades;
@@ -182,11 +187,11 @@ let test_remove_top_nonempty _ =
   assert_equal (1, 2) (size_sw (get (remove_top (get many_cards))));
   (*remove multiple cards fgetm the waste when the waste has multiple cards*)
   let many_cards2 =
-    draw
+    draw None
       (get
-         (draw
+         (draw None
             (get
-               (draw
+               (draw None
                   (add_sw
                      [
                        empty_card Spades;
@@ -201,8 +206,10 @@ let test_remove_top_nonempty _ =
   (*remove all the cards fgetm the waste with multiple cards*)
   let many_cards3 =
     get
-      (draw
-         (get (draw (add_sw [ empty_card Spades; empty_card Hearts ] empty_sw))))
+      (draw None
+         (get
+            (draw None
+               (add_sw [ empty_card Spades; empty_card Hearts ] empty_sw))))
   in
   assert_equal (0, 0)
     (size_sw (get (remove_top (get (remove_top many_cards3)))))
