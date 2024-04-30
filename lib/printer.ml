@@ -297,6 +297,39 @@ module MakePrinter (T : Theme.T) = struct
 
     Game.move_tableau_card_to_foundation g (int_of_string col_index - 1) c
 
+  let check_conditions_for_three_word_commands g x y c =
+    if String.get x 0 = 'f' && String.get y 0 = 't' then
+      foundation_to_tableau_helper g x y c
+    else if String.get x 0 = 't' && String.get y 0 = 't' then
+      tableau_to_tableau_helper g x y c
+    else if String.get x 0 = 't' && String.get y 0 = 'f' && String.length y = 1
+    then tableau_to_foundation_helper g x c
+    else if
+      (String.get x 0 = 's' && String.length x = 1) && String.get y 0 = 't'
+    then
+      let tab_index = slice_from_index_to_end y 1 in
+      Game.s_to_t g (int_of_string tab_index - 1) c
+    else (g, Some "Invalid action.")
+
+  let match_statements q g c =
+    match q with
+    | "help" | "commands" -> (g, Some help_str)
+    | "rules" -> (g, Some rules_str)
+    | "draw" | "d" -> Game.draw_card g c
+    | "new game" -> (Game.new_game (), None)
+    | str -> (
+        let v = String.split_on_char ' ' str in
+        try
+          match v with
+          | [ "s"; "to"; "f" ] -> Game.s_to_f g c
+          | [ x; "to"; y ] -> check_conditions_for_three_word_commands g x y c
+          | [ x; i; "to"; y ] ->
+              if String.get x 0 = 't' && String.get y 0 = 't' then
+                snd_tableau_to_tableau_helper g x y i c
+              else (g, Some "Invalid command.")
+          | _ -> (g, Some "The command is not valid. Enter help more info.")
+        with Failure _ -> (g, Some "The last command is not valid."))
+
   let round theme g c t =
     let () = print_top g in
     print_tab g;
@@ -306,41 +339,7 @@ module MakePrinter (T : Theme.T) = struct
     if q = "quit" then (false, theme, g)
     else if String.starts_with ~prefix:"theme" q then display_theme g theme q
     else
-      let g2, error =
-        match q with
-        | "help" | "commands" -> (g, Some help_str)
-        | "rules" -> (g, Some rules_str)
-        | "draw" | "d" -> Game.draw_card g c
-        | "new game" -> (Game.new_game (), None)
-        | str -> (
-            let v = String.split_on_char ' ' str in
-            try
-              match v with
-              | [ "s"; "to"; "f" ] -> Game.s_to_f g c
-              | [ x; "to"; y ] ->
-                  if String.get x 0 = 'f' && String.get y 0 = 't' then
-                    foundation_to_tableau_helper g x y c
-                  else if String.get x 0 = 't' && String.get y 0 = 't' then
-                    tableau_to_tableau_helper g x y c
-                  else if
-                    String.get x 0 = 't'
-                    && String.get y 0 = 'f'
-                    && String.length y = 1
-                  then tableau_to_foundation_helper g x c
-                  else if
-                    (String.get x 0 = 's' && String.length x = 1)
-                    && String.get y 0 = 't'
-                  then
-                    let tab_index = slice_from_index_to_end y 1 in
-                    Game.s_to_t g (int_of_string tab_index - 1) c
-                  else (g, Some "Invalid action.")
-              | [ x; i; "to"; y ] ->
-                  if String.get x 0 = 't' && String.get y 0 = 't' then
-                    snd_tableau_to_tableau_helper g x y i c
-                  else (g, Some "Invalid command.")
-              | _ -> (g, Some "Invalid command.")
-            with Failure _ -> (g, Some "The last command is not valid."))
-      in
+      let g2, error = match_statements q g c in
 
       if Game.check_win g2 then print_endline (winning_statement c t);
       print_error error;
