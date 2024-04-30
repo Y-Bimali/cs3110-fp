@@ -261,7 +261,7 @@ module MakePrinter (T : Theme.T) = struct
   (*TODO: output tuple should be bool. Game Functions called in Game should
     return game * string option *)
 
-  let round theme g c =
+  let round theme g c t =
     let () = print_top g in
     print_tab g;
     print_endline "";
@@ -328,22 +328,27 @@ module MakePrinter (T : Theme.T) = struct
               | _ -> (g, Some "Invalid command.")
             with Failure _ -> (g, Some "The last command is not valid."))
       in
+      print_endline ("Number of valid moves: " ^ string_of_int !c);
       if Game.check_win g2 then
-        print_endline "You win! Type 'New Game' to play a new game.";
+        print_endline
+          ("\nYou win!\nYou made " ^ string_of_int !c
+         ^ "valid moves\nTotal time spent is "
+          ^ string_of_int (int_of_float (Unix.gettimeofday () -. t))
+          ^ "\nType 'New Game' to play a new game.");
+
       print_error error;
 
-      print_endline ("Number of valid moves: " ^ string_of_int !c);
       (true, theme, g2)
 end
 
-let round theme g c =
+let round theme g c t =
   match theme with
   | Theme.Classic ->
       let module Current = MakePrinter (Theme.MClassic) in
-      Current.round theme g c
+      Current.round theme g c t
   | Theme.Spaceship ->
       let module Current = MakePrinter (Theme.MSpaceship) in
-      Current.round theme g c
+      Current.round theme g c t
   | Theme.UnderTheSea ->
       let module Current = MakePrinter (Theme.MUnderTheSea) in
-      Current.round theme g c
+      Current.round theme g c t

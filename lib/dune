@@ -1,6 +1,6 @@
 (library
  (name fp)
- (libraries batteries csv ANSITerminal)
+ (libraries batteries csv unix ANSITerminal)
  (preprocess
   (pps ppx_inline_test))
  (instrumentation
