@@ -261,6 +261,42 @@ module MakePrinter (T : Theme.T) = struct
   (*TODO: output tuple should be bool. Game Functions called in Game should
     return game * string option *)
 
+  let winning_statement c t =
+    "\nYou win!\nYou made " ^ string_of_int !c
+    ^ " valid moves\nTotal time spent is "
+    ^ string_of_int (int_of_float (Unix.gettimeofday () -. t))
+    ^ " seconds.\nType 'New Game' to play a new game."
+
+  let display_theme g theme q =
+    try (true, Theme.theme_of_string (String.sub q 6 (String.length q - 6)), g)
+    with Theme.UnknownTheme ->
+      print_endline "Unrecognizable Theme. Enter \"help\" for a list of themes.";
+      (true, theme, g)
+
+  let foundation_to_tableau_helper g x y c =
+    let f_index = slice_from_index_to_end x 1 in
+    let t_index = slice_from_index_to_end y 1 in
+
+    Game.move_card_from_foundation_to_tableau g
+      (int_of_string f_index - 1)
+      (int_of_string t_index - 1)
+      c
+
+  let tableau_to_tableau_helper g x y c =
+    let c1 = slice_from_index_to_end x 1 in
+    let c2 = slice_from_index_to_end y 1 in
+    Game.t_to_t g c1 c2 "1" c
+
+  let snd_tableau_to_tableau_helper g x y i c =
+    let c1 = slice_from_index_to_end x 1 in
+    let c2 = slice_from_index_to_end y 1 in
+    Game.t_to_t g c1 c2 i c
+
+  let tableau_to_foundation_helper g x c =
+    let col_index = slice_from_index_to_end x 1 in
+
+    Game.move_tableau_card_to_foundation g (int_of_string col_index - 1) c
+
   let round theme g c t =
     let () = print_top g in
     print_tab g;
@@ -268,12 +304,7 @@ module MakePrinter (T : Theme.T) = struct
     print_string "Enter an action: ";
     let q = remove_excess_whitespace (String.lowercase_ascii (read_line ())) in
     if q = "quit" then (false, theme, g)
-    else if String.starts_with ~prefix:"theme" q then (
-      try (true, Theme.theme_of_string (String.sub q 6 (String.length q - 6)), g)
-      with Theme.UnknownTheme ->
-        print_endline
-          "Unrecognizable Theme. Enter \"help\" for a list of themes.";
-        (true, theme, g))
+    else if String.starts_with ~prefix:"theme" q then display_theme g theme q
     else
       let g2, error =
         match q with
@@ -288,56 +319,31 @@ module MakePrinter (T : Theme.T) = struct
               | [ "s"; "to"; "f" ] -> Game.s_to_f g c
               | [ x; "to"; y ] ->
                   if String.get x 0 = 'f' && String.get y 0 = 't' then
-                    let f_index = slice_from_index_to_end x 1 in
-                    let t_index = slice_from_index_to_end y 1 in
-
-                    Game.move_card_from_foundation_to_tableau g
-                      (int_of_string f_index - 1)
-                      (int_of_string t_index - 1)
-                      c
+                    foundation_to_tableau_helper g x y c
                   else if String.get x 0 = 't' && String.get y 0 = 't' then
-                    let c1 = slice_from_index_to_end x 1 in
-                    let c2 = slice_from_index_to_end y 1 in
-
-                    Game.t_to_t g c1 c2 "1" c
+                    tableau_to_tableau_helper g x y c
                   else if
                     String.get x 0 = 't'
                     && String.get y 0 = 'f'
                     && String.length y = 1
-                  then
-                    let col_index = slice_from_index_to_end x 1 in
-
-                    Game.move_tableau_card_to_foundation g
-                      (int_of_string col_index - 1)
-                      c
+                  then tableau_to_foundation_helper g x c
                   else if
                     (String.get x 0 = 's' && String.length x = 1)
                     && String.get y 0 = 't'
                   then
                     let tab_index = slice_from_index_to_end y 1 in
-
                     Game.s_to_t g (int_of_string tab_index - 1) c
                   else (g, Some "Invalid action.")
               | [ x; i; "to"; y ] ->
                   if String.get x 0 = 't' && String.get y 0 = 't' then
-                    let c1 = slice_from_index_to_end x 1 in
-                    let c2 = slice_from_index_to_end y 1 in
-
-                    Game.t_to_t g c1 c2 i c
+                    snd_tableau_to_tableau_helper g x y i c
                   else (g, Some "Invalid command.")
               | _ -> (g, Some "Invalid command.")
             with Failure _ -> (g, Some "The last command is not valid."))
       in
-      print_endline ("Number of valid moves: " ^ string_of_int !c);
-      if Game.check_win g2 then
-        print_endline
-          ("\nYou win!\nYou made " ^ string_of_int !c
-         ^ "valid moves\nTotal time spent is "
-          ^ string_of_int (int_of_float (Unix.gettimeofday () -. t))
-          ^ " seconds.\nType 'New Game' to play a new game.");
 
+      if Game.check_win g2 then print_endline (winning_statement c t);
       print_error error;
-
       (true, theme, g2)
 end
 

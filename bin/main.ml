@@ -4,7 +4,6 @@ open Fp.Printer
 
 let counter = ref 0
 
-
 let rec game_loop theme g t =
   let b, t2, g2 = round theme g counter t in
   match b with
@@ -19,5 +18,6 @@ let instructions () =
   print_endline help_str
 
 let _ =
+  (* print_endline ("Number of valid moves: " ^ string_of_int !counter); *)
   instructions ();
   game_loop Classic (new_game ()) (Unix.gettimeofday ())
