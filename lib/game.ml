@@ -167,7 +167,7 @@ let move_tableau_card_to_foundation game col_index c =
             { f = updated_foundation; s = game.s; b = t }
           in
           (final_game, None) (* incr c; *)
-        else (game, Some "Invalid move")
+        else (game, Some "You can not make this move")
   else (game, Some (string_of_int col_index ^ " is not a valid index"))
 
 let validate_foundation_index game found_index =
@@ -181,6 +181,8 @@ let validate_tab_index game tab_index =
     Some
       (string_of_int tab_index
      ^ " is not a valid index in the tableau. Must be from 0 to 6") )
+
+
 
 let move_card_from_foundation_to_tableau game found_index tab_index counter =
   let find_and_move foundation_columns found_index tab_index counter =
@@ -196,7 +198,7 @@ let move_card_from_foundation_to_tableau game found_index tab_index counter =
           if num_of top_c = 13 then
             let () = incr counter in
             update_game_with_move game tab_index top_c
-          else (game, Some "Can not move this card there")
+          else (game, Some "You can not make this move")
       | top_card, Some c ->
           if num_of top_card = 0 then (game, Some "The index here is empty")
           else if
