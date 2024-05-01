@@ -5,7 +5,9 @@ Rules: Show rules.
 
 Help/Commands: Show commands.
 
-New Game: Start a new game.
+New Game: Start a new game with draw 1.
+
+New Game 3: Start a new game with draw 3.
 
 Quit: Quit program.
 

@@ -317,14 +317,21 @@ module MakePrinter (T : Theme.T) = struct
       else (g, Some "Type New game!")
     else (g, Some "Invalid action.")
 
+  let three_opt = ref None
+
   let match_statements q g c =
     match q with
     | "help" | "commands" -> (g, Some help_str)
     | "rules" -> (g, Some rules_str)
     | "draw" | "d" ->
-        if not (Game.check_win g) then Game.draw_card g c
+        if not (Game.check_win g) then Game.draw_card g c !three_opt
         else (g, Some "Type New game!")
-    | "new game" -> (Game.new_game (), None)
+    | "new game" ->
+        three_opt := None;
+        (Game.new_game (), None)
+    | "new game 3" ->
+        three_opt := Some "3";
+        (Game.new_game (), None)
     | str -> (
         let v = String.split_on_char ' ' str in
         try
