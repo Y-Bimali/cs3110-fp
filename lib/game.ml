@@ -113,8 +113,8 @@ let s_to_t (game : t) tab_index counter =
   if tab_index < 0 || tab_index > 6 then
     ( game,
       Some
-        (string_of_int tab_index
-       ^ " is not a valid index in the tableau. Must be from 0 to 6") )
+        (string_of_int (tab_index + 1)
+        ^ " is not a valid index in the tableau. Must be from 1 to 7.") )
   else
     match top_sw game.s with
     | None ->
@@ -135,8 +135,9 @@ let s_to_t (game : t) tab_index counter =
         with IllegalMove ->
           ( game,
             Some
-              ("This card cannot go in column " ^ string_of_int tab_index
-             ^ ". (Illegal Move)") ))
+              ("This card cannot go in column "
+              ^ string_of_int (tab_index + 1)
+              ^ ". (Illegal Move)") ))
 
 let update_game_with_move game tab_index foundation_card =
   try
