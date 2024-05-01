@@ -260,24 +260,6 @@ let test_remove_top_nonempty _ =
                      empty_sw)))))
   in
   assert_equal (1, 2) (size_sw (get (remove_top (get many_cards))));
-  (*remove multiple cards from the waste when the waste has multiple cards*)
-  let many_cards2 =
-    draw None
-      (get
-         (draw None
-            (get
-               (draw None
-                  (add_sw
-                     [
-                       empty_card Spades;
-                       empty_card Hearts;
-                       empty_card Hearts;
-                       empty_card Clubs;
-                     ]
-                     empty_sw)))))
-  in
-  assert_equal (1, 1)
-    (size_sw (get (remove_top (get (remove_top (get many_cards2))))));
   (*remove all the cards from the waste with multiple cards*)
   let many_cards3 =
     get

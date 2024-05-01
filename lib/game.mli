@@ -8,7 +8,7 @@ val game_from_parts : Foundation.t -> Stockwaste.t -> Tableau.t -> t
 (** [game_from_parts] is a game of solitaire initialized from a foundation,
     stockwaste, and tableau.*)
 
-val draw_card : t -> int ref -> string option -> t * string option
+val draw_card : t -> int ref -> string option ref -> t * string option
 (**[draw_card fsb] is a game with the draw function applied to the stockwaste.*)
 
 val formatted : t -> (bool * Card.t list) * Card.t list * Card.t list list

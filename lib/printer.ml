@@ -324,7 +324,7 @@ module MakePrinter (T : Theme.T) = struct
     | "help" | "commands" -> (g, Some help_str)
     | "rules" -> (g, Some rules_str)
     | "draw" | "d" ->
-        if not (Game.check_win g) then Game.draw_card g c !three_opt
+        if not (Game.check_win g) then Game.draw_card g c three_opt
         else (g, Some "Type New game!")
     | "new game" ->
         three_opt := None;
