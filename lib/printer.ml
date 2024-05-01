@@ -262,8 +262,8 @@ module MakePrinter (T : Theme.T) = struct
     return game * string option *)
 
   let winning_statement c t =
-    "\nYou win!\nYou made " ^ string_of_int !c
-    ^ " valid moves\nTotal time spent is "
+    "\nYou won the game in " ^ string_of_int !c
+    ^ " valid moves.\nTotal time spent is "
     ^ string_of_int (int_of_float (Unix.gettimeofday () -. t))
     ^ " seconds.\nType 'New Game' to play a new game."
 

@@ -110,6 +110,39 @@ let test_s_to_ft_err _ =
        (string_of_int 21
       ^ " is not a valid index in the tableau. Must be from 1 to 7."))
 
+let tableau3 =
+  init_tab
+    (List.flatten
+       [
+         [ d1; d1; d1; d1; d1; d1; d1 ];
+         [ d8; d1; d1; d1; d1; d12 ];
+         [ c3; c3; c3; c3; c3 ];
+         [ h2; h2; h2; h2 ];
+         [ c11; c11; c11 ];
+         [ s2; s2 ];
+         [ h1 ];
+       ])
+
+let foundation1 = initialize
+let stockwaste1 = empty_sw
+let counter2 = ref 0
+
+let test_tableau_to_foundation_works _ =
+  let g1 = game_from_parts foundation1 stockwaste1 tableau3 in
+
+  assert_equal (snd (move_tableau_card_to_foundation g1 0 counter2)) None;
+  assert_equal
+    (snd (move_tableau_card_to_foundation g1 5 counter2))
+    (Some "You can not make this move");
+  assert_equal !counter2 1;
+  assert_equal
+    (snd (move_tableau_card_to_foundation g1 6 counter2))
+    None;
+  assert_equal
+    (snd (move_card_from_foundation_to_tableau g1 1 1 counter2))
+    (Some "The index here is empty");
+  assert_equal !counter2 2
+
 (*let tab_tests = "Tableau only tests" >::: [ "test_t_to_t" >:: test_t_to_t ]*)
 let sw_tests1 =
   "Stockwaste tests where it is a valid move"
@@ -119,7 +152,12 @@ let sw_tests2 =
   "Stockwaste tests where it is not a valid move"
   >::: [ "test_s_to_ft" >:: test_s_to_ft_err ]
 
+let t_f_tests =
+  "t_to_f"
+  >::: [ "test_tab_to_foundation" >:: test_tableau_to_foundation_works ]
+
 let () =
   (*run_test_tt_main tab_tests;*)
   run_test_tt_main sw_tests1;
-  run_test_tt_main sw_tests2
+  run_test_tt_main sw_tests2;
+  run_test_tt_main t_f_tests
