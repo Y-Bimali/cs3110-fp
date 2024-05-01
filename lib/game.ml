@@ -182,12 +182,10 @@ let validate_tab_index game tab_index =
       (string_of_int tab_index
      ^ " is not a valid index in the tableau. Must be from 0 to 6") )
 
-
-
 let move_card_from_foundation_to_tableau game found_index tab_index counter =
   let find_and_move foundation_columns found_index tab_index counter =
     if found_index < 0 || found_index > 3 then
-      validate_foundation_index game tab_index
+      validate_foundation_index game found_index
     else if tab_index < 0 || tab_index > 6 then
       validate_tab_index game tab_index
     else
@@ -200,7 +198,8 @@ let move_card_from_foundation_to_tableau game found_index tab_index counter =
             update_game_with_move game tab_index top_c
           else (game, Some "You can not make this move")
       | top_card, Some c ->
-          if num_of top_card = 0 then (game, Some "The index here is empty")
+          if num_of top_card = 0 then
+            (game, Some "There is no card in this foundation column")
           else if
             num_of top_card - num_of c = -1 && color_of c <> color_of top_card
           then
