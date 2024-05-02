@@ -140,14 +140,12 @@ let s_to_t (game : t) tab_index counter =
               ^ ". (Illegal Move)") ))
 
 let update_game_with_move game tab_index foundation_card =
-  try
-    let updated_tableau = card_to_col game.b tab_index foundation_card in
-    let updated_foundation = remove game.f foundation_card in
-    let updated_game =
-      { f = updated_foundation; s = game.s; b = updated_tableau }
-    in
-    (updated_game, None)
-  with IllegalMove -> (game, Some "Illegal move")
+  let updated_tableau = card_to_col game.b tab_index foundation_card in
+  let updated_foundation = remove game.f foundation_card in
+  let updated_game =
+    { f = updated_foundation; s = game.s; b = updated_tableau }
+  in
+  (updated_game, None)
 
 let move_tableau_card_to_foundation game col_index c =
   if col_index >= 0 && col_index <= 6 then
