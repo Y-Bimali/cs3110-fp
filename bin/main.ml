@@ -2,10 +2,8 @@
 open Fp.Game
 open Fp.Printer
 
-let counter = ref 0
-
 let rec game_loop theme g t =
-  let b, t2, g2 = round theme g counter t in
+  let b, t2, g2 = round theme g t in
   match b with
   | true -> game_loop t2 g2 t
   | false -> ()

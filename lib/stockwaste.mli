@@ -10,7 +10,7 @@ val size_sw : t -> int * int
 (**[size_sw] is a pair where the first term is the size of the stock and the
    second term is the size of the waste.*)
 
-val draw : string option -> t -> t option
+val draw : (unit -> string option) -> t -> t option
 (** [draw sw three_opt] is [Some sw] with the top card(s) in stock removed and
     placed as the new top card(s) in waste. If the stock is empty, it will put
     the cards from waste back into stock. If the stock and the waste are empty,

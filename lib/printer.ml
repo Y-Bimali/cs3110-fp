@@ -261,8 +261,9 @@ module MakePrinter (T : Theme.T) = struct
   (*TODO: output tuple should be bool. Game Functions called in Game should
     return game * string option *)
 
-  let winning_statement c t =
-    "\nYou won the game in " ^ string_of_int !c
+  let winning_statement t =
+    "\nYou won the game in "
+    ^ string_of_int (Game.get_count ())
     ^ " valid moves.\nTotal time spent is "
     ^ string_of_int (int_of_float (Unix.gettimeofday () -. t))
     ^ " seconds.\nType 'New Game' to play a new game."
@@ -273,79 +274,78 @@ module MakePrinter (T : Theme.T) = struct
       print_endline "Unrecognizable Theme. Enter \"help\" for a list of themes.";
       (true, theme, g)
 
-  let foundation_to_tableau_helper g x y c =
+  let foundation_to_tableau_helper g x y =
     let f_index = slice_from_index_to_end x 1 in
     let t_index = slice_from_index_to_end y 1 in
 
     Game.move_card_from_foundation_to_tableau g
       (int_of_string f_index - 1)
       (int_of_string t_index - 1)
-      c
 
-  let tableau_to_tableau_helper g x y c =
+  let tableau_to_tableau_helper g x y =
     let c1 = slice_from_index_to_end x 1 in
     let c2 = slice_from_index_to_end y 1 in
-    Game.t_to_t g c1 c2 "1" c
+    Game.t_to_t g c1 c2 "1"
 
-  let snd_tableau_to_tableau_helper g x y i c =
+  let snd_tableau_to_tableau_helper g x y i =
     let c1 = slice_from_index_to_end x 1 in
     let c2 = slice_from_index_to_end y 1 in
-    Game.t_to_t g c1 c2 i c
+    Game.t_to_t g c1 c2 i
 
-  let tableau_to_foundation_helper g x c =
+  let tableau_to_foundation_helper g x =
     let col_index = slice_from_index_to_end x 1 in
 
-    Game.move_tableau_card_to_foundation g (int_of_string col_index - 1) c
+    Game.move_tableau_card_to_foundation g (int_of_string col_index - 1)
 
-  let check_conditions_for_three_word_commands g x y c =
+  let check_conditions_for_three_word_commands g x y =
     if String.get x 0 = 'f' && String.get y 0 = 't' then
-      if not (Game.check_win g) then foundation_to_tableau_helper g x y c
+      if not (Game.check_win g) then foundation_to_tableau_helper g x y
       else (g, Some "Type New game!")
     else if String.get x 0 = 't' && String.get y 0 = 't' then
-      if not (Game.check_win g) then tableau_to_tableau_helper g x y c
+      if not (Game.check_win g) then tableau_to_tableau_helper g x y
       else (g, Some "Type New game!")
     else if String.get x 0 = 't' && String.get y 0 = 'f' && String.length y = 1
     then
-      if not (Game.check_win g) then tableau_to_foundation_helper g x c
+      if not (Game.check_win g) then tableau_to_foundation_helper g x
       else (g, Some "Type New game!")
     else if
       (String.get x 0 = 's' && String.length x = 1) && String.get y 0 = 't'
     then
       let tab_index = slice_from_index_to_end y 1 in
-      if not (Game.check_win g) then
-        Game.s_to_t g (int_of_string tab_index - 1) c
+      if not (Game.check_win g) then Game.s_to_t g (int_of_string tab_index - 1)
       else (g, Some "Type New game!")
     else (g, Some "Invalid action.")
 
-  let three_opt = ref None
+  let invalid_command_str = "The command is not valid. Enter help more info."
 
-  let match_statements q g c =
+  let match_statements q g =
     match q with
+    | "count" -> (g, Some ("Moves: " ^ string_of_int (Game.get_count ())))
     | "help" | "commands" -> (g, Some help_str)
     | "rules" -> (g, Some rules_str)
     | "draw" | "d" ->
-        if not (Game.check_win g) then Game.draw_card g c three_opt
+        if not (Game.check_win g) then Game.draw_card g
         else (g, Some "Type New game!")
     | "new game" ->
-        three_opt := None;
+        Game.update_three_opt None;
         (Game.new_game (), None)
     | "new game 3" ->
-        three_opt := Some "3";
+        Game.update_three_opt (Some "3");
         (Game.new_game (), None)
     | str -> (
         let v = String.split_on_char ' ' str in
         try
           match v with
-          | [ "s"; "to"; "f" ] -> Game.s_to_f g c
-          | [ x; "to"; y ] -> check_conditions_for_three_word_commands g x y c
+          | [ "s"; "to"; "f" ] -> Game.s_to_f g
+          | [ x; "to"; y ] -> check_conditions_for_three_word_commands g x y
           | [ x; i; "to"; y ] ->
               if String.get x 0 = 't' && String.get y 0 = 't' then
-                snd_tableau_to_tableau_helper g x y i c
-              else (g, Some "Invalid command.")
-          | _ -> (g, Some "The command is not valid. Enter help more info.")
-        with Failure _ -> (g, Some "The last command is not valid."))
+                snd_tableau_to_tableau_helper g x y i
+              else (g, Some invalid_command_str)
+          | _ -> (g, Some invalid_command_str)
+        with Failure _ -> (g, Some invalid_command_str))
 
-  let round theme g c t =
+  let round theme g t =
     let () = print_top g in
     print_tab g;
     print_endline "";
@@ -354,21 +354,21 @@ module MakePrinter (T : Theme.T) = struct
     if q = "quit" then (false, theme, g)
     else if String.starts_with ~prefix:"theme" q then display_theme g theme q
     else
-      let g2, error = match_statements q g c in
+      let g2, error = match_statements q g in
 
-      if Game.check_win g2 then print_endline (winning_statement c t);
+      if Game.check_win g2 then print_endline (winning_statement t);
       print_error error;
       (true, theme, g2)
 end
 
-let round theme g c t =
+let round theme g t =
   match theme with
   | Theme.Classic ->
       let module Current = MakePrinter (Theme.MClassic) in
-      Current.round theme g c t
+      Current.round theme g t
   | Theme.Spaceship ->
       let module Current = MakePrinter (Theme.MSpaceship) in
-      Current.round theme g c t
+      Current.round theme g t
   | Theme.UnderTheSea ->
       let module Current = MakePrinter (Theme.MUnderTheSea) in
-      Current.round theme g c t
+      Current.round theme g t

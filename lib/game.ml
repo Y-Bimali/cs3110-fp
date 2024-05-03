@@ -12,6 +12,8 @@ type t = {
 }
 
 (* let card_data = BatList.of_enum (BatFile.lines_of "data/card.txt") *)
+let three_opt = ref None
+let counter = ref 0
 
 let generate_deck =
   let suits = [ Spades; Hearts; Clubs; Diamonds ] in
@@ -48,6 +50,7 @@ let rec select_random_elements k lst acc =
    tableau adds 28 cards and the rest goes to Stockwaste *)
 
 let new_game () =
+  counter := 0;
   let card_data = shuffle_list generate_deck in
 
   (* Initialize Foundation *)
@@ -67,8 +70,8 @@ let game_from_parts fn sn bn = { f = fn; s = sn; b = bn }
 
 (**[draw_card fsb] draws a card and moves it from the stock to the waste in
    stockwaste (s)*)
-let draw_card fsb counter three_opt =
-  match draw !three_opt fsb.s with
+let draw_card fsb =
+  match draw (fun () -> !three_opt) fsb.s with
   | None ->
       ( fsb,
         Some
@@ -90,7 +93,7 @@ let remove_opt opt =
   | Some h -> h
   | None -> failwith "None"
 
-let s_to_f (game : t) counter =
+let s_to_f (game : t) =
   match top_sw game.s with
   | None ->
       ( game,
@@ -109,7 +112,7 @@ let s_to_f (game : t) counter =
           None )
       else (game, Some "This card cannot go in the foundation.")
 
-let s_to_t (game : t) tab_index counter =
+let s_to_t (game : t) tab_index =
   if tab_index < 0 || tab_index > 6 then
     ( game,
       Some
@@ -147,7 +150,7 @@ let update_game_with_move game tab_index foundation_card =
   in
   (updated_game, None)
 
-let move_tableau_card_to_foundation game col_index c =
+let move_tableau_card_to_foundation game col_index =
   if col_index >= 0 && col_index <= 6 then
     match peek_col_card game.b col_index with
     | None -> (game, Some "No card is present here")
@@ -161,7 +164,7 @@ let move_tableau_card_to_foundation game col_index c =
           let t, _ = pop_col_card game.b col_index in
 
           let final_game =
-            let () = incr c in
+            let () = incr counter in
             { f = updated_foundation; s = game.s; b = t }
           in
           (final_game, None) (* incr c; *)
@@ -180,8 +183,8 @@ let validate_tab_index game tab_index =
       (string_of_int tab_index
      ^ " is not a valid index in the tableau. Must be from 0 to 6") )
 
-let move_card_from_foundation_to_tableau game found_index tab_index counter =
-  let find_and_move foundation_columns found_index tab_index counter =
+let move_card_from_foundation_to_tableau game found_index tab_index =
+  let find_and_move foundation_columns found_index tab_index =
     if found_index < 0 || found_index > 3 then
       validate_foundation_index game found_index
     else if tab_index < 0 || tab_index > 6 then
@@ -205,11 +208,11 @@ let move_card_from_foundation_to_tableau game found_index tab_index counter =
             update_game_with_move game tab_index top_card
           else (game, Some "You can not make this move")
   in
-  find_and_move (top_cards game.f) found_index tab_index counter
+  find_and_move (top_cards game.f) found_index tab_index
 
 let char_to_int c = int_of_string_opt c
 
-let t_to_t g c1 c2 i counter =
+let t_to_t g c1 c2 i =
   let nc1 = char_to_int (string_of_int (int_of_string c1 - 1)) in
   let nc2 = char_to_int (string_of_int (int_of_string c2 - 1)) in
   let ni = char_to_int i in
@@ -226,3 +229,10 @@ let t_to_t g c1 c2 i counter =
         ({ f = g.f; s = g.s; b = newb }, None)
 
 let check_win g = is_complete g.f
+
+let update_three_opt o =
+  match o with
+  | None | Some "3" -> three_opt := o
+  | _ -> raise (Failure "three-opt must be None or Some 3")
+
+let get_count () = !counter

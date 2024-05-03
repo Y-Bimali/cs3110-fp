@@ -38,7 +38,7 @@ let redraw sw = { stock = List.rev sw.waste; waste = sw.stock }
 let draw three_opt sw =
   if List.is_empty sw.stock && List.is_empty sw.waste then None
   else if List.is_empty sw.stock then Some (redraw sw)
-  else if check_three three_opt then
+  else if check_three (three_opt ()) then
     Some { stock = get_stock_3 sw; waste = get_waste_3 sw }
   else Some { stock = List.tl sw.stock; waste = List.hd sw.stock :: sw.waste }
 
