@@ -112,6 +112,23 @@ let s_to_f (game : t) =
           None )
       else (game, Some "This card cannot go in the foundation.")
 
+let valid_stock_to_tableau_movement game tab_index card =
+  let tableau = game.b in
+  try
+    let () = incr counter in
+    ( {
+        f = game.f;
+        s = remove_opt (remove_top game.s);
+        b = card_to_col tableau tab_index card;
+      },
+      None )
+  with IllegalMove ->
+    ( game,
+      Some
+        ("This card cannot go in column "
+        ^ string_of_int (tab_index + 1)
+        ^ ". (Illegal Move)") )
+
 let s_to_t (game : t) tab_index =
   if tab_index < 0 || tab_index > 6 then
     ( game,
@@ -125,22 +142,7 @@ let s_to_t (game : t) tab_index =
           Some
             "The stock is empty, so it is not possible to move a card to the \
              foundation from it." )
-    | Some card -> (
-        let tableau = game.b in
-        try
-          let () = incr counter in
-          ( {
-              f = game.f;
-              s = remove_opt (remove_top game.s);
-              b = card_to_col tableau tab_index card;
-            },
-            None )
-        with IllegalMove ->
-          ( game,
-            Some
-              ("This card cannot go in column "
-              ^ string_of_int (tab_index + 1)
-              ^ ". (Illegal Move)") ))
+    | Some card -> valid_stock_to_tableau_movement game tab_index card
 
 let update_game_with_move game tab_index foundation_card =
   let updated_tableau = card_to_col game.b tab_index foundation_card in
@@ -167,7 +169,7 @@ let move_tableau_card_to_foundation game col_index =
             let () = incr counter in
             { f = updated_foundation; s = game.s; b = t }
           in
-          (final_game, None) (* incr c; *)
+          (final_game, None) 
         else (game, Some "You can not make this move.")
   else (game, Some (string_of_int col_index ^ " is not a valid index."))
 
@@ -180,6 +182,25 @@ let validate_tab_index game tab_index =
   ( game,
     Some (string_of_int tab_index ^ " is not a valid index in the tableau.") )
 
+let valid_foundation_to_tableau_movement game tab_index foundation_columns
+    found_index =
+  let card = peek_col_card game.b tab_index in
+  let foundation_card = List.nth foundation_columns found_index in
+  match (foundation_card, card) with
+  | top_c, None ->
+      if num_of top_c = 13 then
+        let () = incr counter in
+        update_game_with_move game tab_index top_c
+      else (game, Some "You can not make this move.")
+  | top_card, Some c ->
+      if num_of top_card = 0 then
+        (game, Some "There is no card in this foundation column.")
+      else if num_of top_card - num_of c = -1 && color_of c <> color_of top_card
+      then
+        let () = incr counter in
+        update_game_with_move game tab_index top_card
+      else (game, Some "You can not make this move.")
+
 let move_card_from_foundation_to_tableau game found_index tab_index =
   let find_and_move foundation_columns found_index tab_index =
     if found_index = -1 then (game, Some "Foundation index is not valid.")
@@ -188,23 +209,8 @@ let move_card_from_foundation_to_tableau game found_index tab_index =
     else if tab_index < 0 || tab_index > 6 then
       validate_tab_index game tab_index
     else
-      let card = peek_col_card game.b tab_index in
-      let foundation_card = List.nth foundation_columns found_index in
-      match (foundation_card, card) with
-      | top_c, None ->
-          if num_of top_c = 13 then
-            let () = incr counter in
-            update_game_with_move game tab_index top_c
-          else (game, Some "You can not make this move.")
-      | top_card, Some c ->
-          if num_of top_card = 0 then
-            (game, Some "There is no card in this foundation column.")
-          else if
-            num_of top_card - num_of c = -1 && color_of c <> color_of top_card
-          then
-            let () = incr counter in
-            update_game_with_move game tab_index top_card
-          else (game, Some "You can not make this move.")
+      valid_foundation_to_tableau_movement game tab_index foundation_columns
+        found_index
   in
   find_and_move (top_cards game.f) found_index tab_index
 
