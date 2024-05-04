@@ -98,8 +98,8 @@ let s_to_f (game : t) =
   | None ->
       ( game,
         Some
-          "The stock is empty, so it is not possible to move a \n\
-          \  card to the foundation from it." )
+          "The stock is empty, so it is not possible to move a card to the \
+           foundation from it." )
   | Some card ->
       let foundation = game.f in
       if valid_move foundation card then
@@ -123,8 +123,8 @@ let s_to_t (game : t) tab_index =
     | None ->
         ( game,
           Some
-            "The stock is empty, so it is not possible to move a \n\
-            \  card to the foundation from it." )
+            "The stock is empty, so it is not possible to move a card to the \
+             foundation from it." )
     | Some card -> (
         let tableau = game.b in
         try
@@ -153,7 +153,7 @@ let update_game_with_move game tab_index foundation_card =
 let move_tableau_card_to_foundation game col_index =
   if col_index >= 0 && col_index <= 6 then
     match peek_col_card game.b col_index with
-    | None -> (game, Some "No card is present here")
+    | None -> (game, Some "No card is present here.")
     | Some card ->
         let foundation = game.f in
         let _ = suit_of card in
@@ -168,24 +168,22 @@ let move_tableau_card_to_foundation game col_index =
             { f = updated_foundation; s = game.s; b = t }
           in
           (final_game, None) (* incr c; *)
-        else (game, Some "You can not make this move")
-  else (game, Some (string_of_int col_index ^ " is not a valid index"))
+        else (game, Some "You can not make this move.")
+  else (game, Some (string_of_int col_index ^ " is not a valid index."))
 
 let validate_foundation_index game found_index =
   ( game,
-    Some
-      (string_of_int found_index
-     ^ " is not a valid index in the foundation. Must be from 0 to 3") )
+    Some (string_of_int found_index ^ " is not a valid index in the foundation.")
+  )
 
 let validate_tab_index game tab_index =
   ( game,
-    Some
-      (string_of_int tab_index
-     ^ " is not a valid index in the tableau. Must be from 0 to 6") )
+    Some (string_of_int tab_index ^ " is not a valid index in the tableau.") )
 
 let move_card_from_foundation_to_tableau game found_index tab_index =
   let find_and_move foundation_columns found_index tab_index =
-    if found_index < 0 || found_index > 3 then
+    if found_index = -1 then (game, Some "Foundation index is not valid.")
+    else if found_index < 0 || found_index > 3 then
       validate_foundation_index game found_index
     else if tab_index < 0 || tab_index > 6 then
       validate_tab_index game tab_index
@@ -197,16 +195,16 @@ let move_card_from_foundation_to_tableau game found_index tab_index =
           if num_of top_c = 13 then
             let () = incr counter in
             update_game_with_move game tab_index top_c
-          else (game, Some "You can not make this move")
+          else (game, Some "You can not make this move.")
       | top_card, Some c ->
           if num_of top_card = 0 then
-            (game, Some "There is no card in this foundation column")
+            (game, Some "There is no card in this foundation column.")
           else if
             num_of top_card - num_of c = -1 && color_of c <> color_of top_card
           then
             let () = incr counter in
             update_game_with_move game tab_index top_card
-          else (game, Some "You can not make this move")
+          else (game, Some "You can not make this move.")
   in
   find_and_move (top_cards game.f) found_index tab_index
 

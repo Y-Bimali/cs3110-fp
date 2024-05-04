@@ -275,12 +275,12 @@ module MakePrinter (T : Theme.T) = struct
       (true, theme, g)
 
   let foundation_to_tableau_helper g x y =
-    let f_index = slice_from_index_to_end x 1 in
-    let t_index = slice_from_index_to_end y 1 in
+    let f_int = int_of_string (slice_from_index_to_end x 1) in
+    let t_int = int_of_string (slice_from_index_to_end y 1) in
+    let f_index = if f_int >= 0 then f_int - 1 else f_int in
+    let t_index = if t_int >= 0 then t_int - 1 else t_int in
 
-    Game.move_card_from_foundation_to_tableau g
-      (int_of_string f_index - 1)
-      (int_of_string t_index - 1)
+    Game.move_card_from_foundation_to_tableau g f_index t_index
 
   let tableau_to_tableau_helper g x y =
     let c1 = slice_from_index_to_end x 1 in

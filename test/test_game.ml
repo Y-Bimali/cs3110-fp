@@ -72,6 +72,7 @@ let tableau1 =
 let stockwaste3 =
   Option.get (draw (fun () -> None) (add_sw [ d12; d1 ] empty_sw))
 
+let stockwaste0 = empty_sw
 let stockwaste4 = Option.get (draw (fun () -> None) (add_sw [ d13 ] empty_sw))
 
 let tableau2 =
@@ -101,11 +102,22 @@ let test_s_to_ft_works _ =
   assert_equal (snd (s_to_t g3 0)) None
 
 let test_s_to_ft_err _ =
+  let g0 = game_from_parts foundation1 stockwaste0 tableau2 in
   let g1 = game_from_parts foundation1 stockwaste4 tableau2 in
   let g2 = game_from_parts foundation2 stockwaste4 tableau2 in
   let g3 = game_from_parts foundation1 stockwaste3 tableau2 in
   let g4 = game_from_parts foundation1 stockwaste3 tableau2 in
   assert_equal (snd (s_to_f g1)) (Some "This card cannot go in the foundation.");
+  assert_equal
+    (snd (s_to_f g0))
+    (Some
+       "The stock is empty, so it is not possible to move a card to the \
+        foundation from it.");
+  assert_equal
+    (snd (s_to_t g0 2))
+    (Some
+       "The stock is empty, so it is not possible to move a card to the \
+        foundation from it.");
   assert_equal (snd (s_to_f g2)) (Some "This card cannot go in the foundation.");
   assert_equal
     (snd (s_to_t g3 2))
@@ -115,7 +127,10 @@ let test_s_to_ft_err _ =
     (snd (s_to_t g4 20))
     (Some
        (string_of_int 21
-      ^ " is not a valid index in the tableau. Must be from 1 to 7."))
+      ^ " is not a valid index in the tableau. Must be from 1 to 7."));
+  assert_equal
+    (snd (s_to_t g4 (-2)))
+    (Some "-1 is not a valid index in the tableau. Must be from 1 to 7.")
 
 let tableau3 =
   init_tab
@@ -139,38 +154,41 @@ let test_tableau_to_foundation_works _ =
   let updated_g2 = move_tableau_card_to_foundation (fst updated_g1) 0 in
 
   assert_equal (snd updated_g1) None;
-  assert_equal (snd updated_g2) (Some "No card is present here");
+  assert_equal (snd updated_g2) (Some "No card is present here.");
   assert_equal
     (snd (move_tableau_card_to_foundation g1 (-2)))
-    (Some "-2 is not a valid index");
+    (Some "-2 is not a valid index.");
   assert_equal
     (snd (move_tableau_card_to_foundation g1 5))
-    (Some "You can not make this move");
+    (Some "You can not make this move.");
   assert_equal (snd (move_tableau_card_to_foundation g1 6)) None;
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) 1 1))
     None;
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) 1 0))
-    (Some "You can not make this move");
+    (Some "You can not make this move.");
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) 0 6))
-    (Some "There is no card in this foundation column");
+    (Some "There is no card in this foundation column.");
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) 1 6))
-    (Some "You can not make this move");
+    (Some "You can not make this move.");
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) 4 6))
-    (Some "4 is not a valid index in the foundation. Must be from 0 to 3");
+    (Some "4 is not a valid index in the foundation.");
+  assert_equal
+    (snd (move_card_from_foundation_to_tableau (fst updated_g2) (-2) 6))
+    (Some "-2 is not a valid index in the foundation.");
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) (-1) 6))
-    (Some "-1 is not a valid index in the foundation. Must be from 0 to 3");
+    (Some "Foundation index is not valid.");
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) 1 (-2)))
-    (Some "-2 is not a valid index in the tableau. Must be from 0 to 6");
+    (Some "-2 is not a valid index in the tableau.");
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) 1 8))
-    (Some "8 is not a valid index in the tableau. Must be from 0 to 6")
+    (Some "8 is not a valid index in the tableau.")
 
 let tableau4 =
   init_tab
