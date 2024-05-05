@@ -1,5 +1,5 @@
 type t
-(** [t] represents the tableau. AF: *)
+(** [t] represents the tableau.*)
 
 val init_tab : Card.t list -> t
 (** [init_tab lst] is a tableau initialized from a list of cards. Requires:

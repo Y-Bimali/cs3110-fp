@@ -3,13 +3,12 @@ type t = {
   waste : Card.t list;
 }
 
-(*[check_three three_opt] is a helper function that is a bool representing if
-  the user wants to draw 3*)
+(**[check_three three_opt] is a helper function that is a bool representing if
+   the user wants to draw 3*)
 let check_three three_opt =
   match three_opt with
-  | Some "3" -> true
+  | Some _ -> true
   | None -> false
-  | Some _ -> false
 
 let get_stock_3 (sw : t) =
   match List.length sw.stock with
@@ -28,11 +27,6 @@ let get_waste_3 (sw : t) =
 let empty_sw = { stock = []; waste = [] }
 let add_sw cards sw = { stock = cards @ sw.stock; waste = sw.waste }
 let size_sw sw = (List.length sw.stock, List.length sw.waste)
-
-(* (* Desmond used this to test his code . May be needed sometime. do not delete
-   except for Desmond *)*)
-(* let getStock w = w.stock *)
-
 let redraw sw = { stock = List.rev sw.waste; waste = sw.stock }
 
 let draw three_opt sw =

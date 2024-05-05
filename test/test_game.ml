@@ -88,11 +88,6 @@ let tableau2 =
          [ c10 ];
        ])
 
-(*let test_t_to_t _ = let g1 = game_from_parts foundation1 stockwaste3 tableau2
-  in let g2 = game_from_parts foundation2 stockwaste1 tableau1 in assert_equal
-  (t_to_t g1 "6" "6" "1") (g1, Some "Illegal Move."); assert_equal (t_to_t g2
-  "5" "6" "1") (g2, Some "Illegal Move.")*)
-
 let test_s_to_ft_works _ =
   let g1 = game_from_parts foundation1 stockwaste1 tableau1 in
   let g2 = game_from_parts foundation2 stockwaste1 tableau1 in
