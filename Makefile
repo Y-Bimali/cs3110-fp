@@ -9,3 +9,7 @@ clean:
 
 start:
 	dune exec ./bin/main.exe
+
+lines:
+	dune clean
+	cloc --by-file --include-lang=OCaml .

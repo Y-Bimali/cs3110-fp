@@ -91,8 +91,8 @@ let test_cardmoves_tab _ =
   assert_equal
     (to_str_lst
        (move_col_to_col
-          (move_col_to_col (move_col_to_col t3 0 6 1) 6 5 2)
-          5 0 3))
+          (move_col_to_col (move_col_to_col t3 0 6) 6 5)
+          5 0))
     (let x = "K♦" in
      let y = "Q♠" in
      let z = "J♥" in
@@ -123,10 +123,10 @@ let test_cardmoves_tab _ =
      ]);
   assert_raises IllegalMove (fun _ -> card_to_col t2 0 (new_card Hearts 0));
   assert_raises InvalidColID (fun _ -> card_to_col t2 10 (new_card Hearts 0));
-  assert_raises IllegalMove (fun _ -> move_col_to_col t3 0 6 ~-1);
+  assert_raises IllegalMove (fun _ -> move_col_to_col t3 2 6);
   assert_raises IllegalMove (fun _ ->
-      card_to_col (move_col_to_col t3 0 6 1) 0 (new_card Hearts 0));
-  assert_raises IllegalMove (fun _ -> move_col_to_col t2 6 1 3)
+      card_to_col (move_col_to_col t3 0 6) 0 (new_card Hearts 0));
+  assert_raises IllegalMove (fun _ -> move_col_to_col t2 6 1)
 
 let test_to_cd_lst _ =
   assert_equal (to_cd_lst t1)

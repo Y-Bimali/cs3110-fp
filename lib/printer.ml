@@ -285,12 +285,11 @@ module MakePrinter (T : Theme.T) = struct
   let tableau_to_tableau_helper g x y =
     let c1 = slice_from_index_to_end x 1 in
     let c2 = slice_from_index_to_end y 1 in
-    Game.t_to_t g c1 c2 "1"
+    Game.t_to_t g c1 c2
 
-  let snd_tableau_to_tableau_helper g x y i =
-    let c1 = slice_from_index_to_end x 1 in
-    let c2 = slice_from_index_to_end y 1 in
-    Game.t_to_t g c1 c2 i
+  (* let snd_tableau_to_tableau_helper g x y i = let c1 =
+     slice_from_index_to_end x 1 in let c2 = slice_from_index_to_end y 1 in
+     Game.t_to_t g c1 c2 i *)
 
   let tableau_to_foundation_helper g x =
     let col_index = slice_from_index_to_end x 1 in
@@ -338,10 +337,9 @@ module MakePrinter (T : Theme.T) = struct
           match v with
           | [ "s"; "to"; "f" ] -> Game.s_to_f g
           | [ x; "to"; y ] -> check_conditions_for_three_word_commands g x y
-          | [ x; i; "to"; y ] ->
-              if String.get x 0 = 't' && String.get y 0 = 't' then
-                snd_tableau_to_tableau_helper g x y i
-              else (g, Some invalid_command_str)
+          (* | [ x; i; "to"; y ] -> if String.get x 0 = 't' && String.get y 0 =
+             't' then snd_tableau_to_tableau_helper g x y i else (g, Some
+             invalid_command_str) *)
           | _ -> (g, Some invalid_command_str)
         with Failure _ -> (g, Some invalid_command_str))
 

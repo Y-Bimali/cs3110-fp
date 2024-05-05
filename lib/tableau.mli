@@ -1,5 +1,5 @@
 type t
-(** [t] represents the tableau. *)
+(** [t] represents the tableau. AF: *)
 
 val init_tab : Card.t list -> t
 (** [init_tab lst] is a tableau initialized from a list of cards. Requires:
@@ -29,10 +29,10 @@ val card_to_col : t -> int -> Card.t -> t
     [InvalidColID] if [0 > [col] || [col] > 6]. [IllegalMove] if this move is
     not legal. *)
 
-val move_col_to_col : t -> int -> int -> int -> t
+val move_col_to_col : t -> int -> int -> t
 (**[move_col_to_col tab
-      c1 c2 i] is tableau [tab] after moving the bottom
-   [i] cards from column [c1] to [c2]. Raises: [InvalidColID] if
+      c1 c2] is tableau [tab] after moving cards from
+   column [c1] to [c2]. Raises: [InvalidColID] if
    [0 > [c1] || [c1] > 6 || 0 > [c1] || [c1]
       > 6]. [IllegalMove] if this
    move is not legal.*)
@@ -42,3 +42,6 @@ val to_str_lst : t -> string list list
 
 val to_cd_lst : t -> Card.t list list
 (** [to_cd_lst t] is the tableau represented as a card list list.*)
+
+val to_str : t -> string
+(**[to_string t] is the tableau represented as a string.*)

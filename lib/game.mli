@@ -53,12 +53,12 @@ val move_card_from_foundation_to_tableau : t -> int -> int -> t * string option
     h means that the card did not successfully move and h is the reason why
     represented as a string.*)
 
-val t_to_t : t -> string -> string -> string -> t * string option
-(** [t_to_t g c1 c2 i] is (g, opt) where g is the game that could have been
-    updated by moving the bottom [i] cards from column [c1] to column [c2] in
-    the tableau. opt is the option where None means the card(s) successfully
-    moved and Some h means that the card did not successfully move and h is the
-    reason why, represented as a string.*)
+val t_to_t : t -> string -> string -> t * string option
+(** [t_to_t g c1 c2] is (g, opt) where g is the game that could have been
+    updated by moving cards from column [c1] to column [c2] in the tableau. opt
+    is the option where None means the card(s) successfully moved and Some h
+    means that the card did not successfully move and h is the reason why,
+    represented as a string.*)
 
 val check_win : t -> bool
 (** [check_win t] is true if t is in a winning state and false otherwise.*)

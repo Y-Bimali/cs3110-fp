@@ -169,7 +169,7 @@ let move_tableau_card_to_foundation game col_index =
             let () = incr counter in
             { f = updated_foundation; s = game.s; b = t }
           in
-          (final_game, None) 
+          (final_game, None)
         else (game, Some "You can not make this move.")
   else (game, Some (string_of_int col_index ^ " is not a valid index."))
 
@@ -216,18 +216,15 @@ let move_card_from_foundation_to_tableau game found_index tab_index =
 
 let char_to_int c = int_of_string_opt c
 
-let t_to_t g c1 c2 i =
+let t_to_t g c1 c2 =
   let nc1 = char_to_int (string_of_int (int_of_string c1 - 1)) in
   let nc2 = char_to_int (string_of_int (int_of_string c2 - 1)) in
-  let ni = char_to_int i in
-  if nc1 = None || nc2 = None || ni = None then
-    (g, Some "Unrecognizable Command.")
+  if nc1 = None || nc2 = None then (g, Some "Unrecognizable Command.")
   else
-    match
-      move_col_to_col g.b (Option.get nc1) (Option.get nc2) (Option.get ni)
-    with
+    match move_col_to_col g.b (Option.get nc1) (Option.get nc2) with
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception IllegalMove -> (g, Some "Illegal Move.")
+    | exception _ -> (g, Some "Unknown error from tableau.ml.")
     | newb ->
         let () = incr counter in
         ({ f = g.f; s = g.s; b = newb }, None)

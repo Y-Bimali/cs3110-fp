@@ -121,15 +121,27 @@ let rec put_n_col_card tab col cd_lst =
   | [] -> tab
   | h :: t -> rep_ok (put_n_col_card (card_to_col tab col h) col t)
 
-let move_col_to_col tab c1 c2 i =
-  let tab = rep_ok tab in
-  let col1 = get_col tab c1 in
-  if i > col1.vis || i < 0 then raise IllegalMove
-  else if i = col1.vis && c1 = c2 && List.length col1.cards <> col1.vis then
-    raise IllegalMove
+let rec find_match tab c2 c1vis n =
+  if c1vis = [] then raise IllegalMove
   else
-    let tab1, cd_lst = pop_n_col_card tab c1 i in
+    match card_to_col tab c2 (List.hd c1vis) with
+    | exception IllegalMove -> find_match tab c2 (List.tl c1vis) (n + 1)
+    | _ -> n
+
+let move_col_to_col tab c1 c2 =
+  if c1 = c2 then tab
+  else
+    let tab = rep_ok tab in
+    let col1 = get_col tab c1 in
+    let i = find_match tab c2 (BatList.take col1.vis col1.cards) 0 in
+    let tab1, cd_lst = pop_n_col_card tab c1 (i + 1) in
     put_n_col_card tab1 c2 (List.rev cd_lst)
 
 let to_str_lst tab = List.map col_str_lst tab
+
+let to_str tab =
+  List.fold_left
+    (fun c d -> c ^ List.fold_left (fun a b -> a ^ " " ^ b) "" d ^ "\n")
+    "" (to_str_lst tab)
+
 let to_cd_lst tab = List.map to_col_lst tab
