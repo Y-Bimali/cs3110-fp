@@ -7,8 +7,10 @@ type t = {
   backs : ANSITerminal.style;
   back_pattern : ANSITerminal.style;
 }
-(** The signature for a theme. Requires: red, black, back_pattern are foreground
-    styles (in ANSITERMINAL) and bg, faces, and backs are background styles. *)
+(** Exposed dictionary type of theme, so external functions may retrieve data
+    from it with just the [.] notation. [red], [black], [back_pattern] are
+    foreground styles (in ANSITERMINAL) and [bg], [faces], [backs] are
+    background styles. *)
 
 exception UnknownTheme
 

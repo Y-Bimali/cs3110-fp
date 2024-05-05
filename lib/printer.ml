@@ -165,7 +165,7 @@ let print_top g =
   | (s, w), f, _ -> print_board (format_top s w f)
 
 (* * * * *)
-(* The following section implements the mechanics of printing the tabelau. *)
+(* The following section implements the mechanics of printing the tableau. *)
 
 (** [list_collapse lst] is the list resulting from collapsing the elements of a
     list of lists into a single list*)
@@ -252,13 +252,15 @@ let remove_excess_whitespace str =
 let slice_from_index_to_end str index =
   String.sub str index (String.length str - index)
 
-(*TODO: output tuple should be bool. Game Functions called in Game should return
-  game * string option *)
+(*TODO: output tuple should be bool * Game. Functions called in Game should
+  return game * string option *)
 
 let winning_statement t =
   "\nYou won the game in "
   ^ string_of_int (Game.get_count ())
-  ^ " valid moves.\nTotal time spent is "
+  ^ " valid moves, and "
+  ^ string_of_int (Game.get_count () + Game.get_undos ())
+  ^ " moves including undos.\nTotal time spent is "
   ^ string_of_int (int_of_float (Unix.gettimeofday () -. t))
   ^ " seconds.\nType 'New Game' to play a new game."
 
@@ -310,11 +312,18 @@ let check_conditions_for_three_word_commands g x y =
     else (g, Some "Type New game!")
   else (g, Some "Invalid action.")
 
-let invalid_command_str = "The command is not valid. Enter help more info."
+let invalid_command_str =
+  "The command is not valid. Enter help for more information."
 
 let match_statements q g =
   match q with
-  | "count" -> (g, Some ("Moves: " ^ string_of_int (Game.get_count ())))
+  | "count" ->
+      ( g,
+        Some
+          ("Moves: "
+          ^ string_of_int (Game.get_count ())
+          ^ "\nMoves including Undos: "
+          ^ string_of_int (Game.get_count () + Game.get_undos ())) )
   | "help" | "commands" -> (g, Some help_str)
   | "rules" -> (g, Some rules_str)
   | "draw" | "d" ->
@@ -327,6 +336,7 @@ let match_statements q g =
       Game.update_three_opt (Some "3");
       (Game.new_game (), None)
   | "autowin" -> Game.autowin g
+  | "undo" -> Game.undo g
   | str -> (
       let v = String.split_on_char ' ' str in
       try

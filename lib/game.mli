@@ -24,6 +24,11 @@ val formatted : t -> (bool * Card.t list) * Card.t list * Card.t list list
 (* val get_foundation : t -> Foundation.t val get_stockwaste : t -> Stockwaste.t
    val get_tableau : t -> Tableau.t *)
 
+val undo : t -> t * string option
+(** [undo g] is (g', opt) where, if the previous game state exists, g' is the
+    previous game state and opt is None. If this is the earlierst game state, g'
+    is [g] and opt contains an error message.*)
+
 val s_to_f : t -> t * string option
 (** [s_to_f g] is (g, opt) where g is the game that could have been updated with
     the top card of the stock moving to the foundation or the original game. opt
@@ -77,3 +82,6 @@ val update_three_opt : string option -> unit
 
 val get_count : unit -> int
 (** [get_count] is the number of moves made in this game.*)
+
+val get_undos : unit -> int
+(** [get_undos] is the number of undos made in this game.*)
