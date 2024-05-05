@@ -2,10 +2,10 @@
 open Fp.Game
 open Fp.Printer
 
-let rec game_loop theme g t =
-  let b, t2, g2 = round theme g t in
+let rec game_loop g t =
+  let b, g2 = round g t in
   match b with
-  | true -> game_loop t2 g2 t
+  | true -> game_loop g2 t
   | false -> ()
 
 let () = Random.self_init ()
@@ -18,4 +18,4 @@ let instructions () =
 let _ =
   (* print_endline ("Number of valid moves: " ^ string_of_int !counter); *)
   instructions ();
-  game_loop Classic (new_game ()) (Unix.gettimeofday ())
+  game_loop (new_game ()) (Unix.gettimeofday ())

@@ -14,7 +14,7 @@ New Game 3: Start a new game with draw 3.
 Quit: Quit program.
 
 Theme <theme name>: Change color theme of game to <theme name>. Supported themes
-  include Classic, Spaceship, and Under the Sea
+  include Classic, Spaceship, Under the Sea, and April Fools
 
 Draw/D: Draw a card from the stock to the waste, or return all cards in 
 the waste back to the stock.
