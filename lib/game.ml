@@ -14,6 +14,8 @@ type t = {
 (* let card_data = BatList.of_enum (BatFile.lines_of "data/card.txt") *)
 let three_opt = ref None
 let counter = ref 0
+let previous = ref []
+let undos = ref 0
 
 let generate_deck =
   let suits = [ Spades; Hearts; Clubs; Diamonds ] in
@@ -51,6 +53,8 @@ let rec select_random_elements k lst acc =
 
 let new_game () =
   counter := 0;
+  previous := [];
+  undos := 0;
   let card_data = shuffle_list generate_deck in
 
   (* Initialize Foundation *)
@@ -68,6 +72,29 @@ let new_game () =
 
 let game_from_parts fn sn bn = { f = fn; s = sn; b = bn }
 
+(* Call this with the previous game state at the end of a successful move to
+   increment the counter and add the previous game state to [previous]*)
+let routine game =
+  incr counter;
+  previous := game :: !previous
+
+(* Can be used to reverse the effects of routine.*)
+let partial_undo () =
+  match !previous with
+  | [] -> failwith "No previous game state to return to."
+  | h :: t ->
+      previous := t;
+      decr counter;
+      h
+
+let undo game =
+  try
+    let g2 = partial_undo () in
+    incr undos;
+    (g2, None)
+  with Failure _ ->
+    (game, Some "This is the original game, there is nothing left to undo.")
+
 (**[draw_card fsb] draws a card and moves it from the stock to the waste in
    stockwaste (s)*)
 let draw_card fsb =
@@ -78,7 +105,7 @@ let draw_card fsb =
           "There are no cards in the waste or stock, \n\
           \    so this move is not valid." )
   | Some h ->
-      let () = incr counter in
+      routine fsb;
       ({ f = fsb.f; s = h; b = fsb.b }, None)
 
 let formatted fsb =
@@ -102,20 +129,20 @@ let s_to_f (game : t) =
            foundation from it." )
   | Some card ->
       let foundation = game.f in
-      if valid_move foundation card then
-        let () = incr counter in
+      if valid_move foundation card then (
+        routine game;
         ( {
             f = put foundation card;
             s = remove_opt (remove_top game.s);
             b = game.b;
           },
-          None )
+          None ))
       else (game, Some "This card cannot go in the foundation.")
 
 let valid_stock_to_tableau_movement game tab_index card =
   let tableau = game.b in
   try
-    let () = incr counter in
+    routine game;
     ( {
         f = game.f;
         s = remove_opt (remove_top game.s);
@@ -123,6 +150,7 @@ let valid_stock_to_tableau_movement game tab_index card =
       },
       None )
   with IllegalMove ->
+    ignore (partial_undo ());
     ( game,
       Some
         ("This card cannot go in column "
@@ -166,7 +194,7 @@ let move_tableau_card_to_foundation game col_index =
           let t, _ = pop_col_card game.b col_index in
 
           let final_game =
-            let () = incr counter in
+            routine game;
             { f = updated_foundation; s = game.s; b = t }
           in
           (final_game, None)
@@ -188,17 +216,17 @@ let valid_foundation_to_tableau_movement game tab_index foundation_columns
   let foundation_card = List.nth foundation_columns found_index in
   match (foundation_card, card) with
   | top_c, None ->
-      if num_of top_c = 13 then
-        let () = incr counter in
-        update_game_with_move game tab_index top_c
+      if num_of top_c = 13 then (
+        routine game;
+        update_game_with_move game tab_index top_c)
       else (game, Some "You can not make this move.")
   | top_card, Some c ->
       if num_of top_card = 0 then
         (game, Some "There is no card in this foundation column.")
       else if num_of top_card - num_of c = -1 && color_of c <> color_of top_card
-      then
-        let () = incr counter in
-        update_game_with_move game tab_index top_card
+      then (
+        routine game;
+        update_game_with_move game tab_index top_card)
       else (game, Some "You can not make this move.")
 
 let move_card_from_foundation_to_tableau game found_index tab_index =
@@ -226,7 +254,7 @@ let t_to_t g c1 c2 =
     | exception IllegalMove -> (g, Some "Illegal Move.")
     | exception _ -> (g, Some "Unknown error from tableau.ml.")
     | newb ->
-        let () = incr counter in
+        routine g;
         ({ f = g.f; s = g.s; b = newb }, None)
 
 let check_win g = is_complete g.f
@@ -237,3 +265,4 @@ let update_three_opt o =
   | _ -> raise (Failure "three-opt must be None or Some 3")
 
 let get_count () = !counter
+let get_undos () = !undos

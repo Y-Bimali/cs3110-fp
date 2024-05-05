@@ -236,6 +236,20 @@ let test_counter _ =
   let _ = new_game () in
   assert_equal (get_count ()) 0
 
+let test_undo _ =
+  let g1 = game_from_parts foundation1 stockwaste1 tableau1 in
+  let g2 = fst (s_to_f g1) in
+  assert_equal g1 g2;
+  (* Why is this ^ line passing*)
+  assert_equal (undo g2) (g1, None);
+  (* These aren't passing :/ *)
+  assert_equal (get_undos ()) 1;
+  assert_equal (get_count ()) 0;
+  let g3 = new_game () in
+  assert_equal (undo g3)
+    (g3, Some "This is the original game, there is nothing left to undo.");
+  assert_equal (get_undos ()) 0
+
 (*let tab_tests = "Tableau only tests" >::: [ "test_t_to_t" >:: test_t_to_t ]*)
 let sw_tests1 =
   "Stockwaste tests where it is a valid move"
@@ -253,6 +267,7 @@ let king_tests =
   "king_to_foundation" >::: [ "test_king_to_foundation" >:: test_king_movement ]
 
 let counter_tests = "Counter tests" >::: [ "test_counter" >:: test_counter ]
+let undo_tests = "Undo tests" >::: [ "test_undo" >:: test_undo ]
 
 let () =
   (*run_test_tt_main tab_tests;*)
@@ -260,4 +275,5 @@ let () =
   run_test_tt_main sw_tests2;
   run_test_tt_main t_f_tests;
   run_test_tt_main king_tests;
-  run_test_tt_main counter_tests
+  run_test_tt_main counter_tests;
+  run_test_tt_main undo_tests

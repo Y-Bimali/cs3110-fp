@@ -50,10 +50,6 @@ let make data =
     }
     :: !theme_list
 
-(** Add variables for new themes below, with the int argument for List.nth being
-    the corresponding line of the themes.txt file. The program will fail if that
-    line in themes.txt is badly formatted or unusable.*)
-
 let data_in =
   List.map (String.split_on_char ',')
     (BatList.of_enum (BatFile.lines_of "data/themes.txt"))
