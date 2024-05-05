@@ -54,7 +54,7 @@ val move_card_from_foundation_to_tableau : t -> int -> int -> t * string option
     represented as a string.*)
 
 val t_to_t : t -> string -> string -> t * string option
-(** [t_to_t g c1 c2] is (g, opt) where g is the game that could have been
+(** [t_to_t g c1 c2] is (g', opt) where g' is the game that could have been
     updated by moving cards from column [c1] to column [c2] in the tableau. opt
     is the option where None means the card(s) successfully moved and Some h
     means that the card did not successfully move and h is the reason why,
@@ -62,6 +62,14 @@ val t_to_t : t -> string -> string -> t * string option
 
 val check_win : t -> bool
 (** [check_win t] is true if t is in a winning state and false otherwise.*)
+
+val autowin : t -> t * string option
+(** [autowin g] is (g', opt) where g' is the winning state if [g] is an
+    autowinnable state, and g otherwise. opt is the option Some h describing the
+    outcome of [autowin g].*)
+
+val won_game : t
+(** [won_game] is the won game. *)
 
 val update_three_opt : string option -> unit
 (** [update_three_opt o] sets whether the game is draw 3 or draw 1. Requires:

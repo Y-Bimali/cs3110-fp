@@ -40,6 +40,10 @@ let is_complete f =
 
 let set s h c d = rep_ok { spade = s; heart = h; club = c; diamond = d }
 
+let won_foundation =
+  set (new_card Spades 13) (new_card Hearts 13) (new_card Clubs 13)
+    (new_card Diamonds 13)
+
 let suit_matcher fcn f c =
   match suit_of c with
   | Spades -> fcn f.spade c

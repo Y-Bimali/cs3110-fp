@@ -5,6 +5,9 @@ val init_tab : Card.t list -> t
 (** [init_tab lst] is a tableau initialized from a list of cards. Requires:
     [lst] is a list of 28 cards.*)
 
+val empty_tab : t
+(** [empty_tab] is the empty tableau.*)
+
 exception InvalidColID
 (** Represents an attempt to access a nonexistent column.*)
 
@@ -36,6 +39,10 @@ val move_col_to_col : t -> int -> int -> t
    [0 > [c1] || [c1] > 6 || 0 > [c1] || [c1]
       > 6]. [IllegalMove] if this
    move is not legal.*)
+
+val winnable : t -> bool
+(** [winnable tab] is [true] if [tab] is in a winnable state, and [false]
+    otherwise.*)
 
 val to_str_lst : t -> string list list
 (**[to_string t] is the tableau represented as a string list.*)

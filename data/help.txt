@@ -11,6 +11,9 @@ New Game: Start a new game with draw 1.
 
 New Game 3: Start a new game with draw 3.
 
+Autowin: If possible, autocomplete the game (the stockwaste must be empty and
+  all tableau cards must be visible.)
+
 Quit: Quit program.
 
 Theme <theme name>: Change color theme of game to <theme name>. Supported themes

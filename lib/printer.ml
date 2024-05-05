@@ -326,6 +326,7 @@ let match_statements q g =
   | "new game 3" ->
       Game.update_three_opt (Some "3");
       (Game.new_game (), None)
+  | "autowin" -> Game.autowin g
   | str -> (
       let v = String.split_on_char ' ' str in
       try

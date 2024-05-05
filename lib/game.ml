@@ -230,6 +230,16 @@ let t_to_t g c1 c2 =
         ({ f = g.f; s = g.s; b = newb }, None)
 
 let check_win g = is_complete g.f
+let won_game = { f = won_foundation; s = empty_sw; b = empty_tab }
+
+let autowin g =
+  if check_stock_empty g.s && top_sw g.s = None && winnable g.b then
+    (won_game, None)
+  else
+    ( g,
+      Some
+        "This game is not autowinnable. The stockwaste must be empty and all \
+         tableau cards must be visible." )
 
 let update_three_opt o =
   match o with

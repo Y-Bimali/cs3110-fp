@@ -42,6 +42,8 @@ module Column = struct
     let col = rep_ok col in
     let l1, l2 = BatList.takedrop col.vis col.cards in
     l1 @ BatList.make (List.length l2) (empty_card Spades)
+
+  let empty_col = { cards = []; vis = 0 }
 end
 
 open Column
@@ -136,6 +138,14 @@ let move_col_to_col tab c1 c2 =
     let i = find_match tab c2 (BatList.take col1.vis col1.cards) 0 in
     let tab1, cd_lst = pop_n_col_card tab c1 (i + 1) in
     put_n_col_card tab1 c2 (List.rev cd_lst)
+
+let empty_tab = BatList.make 7 empty_col
+
+let winnable tab =
+  List.fold_left
+    (fun a b -> a && b)
+    true
+    (List.map (fun a -> a.vis = List.length a.cards) tab)
 
 let to_str_lst tab = List.map col_str_lst tab
 

@@ -27,3 +27,6 @@ val set : Card.t -> Card.t -> Card.t -> Card.t -> t
 (**[set s h c d] is the foundation with the top cards [s] for spades, [h] for
    hearts, [c] for clubs, and [d] for diamonds. Requires: suits of [s], [h],
    [c], and [d] match the given order.*)
+
+val won_foundation : t
+(**[won_foundation] is the foundation with all Kings as top cards.]*)
