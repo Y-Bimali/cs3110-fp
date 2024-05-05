@@ -1,4 +1,5 @@
 type t
+(** TODO: WRITE A SPEC*)
 
 val new_game : unit -> t
 (**[new_game] is game of solitaire in the starting position, with cards
