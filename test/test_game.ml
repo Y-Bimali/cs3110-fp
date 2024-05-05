@@ -237,6 +237,18 @@ let test_counter _ =
   assert_equal (get_count ()) 0
 
 (*let tab_tests = "Tableau only tests" >::: [ "test_t_to_t" >:: test_t_to_t ]*)
+let test_t_to_t _ =
+  let g = game_from_parts foundation1 stockwaste0 tableau1 in
+  assert_equal (snd (t_to_t g "1" "1")) None;
+  let g2 = game_from_parts foundation1 stockwaste0 tableau3 in
+  assert_equal (snd (t_to_t g2 "3" "4")) None;
+  assert_equal (snd (t_to_t (fst (t_to_t g2 "3" "4")) "4" "5")) None;
+  assert_equal
+    (snd (t_to_t (fst (t_to_t (fst (t_to_t g2 "3" "4")) "4" "5")) "7" "2"))
+    None;
+  assert_equal (snd (t_to_t g "2" "5")) (Some "Illegal Move.");
+  assert_equal (snd (t_to_t g "9" "8")) (Some "Invalid Column ID.")
+
 let sw_tests1 =
   "Stockwaste tests where it is a valid move"
   >::: [ "test_s_to_ft" >:: test_s_to_ft_works ]
@@ -253,6 +265,7 @@ let king_tests =
   "king_to_foundation" >::: [ "test_king_to_foundation" >:: test_king_movement ]
 
 let counter_tests = "Counter tests" >::: [ "test_counter" >:: test_counter ]
+let t_t_tests = "t_to_t" >::: [ "test_t_to_t" >:: test_t_to_t ]
 
 let () =
   (*run_test_tt_main tab_tests;*)
@@ -260,4 +273,5 @@ let () =
   run_test_tt_main sw_tests2;
   run_test_tt_main t_f_tests;
   run_test_tt_main king_tests;
-  run_test_tt_main counter_tests
+  run_test_tt_main counter_tests;
+  run_test_tt_main t_t_tests
