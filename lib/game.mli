@@ -73,6 +73,12 @@ val autowin : t -> t * string option
     autowinnable state, and g otherwise. opt is the option Some h describing the
     outcome of [autowin g].*)
 
+val cheat : t -> string -> string -> t * string option
+(** [cheat g col card] is (g, opt) where g is the same game and opt is the
+    string option Some h with h describing the [card]th card at column [col]. If
+    the specified card does not exist, Some h instead contains a message
+    explaining so.*)
+
 val won_game : t
 (** [won_game] is the won game. *)
 

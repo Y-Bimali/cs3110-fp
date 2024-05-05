@@ -53,6 +53,7 @@ type t = c list
 (* RI: [List.length t] = 7.*)
 
 exception InvalidColID
+exception InvalidCardID
 exception IllegalMove
 exception EmptyCol
 
@@ -146,6 +147,15 @@ let winnable tab =
     (fun a b -> a && b)
     true
     (List.map (fun a -> a.vis = List.length a.cards) tab)
+
+let cheat_col_card tab col cardi =
+  let tab = rep_ok tab in
+  let col1 = get_col tab col in
+  if List.length col1.cards < cardi || cardi < 1 then raise InvalidCardID
+  else
+    match BatList.at_opt col1.cards (List.length col1.cards - cardi) with
+    | None -> raise InvalidCardID
+    | Some x -> x
 
 let to_str_lst tab = List.map col_str_lst tab
 

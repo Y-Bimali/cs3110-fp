@@ -11,6 +11,9 @@ val empty_tab : t
 exception InvalidColID
 (** Represents an attempt to access a nonexistent column.*)
 
+exception InvalidCardID
+(** Represents an attempt to access a nonexistent card.*)
+
 exception IllegalMove
 (** Represents an attempt to move cards illegally.*)
 
@@ -26,6 +29,11 @@ val pop_col_card : t -> int -> t * Card.t
     card from [col] and the card itself. Must be called with corresponding
     [Foundation.put] call. Raises: [InvalidColID] if [0 > [col] || [col] > 6].
     [EmptyCol] if [col] has no cards. *)
+
+val cheat_col_card : t -> int -> int -> Card.t
+(** [cheat_col_card col cardi] is the [cardi] card from the top of column [col].
+    Raises: [InvalidColID] if [0 > [col] || [col] > 6]. [InvalidCardID] if [col]
+    has fewer cards than [cardi].*)
 
 val card_to_col : t -> int -> Card.t -> t
 (** [card_to_col tab col card] is [tab] after putting [card] onto [col]. Raises:

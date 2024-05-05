@@ -269,6 +269,17 @@ let autowin g =
         "This game is not autowinnable. The stockwaste must be empty and all \
          tableau cards must be visible." )
 
+let cheat g coli cardi =
+  let coli = char_to_int (string_of_int (int_of_string coli - 1)) in
+  let cardi = char_to_int (string_of_int (int_of_string cardi)) in
+  if coli = None || cardi = None then (g, Some "Unrecognizable Command.")
+  else
+    match cheat_col_card g.b (Option.get coli) (Option.get cardi) with
+    | exception InvalidColID -> (g, Some "Invalid Column ID.")
+    | exception InvalidCardID -> (g, Some "Invalid Card ID.")
+    | exception _ -> (g, Some "Unknown error from tableau.ml.")
+    | card -> (g, Some ("The specified card is " ^ to_string card ^ "."))
+
 let update_three_opt o =
   match o with
   | None | Some "3" -> three_opt := o

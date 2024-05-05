@@ -14,6 +14,8 @@ New Game 3: Start a new game with draw 3.
 Autowin: If possible, autocomplete the game (the stockwaste must be empty and
   all tableau cards must be visible.)
 
+Cheat # #: Shares what the (2nd #) card from the top of column (1st #) is.
+
 Quit: Quit program.
 
 Theme <theme name>: Change color theme of game to <theme name>. Supported themes

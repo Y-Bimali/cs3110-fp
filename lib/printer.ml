@@ -343,9 +343,7 @@ let match_statements q g =
         match v with
         | [ "s"; "to"; "f" ] -> Game.s_to_f g
         | [ x; "to"; y ] -> check_conditions_for_three_word_commands g x y
-        (* | [ x; i; "to"; y ] -> if String.get x 0 = 't' && String.get y 0 =
-           't' then snd_tableau_to_tableau_helper g x y i else (g, Some
-           invalid_command_str) *)
+        | [ "cheat"; x; y ] -> Game.cheat g x y
         | _ -> (g, Some invalid_command_str)
       with Failure _ -> (g, Some invalid_command_str))
 
