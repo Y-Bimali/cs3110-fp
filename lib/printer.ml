@@ -295,22 +295,20 @@ let tableau_to_foundation_helper g x =
   Game.move_tableau_card_to_foundation g (int_of_string col_index - 1)
 
 let check_conditions_for_three_word_commands g x y =
-  if String.get x 0 = 'f' && String.get y 0 = 't' then
-    if not (Game.check_win g) then foundation_to_tableau_helper g x y
-    else (g, Some "Type New game!")
-  else if String.get x 0 = 't' && String.get y 0 = 't' then
-    if not (Game.check_win g) then tableau_to_tableau_helper g x y
-    else (g, Some "Type New game!")
-  else if String.get x 0 = 't' && String.get y 0 = 'f' && String.length y = 1
-  then
-    if not (Game.check_win g) then tableau_to_foundation_helper g x
-    else (g, Some "Type New game!")
-  else if (String.get x 0 = 's' && String.length x = 1) && String.get y 0 = 't'
-  then
-    let tab_index = slice_from_index_to_end y 1 in
-    if not (Game.check_win g) then Game.s_to_t g (int_of_string tab_index - 1)
-    else (g, Some "Type New game!")
-  else (g, Some "Invalid action.")
+  if not (Game.check_win g) then
+    if String.get x 0 = 'f' && String.get y 0 = 't' then
+      foundation_to_tableau_helper g x y 
+    else if String.get x 0 = 't' && String.get y 0 = 't' then
+      tableau_to_tableau_helper g x y
+    else if String.get x 0 = 't' && String.get y 0 = 'f' && String.length y = 1
+    then tableau_to_foundation_helper g x
+    else if
+      (String.get x 0 = 's' && String.length x = 1) && String.get y 0 = 't'
+    then
+      let tab_index = slice_from_index_to_end y 1 in
+      Game.s_to_t g (int_of_string tab_index - 1)
+    else (g, Some "Invalid action.")
+  else (g, Some "Type New game to start a new game or quit to end the game!")
 
 let invalid_command_str =
   "The command is not valid. Enter help for more information."
