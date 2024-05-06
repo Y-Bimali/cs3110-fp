@@ -308,7 +308,11 @@ let check_conditions_for_three_word_commands g x y =
       let tab_index = slice_from_index_to_end y 1 in
       Game.s_to_t g (int_of_string tab_index - 1)
     else (g, Some "Invalid action.")
-  else (g, Some "Type New game to start a new game or quit to end the game!")
+  else
+    ( g,
+      Some
+        "The game has ended. Type New game to start a new game or quit to end \
+         the game!" )
 
 let invalid_command_str =
   "The command is not valid. Enter help for more information."
@@ -326,15 +330,31 @@ let match_statements q g =
   | "rules" -> (g, Some rules_str)
   | "draw" | "d" ->
       if not (Game.check_win g) then Game.draw_card g
-      else (g, Some "Type New game!")
+      else
+        ( g,
+          Some
+            "The game has ended. Type New game to start a new game or quit to \
+             end the game!" )
   | "new game" ->
       Game.update_three_opt None;
       (Game.new_game (), None)
   | "new game 3" ->
       Game.update_three_opt (Some "3");
       (Game.new_game (), None)
-  | "autowin" -> Game.autowin g
-  | "undo" -> Game.undo g
+  | "autowin" ->
+      if not (Game.check_win g) then Game.autowin g
+      else
+        ( g,
+          Some
+            "The game has ended. Type New game to start a new game or quit to \
+             end the game!" )
+  | "undo" ->
+      if not (Game.check_win g) then Game.undo g
+      else
+        ( g,
+          Some
+            "The game has ended. Type New game to start a new game or quit to \
+             end the game!" )
   | str -> (
       let v = String.split_on_char ' ' str in
       try
