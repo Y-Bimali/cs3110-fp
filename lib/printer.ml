@@ -258,7 +258,7 @@ let slice_from_index_to_end str index =
 let winning_statement t =
   "\nYou won the game in "
   ^ string_of_int (Game.get_count ())
-  ^ " valid moves, and "
+  ^ " valid moves without undos, and in "
   ^ string_of_int (Game.get_count () + Game.get_undos ())
   ^ " moves including undos.\nTotal time spent is "
   ^ string_of_int (int_of_float (Unix.gettimeofday () -. t))
@@ -297,7 +297,7 @@ let tableau_to_foundation_helper g x =
 let check_conditions_for_three_word_commands g x y =
   if not (Game.check_win g) then
     if String.get x 0 = 'f' && String.get y 0 = 't' then
-      foundation_to_tableau_helper g x y 
+      foundation_to_tableau_helper g x y
     else if String.get x 0 = 't' && String.get y 0 = 't' then
       tableau_to_tableau_helper g x y
     else if String.get x 0 = 't' && String.get y 0 = 'f' && String.length y = 1

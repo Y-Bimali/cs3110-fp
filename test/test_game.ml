@@ -145,11 +145,11 @@ let tableau3 =
          [ h1 ];
        ])
 
-let foundation1 = initialize
-let stockwaste1 = empty_sw
+let foundation_1 = initialize
+let stockwaste_1 = empty_sw
 
 let test_tableau_to_foundation_works _ =
-  let g1 = game_from_parts foundation1 stockwaste1 tableau3 in
+  let g1 = game_from_parts foundation_1 stockwaste_1 tableau3 in
   let updated_g1 = move_tableau_card_to_foundation g1 0 in
   let updated_g2 = move_tableau_card_to_foundation (fst updated_g1) 0 in
 
@@ -203,11 +203,11 @@ let tableau4 =
          [ d1 ];
        ])
 
-let foundation2 = initialize
-let stockwaste2 = empty_sw
+let foundation_2 = initialize
+let stockwaste_2 = empty_sw
 
 let test_king_movement _ =
-  let g1 = game_from_parts foundation2 stockwaste2 tableau4 in
+  let g1 = game_from_parts foundation_2 stockwaste_2 tableau4 in
   let updated_g1 = move_tableau_card_to_foundation g1 0 in
 
   let updated_g2 = move_tableau_card_to_foundation (fst updated_g1) 1 in
@@ -239,7 +239,9 @@ let test_counter _ =
 let test_undo _ =
   let g1 = game_from_parts foundation1 stockwaste1 tableau1 in
   let g2 = fst (s_to_f g1) in
-  assert_equal g1 g2;
+  assert (g2 <> g1);
+  assert (g2 != g1);
+  (* assert_equal g1 g2; *)
   (* Why is this ^ line passing*)
   assert_equal (undo g2) (g1, None);
   (* These aren't passing :/ *)
