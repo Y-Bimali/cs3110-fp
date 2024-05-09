@@ -364,7 +364,7 @@ let match_statements q g =
   | other ->
       if Game.check_win g then (g, Some game_ended_str) else match_other other g
 
-let round g t =
+let round g =
   let () = print_top g in
   print_tab g;
   print_endline "";
@@ -376,6 +376,6 @@ let round g t =
   else
     let g2, error = match_statements q g in
     if Game.check_win g2 && not has_won_alr then
-      print_endline (winning_statement t);
+      print_endline (winning_statement !Game.timer);
     print_error error;
     (true, g2)

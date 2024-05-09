@@ -96,3 +96,6 @@ val get_count : unit -> int
 
 val get_undos : unit -> int
 (** [get_undos] is the number of undos made in this game.*)
+
+val timer : float ref
+(** [timer] is the reference to how long the game runs*)

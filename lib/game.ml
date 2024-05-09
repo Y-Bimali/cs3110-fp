@@ -16,6 +16,7 @@ let three_opt = ref None
 let counter = ref 0
 let previous = ref []
 let undos = ref 0
+let timer = ref (Unix.gettimeofday ())
 
 let generate_deck =
   let suits = [ Spades; Hearts; Clubs; Diamonds ] in
@@ -54,6 +55,7 @@ let rec select_random_elements k lst acc =
 let new_game () =
   counter := 0;
   previous := [];
+  timer := Unix.gettimeofday ();
   undos := 0;
   let card_data = shuffle_list generate_deck in
 
