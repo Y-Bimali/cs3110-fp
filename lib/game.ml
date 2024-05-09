@@ -19,10 +19,18 @@ type t = {
   b : Tableau.t;
 }
 
+(*three_opt is a string option ref which represents if the user wants to play
+  with drawing 3 cards or not.*)
 let three_opt = ref None
+
+(*counter is a int ref that counts how many moves have been made.*)
 let counter = ref 0
+
+(*previous and undo are refs that are used in undo functionality.*)
 let previous = ref []
 let undos = ref 0
+
+(*timer is a float ref that is used to see how long a game is played for.*)
 let timer = ref (Unix.gettimeofday ())
 
 let generate_deck =
