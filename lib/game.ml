@@ -11,7 +11,6 @@ open Card
    respective abstraction functions are located in stockwaste.ml, tableau.ml and
    foundation.ml*)
 (* RI: None.*)
-(* RI: None.*)
 
 type t = {
   f : Foundation.t;
