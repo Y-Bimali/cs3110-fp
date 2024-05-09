@@ -267,6 +267,15 @@ let autowin g =
         "This game is not autowinnable. The stockwaste must be empty and all \
          tableau cards must be visible." )
 
+let rec autowin_gamelist_helper g lst =
+  match lowest_col_index g.b with
+  | None -> if List.length lst > 0 then List.rev (List.tl lst) else lst
+  | Some i ->
+      let newg = fst (move_tableau_card_to_foundation g i) in
+      autowin_gamelist_helper newg (newg :: lst)
+
+let autowin_gamelist g = autowin_gamelist_helper g []
+
 let cheat g coli cardi =
   let coli = int_of_string_opt coli in
   let cardi = int_of_string_opt cardi in

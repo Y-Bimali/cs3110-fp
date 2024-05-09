@@ -169,6 +169,10 @@ let test_winnable _ =
     (winnable (card_to_col empty_tab 0 { rank = King; suit = Diamonds }))
     true
 
+let test_lowest_col_index _ =
+  assert_equal (lowest_col_index t2) (Some 1);
+  assert_equal (lowest_col_index t3) (Some 0)
+
 let tab_tests =
   "tab_tests"
   >::: [
@@ -183,6 +187,7 @@ let tab_tests =
          "test_cheat" >:: test_cheat;
          "test_invalid_cheat" >:: test_invalid_cheat;
          "test_winnable" >:: test_winnable;
+         "test_lowest_col_index" >:: test_lowest_col_index;
        ]
 
 let () = run_test_tt_main tab_tests

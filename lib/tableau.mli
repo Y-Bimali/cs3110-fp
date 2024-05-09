@@ -48,6 +48,10 @@ val move_col_to_col : t -> int -> int -> t
       > 6]. [IllegalMove] if this
    move is not legal.*)
 
+val lowest_col_index : t -> int option
+(** [lowest_col_index t] is the index of the column of [t] containing a
+    lowest-numbered card, or [None] if [t = empty_tab].*)
+
 val winnable : t -> bool
 (** [winnable tab] is [true] if [tab] is in a winnable state, and [false]
     otherwise.*)

@@ -74,6 +74,10 @@ val autowin : t -> t * string option
     autowinnable state, and g otherwise. opt is the option Some h describing the
     outcome of [autowin g].*)
 
+val autowin_gamelist : t -> t list
+(** [autowin_gamelist g] is the list of game states that [g] must progress
+    through to be won. Requires: [autowin g = true].*)
+
 val cheat : t -> string -> string -> t * string option
 (** [cheat g col card] is (g, opt) where g is the same game and opt is the
     string option Some h with h describing the [card]th card at column [col]. If

@@ -299,6 +299,14 @@ let test_autowin _ =
         "This game is not autowinnable. The stockwaste must be empty and all \
          tableau cards must be visible." )
 
+let test_autowin_gamelist _ =
+  assert_equal (autowin_gamelist won_game) [];
+  assert_equal
+    (List.length
+       (autowin_gamelist
+          (game_from_parts foundation_queens stockwaste0 tableau_kings)))
+    3
+
 let test_cheat _ =
   let g2 = game_from_parts foundation1 stockwaste0 tableau2 in
   let g4 = game_from_parts foundation1 stockwaste0 tableau4 in
@@ -321,6 +329,7 @@ let game_tests =
          "test_t_to_t" >:: test_t_to_t;
          "test_check_win" >:: test_check_win;
          "test_autowin" >:: test_autowin;
+         "test_autowin_gamelist" >:: test_autowin_gamelist;
          "test_cheat" >:: test_cheat;
        ]
 
