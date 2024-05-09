@@ -159,9 +159,7 @@ let cheat_col_card tab col cardi =
 
 let to_str_lst tab = List.map col_str_lst tab
 
-let to_str tab =
-  List.fold_left
-    (fun c d -> c ^ List.fold_left (fun a b -> a ^ " " ^ b) "" d ^ "\n")
-    "" (to_str_lst tab)
+(* let to_str tab = List.fold_left (fun c d -> c ^ List.fold_left (fun a b -> a
+   ^ " " ^ b) "" d ^ "\n") "" (to_str_lst tab) *)
 
 let to_cd_lst tab = List.map to_col_lst tab

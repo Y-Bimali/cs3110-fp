@@ -58,5 +58,5 @@ val to_str_lst : t -> string list list
 val to_cd_lst : t -> Card.t list list
 (** [to_cd_lst t] is the tableau represented as a card list list.*)
 
-val to_str : t -> string
-(**[to_string t] is the tableau represented as a string.*)
+(* val to_str : t -> string *[to_string t] is the tableau represented as a
+   string. *)
