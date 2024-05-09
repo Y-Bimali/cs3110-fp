@@ -1,3 +1,8 @@
+(* AF: The stockwaste (t) is a record of the form: { stock : Card.t list; waste
+   : Card.t list } where the first entry is a list of Cards representing the
+   stock, and the second entry is a a list of Cards representing the waste.*)
+(* RI: None.*)
+
 type t = {
   stock : Card.t list;
   waste : Card.t list;

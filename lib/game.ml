@@ -5,13 +5,20 @@ open Tableau
 (* open Random *)
 open Card
 
+(* AF: The game (t) is a record of the form: { f : Foundation.t; s :
+   Stockwaste.t; b : Tableau.t } where the first entry is a foundation, the
+   second entry is a stockwaste, and the third entry is a tableau. The
+   respective abstraction functions are located in stockwaste.ml, tableau.ml and
+   foundation.ml*)
+(* RI: None.*)
+(* RI: None.*)
+
 type t = {
   f : Foundation.t;
   s : Stockwaste.t;
   b : Tableau.t;
 }
 
-(* let card_data = BatList.of_enum (BatFile.lines_of "data/card.txt") *)
 let three_opt = ref None
 let counter = ref 0
 let previous = ref []
@@ -51,7 +58,6 @@ let rec select_random_elements k lst acc =
 
 (**[new_game ()] initializes the game_state. foundation must be empty, and
    tableau adds 28 cards and the rest goes to Stockwaste *)
-
 let new_game () =
   counter := 0;
   previous := [];

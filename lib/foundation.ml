@@ -3,6 +3,7 @@ open Card
 (** AF: The record [{spade = s, heart = h, club = c, diamond = d}] represents
     the four foundations with s, h, c, and d on top. RI: The the suit of the
     Card stored in the field matches the name of the field*)
+(* RI: None.*)
 
 type t = {
   spade : Card.t;
