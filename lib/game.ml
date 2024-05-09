@@ -16,6 +16,7 @@ let three_opt = ref None
 let counter = ref 0
 let previous = ref []
 let undos = ref 0
+let timer = ref (Unix.gettimeofday ())
 
 let generate_deck =
   let suits = [ Spades; Hearts; Clubs; Diamonds ] in
@@ -54,6 +55,7 @@ let rec select_random_elements k lst acc =
 let new_game () =
   counter := 0;
   previous := [];
+  timer := Unix.gettimeofday ();
   undos := 0;
   let card_data = shuffle_list generate_deck in
 
@@ -242,14 +244,12 @@ let move_card_from_foundation_to_tableau game found_index tab_index =
   in
   find_and_move (top_cards game.f) found_index tab_index
 
-let char_to_int c = int_of_string_opt c
-
 let t_to_t g c1 c2 =
-  let nc1 = char_to_int (string_of_int (int_of_string c1 - 1)) in
-  let nc2 = char_to_int (string_of_int (int_of_string c2 - 1)) in
+  let nc1 = int_of_string_opt c1 in
+  let nc2 = int_of_string_opt c2 in
   if nc1 = None || nc2 = None then (g, Some "Unrecognizable Command.")
   else
-    match move_col_to_col g.b (Option.get nc1) (Option.get nc2) with
+    match move_col_to_col g.b (Option.get nc1 - 1) (Option.get nc2 - 1) with
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception IllegalMove -> (g, Some "Illegal Move.")
     | exception _ -> (g, Some "Unknown error from tableau.ml.")
@@ -269,12 +269,21 @@ let autowin g =
         "This game is not autowinnable. The stockwaste must be empty and all \
          tableau cards must be visible." )
 
+let rec autowin_gamelist_helper g lst =
+  match lowest_col_index g.b with
+  | None -> if List.length lst > 0 then List.rev (List.tl lst) else lst
+  | Some i ->
+      let newg = fst (move_tableau_card_to_foundation g i) in
+      autowin_gamelist_helper newg (newg :: lst)
+
+let autowin_gamelist g = autowin_gamelist_helper g []
+
 let cheat g coli cardi =
-  let coli = char_to_int (string_of_int (int_of_string coli - 1)) in
-  let cardi = char_to_int (string_of_int (int_of_string cardi)) in
+  let coli = int_of_string_opt coli in
+  let cardi = int_of_string_opt cardi in
   if coli = None || cardi = None then (g, Some "Unrecognizable Command.")
   else
-    match cheat_col_card g.b (Option.get coli) (Option.get cardi) with
+    match cheat_col_card g.b (Option.get coli - 1) (Option.get cardi) with
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception InvalidCardID -> (g, Some "Invalid Card ID.")
     | exception _ -> (g, Some "Unknown error from tableau.ml.")

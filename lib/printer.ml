@@ -258,7 +258,7 @@ let slice_from_index_to_end str index =
 let winning_statement t =
   "\nYou won the game in "
   ^ string_of_int (Game.get_count ())
-  ^ " valid moves, and "
+  ^ " valid moves without undos, and in "
   ^ string_of_int (Game.get_count () + Game.get_undos ())
   ^ " moves including undos.\nTotal time spent is "
   ^ string_of_int (int_of_float (Unix.gettimeofday () -. t))
@@ -294,26 +294,55 @@ let tableau_to_foundation_helper g x =
 
   Game.move_tableau_card_to_foundation g (int_of_string col_index - 1)
 
+let game_ended_str =
+  "The game has ended. Type New game to start a new game or quit to end the \
+   game!"
+
 let check_conditions_for_three_word_commands g x y =
-  if String.get x 0 = 'f' && String.get y 0 = 't' then
-    if not (Game.check_win g) then foundation_to_tableau_helper g x y
-    else (g, Some "Type New game!")
-  else if String.get x 0 = 't' && String.get y 0 = 't' then
-    if not (Game.check_win g) then tableau_to_tableau_helper g x y
-    else (g, Some "Type New game!")
-  else if String.get x 0 = 't' && String.get y 0 = 'f' && String.length y = 1
-  then
-    if not (Game.check_win g) then tableau_to_foundation_helper g x
-    else (g, Some "Type New game!")
-  else if (String.get x 0 = 's' && String.length x = 1) && String.get y 0 = 't'
-  then
-    let tab_index = slice_from_index_to_end y 1 in
-    if not (Game.check_win g) then Game.s_to_t g (int_of_string tab_index - 1)
-    else (g, Some "Type New game!")
-  else (g, Some "Invalid action.")
+  if not (Game.check_win g) then
+    if String.get x 0 = 'f' && String.get y 0 = 't' then
+      foundation_to_tableau_helper g x y
+    else if String.get x 0 = 't' && String.get y 0 = 't' then
+      tableau_to_tableau_helper g x y
+    else if String.get x 0 = 't' && String.get y 0 = 'f' && String.length y = 1
+    then tableau_to_foundation_helper g x
+    else if
+      (String.get x 0 = 's' && String.length x = 1) && String.get y 0 = 't'
+    then
+      let tab_index = slice_from_index_to_end y 1 in
+      Game.s_to_t g (int_of_string tab_index - 1)
+    else (g, Some "Invalid action.")
+  else (g, Some game_ended_str)
 
 let invalid_command_str =
   "The command is not valid. Enter help for more information."
+
+let autowin_animation g =
+  List.fold_left
+    (fun _ newg ->
+      let () = print_top newg in
+      print_tab newg;
+      print_endline "";
+      Unix.sleepf 0.04)
+    () (Game.autowin_gamelist g)
+
+let match_other other g =
+  match other with
+  | "draw" | "d" -> Game.draw_card g
+  | "autowin" ->
+      let out = Game.autowin g in
+      if snd out = None then autowin_animation g;
+      out
+  | "undo" -> Game.undo g
+  | str -> (
+      let v = String.split_on_char ' ' str in
+      try
+        match v with
+        | [ "s"; "to"; "f" ] -> Game.s_to_f g
+        | [ x; "to"; y ] -> check_conditions_for_three_word_commands g x y
+        | [ "cheat"; x; y ] -> Game.cheat g x y
+        | _ -> (g, Some invalid_command_str)
+      with Failure _ -> (g, Some invalid_command_str))
 
 let match_statements q g =
   match q with
@@ -326,28 +355,16 @@ let match_statements q g =
           ^ string_of_int (Game.get_count () + Game.get_undos ())) )
   | "help" | "commands" -> (g, Some help_str)
   | "rules" -> (g, Some rules_str)
-  | "draw" | "d" ->
-      if not (Game.check_win g) then Game.draw_card g
-      else (g, Some "Type New game!")
   | "new game" ->
       Game.update_three_opt None;
       (Game.new_game (), None)
   | "new game 3" ->
       Game.update_three_opt (Some "3");
       (Game.new_game (), None)
-  | "autowin" -> Game.autowin g
-  | "undo" -> Game.undo g
-  | str -> (
-      let v = String.split_on_char ' ' str in
-      try
-        match v with
-        | [ "s"; "to"; "f" ] -> Game.s_to_f g
-        | [ x; "to"; y ] -> check_conditions_for_three_word_commands g x y
-        | [ "cheat"; x; y ] -> Game.cheat g x y
-        | _ -> (g, Some invalid_command_str)
-      with Failure _ -> (g, Some invalid_command_str))
+  | other ->
+      if Game.check_win g then (g, Some game_ended_str) else match_other other g
 
-let round g t =
+let round g =
   let () = print_top g in
   print_tab g;
   print_endline "";
@@ -358,8 +375,7 @@ let round g t =
   else if String.starts_with ~prefix:"theme" q then display_theme g q
   else
     let g2, error = match_statements q g in
-
     if Game.check_win g2 && not has_won_alr then
-      print_endline (winning_statement t);
+      print_endline (winning_statement !Game.timer);
     print_error error;
     (true, g2)

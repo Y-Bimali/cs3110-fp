@@ -48,6 +48,10 @@ val move_col_to_col : t -> int -> int -> t
       > 6]. [IllegalMove] if this
    move is not legal.*)
 
+val lowest_col_index : t -> int option
+(** [lowest_col_index t] is the index of the column of [t] containing a
+    lowest-numbered card, or [None] if [t = empty_tab].*)
+
 val winnable : t -> bool
 (** [winnable tab] is [true] if [tab] is in a winnable state, and [false]
     otherwise.*)
@@ -58,5 +62,5 @@ val to_str_lst : t -> string list list
 val to_cd_lst : t -> Card.t list list
 (** [to_cd_lst t] is the tableau represented as a card list list.*)
 
-val to_str : t -> string
-(**[to_string t] is the tableau represented as a string.*)
+(* val to_str : t -> string *[to_string t] is the tableau represented as a
+   string. *)

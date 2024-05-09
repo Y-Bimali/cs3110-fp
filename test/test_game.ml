@@ -140,11 +140,11 @@ let tableau3 =
          [ h1 ];
        ])
 
-let foundation1 = initialize
-let stockwaste1 = empty_sw
+let foundation_1 = initialize
+let stockwaste_1 = empty_sw
 
 let test_tableau_to_foundation_works _ =
-  let g1 = game_from_parts foundation1 stockwaste1 tableau3 in
+  let g1 = game_from_parts foundation_1 stockwaste_1 tableau3 in
   let updated_g1 = move_tableau_card_to_foundation g1 0 in
   let updated_g2 = move_tableau_card_to_foundation (fst updated_g1) 0 in
 
@@ -198,11 +198,11 @@ let tableau4 =
          [ d1 ];
        ])
 
-let foundation2 = initialize
-let stockwaste2 = empty_sw
+let foundation_2 = initialize
+let stockwaste_2 = empty_sw
 
 let test_king_movement _ =
-  let g1 = game_from_parts foundation2 stockwaste2 tableau4 in
+  let g1 = game_from_parts foundation_2 stockwaste_2 tableau4 in
   let updated_g1 = move_tableau_card_to_foundation g1 0 in
 
   let updated_g2 = move_tableau_card_to_foundation (fst updated_g1) 1 in
@@ -234,7 +234,9 @@ let test_counter _ =
 let test_undo _ =
   let g1 = game_from_parts foundation1 stockwaste1 tableau1 in
   let g2 = fst (s_to_f g1) in
-  assert_equal g1 g2;
+  assert (g2 <> g1);
+  assert (g2 != g1);
+  (* assert_equal g1 g2; *)
   (* Why is this ^ line passing*)
   assert_equal (undo g2) (g1, None);
   (* These aren't passing :/ *)
@@ -256,33 +258,74 @@ let test_t_to_t _ =
     (snd (t_to_t (fst (t_to_t (fst (t_to_t g2 "3" "4")) "4" "5")) "7" "2"))
     None;
   assert_equal (snd (t_to_t g "2" "5")) (Some "Illegal Move.");
-  assert_equal (snd (t_to_t g "9" "8")) (Some "Invalid Column ID.")
+  assert_equal (snd (t_to_t g "9" "8")) (Some "Invalid Column ID.");
+  assert_equal (snd (t_to_t g "ai49" "3")) (Some "Unrecognizable Command.");
+  assert_equal (snd (t_to_t g "3" "nwo")) (Some "Unrecognizable Command.")
 
-let sw_tests1 =
-  "Stockwaste tests where it is a valid move"
-  >::: [ "test_s_to_ft" >:: test_s_to_ft_works ]
+let test_check_win _ =
+  assert_equal (check_win won_game) true;
+  assert_equal
+    (check_win (game_from_parts foundation1 stockwaste0 tableau1))
+    false
 
-let sw_tests2 =
-  "Stockwaste tests where it is not a valid move"
-  >::: [ "test_s_to_ft" >:: test_s_to_ft_err ]
+let foundation_queens =
+  set (new_card Spades 12) (new_card Hearts 12) (new_card Clubs 12)
+    (new_card Diamonds 12)
 
-let t_f_tests =
-  "t_to_f"
-  >::: [ "test_tab_to_foundation" >:: test_tableau_to_foundation_works ]
+let tableau_kings =
+  List.fold_left2
+    (fun acc a b -> card_to_col acc a b)
+    empty_tab [ 0; 1; 2; 3 ]
+    [
+      new_card Spades 13;
+      new_card Hearts 13;
+      new_card Diamonds 13;
+      new_card Clubs 13;
+    ]
 
-let king_tests =
-  "king_to_foundation" >::: [ "test_king_to_foundation" >:: test_king_movement ]
+let test_autowin _ =
+  assert_equal
+    (autowin (game_from_parts foundation_queens stockwaste0 tableau_kings))
+    (won_game, None);
+  let g1 = game_from_parts foundation1 stockwaste0 tableau1 in
+  assert_equal (autowin g1)
+    ( g1,
+      Some
+        "This game is not autowinnable. The stockwaste must be empty and all \
+         tableau cards must be visible." )
 
-let counter_tests = "Counter tests" >::: [ "test_counter" >:: test_counter ]
-let undo_tests = "Undo tests" >::: [ "test_undo" >:: test_undo ]
-let t_t_tests = "t_to_t" >::: [ "test_t_to_t" >:: test_t_to_t ]
+let test_autowin_gamelist _ =
+  assert_equal (autowin_gamelist won_game) [];
+  assert_equal
+    (List.length
+       (autowin_gamelist
+          (game_from_parts foundation_queens stockwaste0 tableau_kings)))
+    3
 
-let () =
-  (*run_test_tt_main tab_tests;*)
-  run_test_tt_main sw_tests1;
-  run_test_tt_main sw_tests2;
-  run_test_tt_main t_f_tests;
-  run_test_tt_main king_tests;
-  run_test_tt_main counter_tests;
-  run_test_tt_main undo_tests;
-  run_test_tt_main t_t_tests
+let test_cheat _ =
+  let g2 = game_from_parts foundation1 stockwaste0 tableau2 in
+  let g4 = game_from_parts foundation1 stockwaste0 tableau4 in
+  assert_equal (cheat g2 "1" "1") (g2, Some "The specified card is 10♣.");
+  assert_equal (cheat g4 "7" "7") (g4, Some "The specified card is 4♦.");
+  assert_equal (cheat g4 "0" "1") (g4, Some "Invalid Column ID.");
+  assert_equal (cheat g4 "1" "0") (g4, Some "Invalid Card ID.");
+  assert_equal (cheat g4 "po" "0") (g4, Some "Unrecognizable Command.");
+  assert_equal (cheat g4 "3" "weee") (g4, Some "Unrecognizable Command.")
+
+let game_tests =
+  "game_tests"
+  >::: [
+         "valid moves test_s_to_ft" >:: test_s_to_ft_works;
+         "invalid moves test_s_to_ft" >:: test_s_to_ft_err;
+         "test_tab_to_foundation" >:: test_tableau_to_foundation_works;
+         "test_king_to_foundation" >:: test_king_movement;
+         "test_counter" >:: test_counter;
+         "test_undo" >:: test_undo;
+         "test_t_to_t" >:: test_t_to_t;
+         "test_check_win" >:: test_check_win;
+         "test_autowin" >:: test_autowin;
+         "test_autowin_gamelist" >:: test_autowin_gamelist;
+         "test_cheat" >:: test_cheat;
+       ]
+
+let () = run_test_tt_main game_tests

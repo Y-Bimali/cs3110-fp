@@ -157,11 +157,21 @@ let cheat_col_card tab col cardi =
     | None -> raise InvalidCardID
     | Some x -> x
 
+let lowest_col_index (tab : t) =
+  List.fold_left
+    (fun a b ->
+      match (a, peek_col_card tab b) with
+      | None, None -> None
+      | Some i, None -> Some i
+      | None, Some _ -> Some b
+      | Some i, Some x ->
+          if num_of (Option.get (peek_col_card tab i)) > num_of x then Some b
+          else Some i)
+    None [ 0; 1; 2; 3; 4; 5; 6 ]
+
 let to_str_lst tab = List.map col_str_lst tab
 
-let to_str tab =
-  List.fold_left
-    (fun c d -> c ^ List.fold_left (fun a b -> a ^ " " ^ b) "" d ^ "\n")
-    "" (to_str_lst tab)
+(* let to_str tab = List.fold_left (fun c d -> c ^ List.fold_left (fun a b -> a
+   ^ " " ^ b) "" d ^ "\n") "" (to_str_lst tab) *)
 
 let to_cd_lst tab = List.map to_col_lst tab
