@@ -140,11 +140,10 @@ let tableau3 =
          [ h1 ];
        ])
 
-let foundation_1 = initialize
-let stockwaste_1 = empty_sw
+let foundation3 = initialize
 
 let test_tableau_to_foundation_works _ =
-  let g1 = game_from_parts foundation_1 stockwaste_1 tableau3 in
+  let g1 = game_from_parts foundation3 stockwaste0 tableau3 in
   let updated_g1 = move_tableau_card_to_foundation g1 0 in
   let updated_g2 = move_tableau_card_to_foundation (fst updated_g1) 0 in
 
@@ -198,11 +197,8 @@ let tableau4 =
          [ d1 ];
        ])
 
-let foundation_2 = initialize
-let stockwaste_2 = empty_sw
-
 let test_king_movement _ =
-  let g1 = game_from_parts foundation_2 stockwaste_2 tableau4 in
+  let g1 = game_from_parts foundation3 stockwaste0 tableau4 in
   let updated_g1 = move_tableau_card_to_foundation g1 0 in
 
   let updated_g2 = move_tableau_card_to_foundation (fst updated_g1) 1 in
@@ -224,28 +220,23 @@ let test_king_movement _ =
 
 let test_counter _ =
   let g = new_game () in
-  let g1 = draw_card g in
-  assert_equal (get_count ()) 1;
-  let _ = draw_card (fst g1) in
-  assert_equal (get_count ()) 2;
-  let _ = new_game () in
-  assert_equal (get_count ()) 0
+  let g1 = draw_card g |> fst in
+  let g2 = draw_card g1 |> fst in
+  assert_equal (get_count g) 0;
+  assert_equal (get_count g1) 1;
+  assert_equal (get_count g2) 2
 
 let test_undo _ =
   let g1 = game_from_parts foundation1 stockwaste1 tableau1 in
   let g2 = fst (s_to_f g1) in
-  assert (g2 <> g1);
-  assert (g2 != g1);
-  (* assert_equal g1 g2; *)
-  (* Why is this ^ line passing*)
   assert_equal (undo g2) (g1, None);
-  (* These aren't passing :/ *)
-  assert_equal (get_undos ()) 1;
-  assert_equal (get_count ()) 0;
-  let g3 = new_game () in
-  assert_equal (undo g3)
-    (g3, Some "This is the original game, there is nothing left to undo.");
-  assert_equal (get_undos ()) 0
+  let g3 = fst (undo g2) in
+  assert_equal (get_undos g3) 1;
+  assert_equal (get_count g3) 0;
+  let g4 = new_game () in
+  assert_equal (undo g4)
+    (g4, Some "This is the original game, there is nothing left to undo.");
+  assert_equal (get_undos g4) 0
 
 (*let tab_tests = "Tableau only tests" >::: [ "test_t_to_t" >:: test_t_to_t ]*)
 let test_t_to_t _ =

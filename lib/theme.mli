@@ -13,6 +13,8 @@ type t = {
     background styles. *)
 
 exception UnknownTheme
+(** [UnknownTheme] indicates that a theme attempted to be referenced does not
+    exist. *)
 
 val theme_of_string : string -> t
 (** [theme_of_string str] is the theme a string corresponds to. Raises
