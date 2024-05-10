@@ -8,6 +8,11 @@ let four_card_deck =
     empty_card Clubs; empty_card Diamonds; empty_card Hearts; empty_card Spades;
   ]
 
+let rec draw_n n o sw =
+  match n with
+  | 0 -> sw
+  | _ -> get (draw (fun _ -> o) (draw_n (n - 1) o sw))
+
 let test_empty_stockwaste _ = assert_equal (0, 0) (size_sw empty_sw)
 
 let test_check_stock_empty _ =
@@ -45,35 +50,16 @@ let test_draw_1_basic _ =
   in
   assert_equal (0, 1) (size_sw (get one_card_1));
   (*draw multiple unique cards from stock with multiple cards - draw 1*)
-  let many_cards1 =
-    get
-      (draw
-         (fun () -> None)
-         (get
-            (draw
-               (fun () -> None)
-               (get (draw (fun () -> None) (add_sw four_card_deck empty_sw))))))
-  in
+  let many_cards1 = draw_n 3 None (add_sw four_card_deck empty_sw) in
   (*draw multiple cards from stock with multiple cards- draw 1*)
-  let many_cards5 =
-    get
-      (draw
-         (fun () -> None)
-         (get (draw (fun () -> None) (add_sw four_card_deck empty_sw))))
-  in
+  let many_cards5 = draw_n 2 None (add_sw four_card_deck empty_sw) in
   assert_equal (2, 2) (size_sw many_cards5);
   assert_equal (1, 3) (size_sw many_cards1)
 
 let test_draw_1_redraw _ =
   (*draw as many cards as the stock has- draw 1*)
   let many_cards6 =
-    get
-      (draw
-         (fun () -> None)
-         (get
-            (draw
-               (fun () -> None)
-               (add_sw [ empty_card Spades; empty_card Diamonds ] empty_sw))))
+    draw_n 2 None (add_sw [ empty_card Spades; empty_card Diamonds ] empty_sw)
   in
   assert_equal (0, 2) (size_sw many_cards6);
 
@@ -82,13 +68,7 @@ let test_draw_1_redraw _ =
   let many_cards7 =
     draw
       (fun () -> None)
-      (get
-         (draw
-            (fun () -> None)
-            (get
-               (draw
-                  (fun () -> None)
-                  (add_sw [ empty_card Hearts; empty_card Spades ] empty_sw)))))
+      (draw_n 2 None (add_sw [ empty_card Hearts; empty_card Spades ] empty_sw))
   in
   assert_equal (2, 0) (size_sw (get many_cards7));
 
@@ -97,18 +77,7 @@ let test_draw_1_redraw _ =
   let many_cards8 =
     draw
       (fun () -> None)
-      (get
-         (draw
-            (fun () -> None)
-            (get
-               (draw
-                  (fun () -> None)
-                  (get
-                     (draw
-                        (fun () -> None)
-                        (add_sw
-                           [ empty_card Hearts; empty_card Spades ]
-                           empty_sw)))))))
+      (draw_n 3 None (add_sw [ empty_card Hearts; empty_card Spades ] empty_sw))
   in
   assert_equal (1, 1) (size_sw (get many_cards8))
 
@@ -147,34 +116,11 @@ let test_draw_3_redraw _ =
   assert_equal (0, 4) (size_sw many_cards2);
   (*draw multiple times cards from stock with multiple cards until redraw stock-
     draw 3*)
-  let many_cards3 =
-    get
-      (draw
-         (fun () -> Some "3")
-         (get
-            (draw
-               (fun () -> Some "3")
-               (get
-                  (draw (fun () -> Some "3") (add_sw four_card_deck empty_sw))))))
-  in
+  let many_cards3 = draw_n 3 (Some "3") (add_sw four_card_deck empty_sw) in
   assert_equal (4, 0) (size_sw many_cards3);
   (*draw multiple times cards from stock with multiple cards until redraw stock
     and continue to draw - draw 3*)
-  let many_cards4 =
-    get
-      (draw
-         (fun () -> Some "3")
-         (get
-            (draw
-               (fun () -> Some "3")
-               (get
-                  (draw
-                     (fun () -> Some "3")
-                     (get
-                        (draw
-                           (fun () -> Some "3")
-                           (add_sw four_card_deck empty_sw))))))))
-  in
+  let many_cards4 = draw_n 4 (Some "3") (add_sw four_card_deck empty_sw) in
   assert_equal (1, 3) (size_sw many_cards4)
 
 let test_remove_top_empty _ =
@@ -210,13 +156,7 @@ let test_remove_top_nonempty _ =
   assert_equal (1, 2) (size_sw (get (remove_top (get many_cards))));
   (*remove all the cards from the waste with multiple cards*)
   let many_cards3 =
-    get
-      (draw
-         (fun () -> None)
-         (get
-            (draw
-               (fun () -> None)
-               (add_sw [ empty_card Spades; empty_card Hearts ] empty_sw))))
+    draw_n 2 None (add_sw [ empty_card Spades; empty_card Hearts ] empty_sw)
   in
   assert_equal (0, 0)
     (size_sw (get (remove_top (get (remove_top many_cards3)))))

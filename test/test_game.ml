@@ -225,6 +225,7 @@ let test_counter_and_start_time _ =
   assert_equal (get_count g) 0;
   assert_equal (get_count g1) 1;
   assert_equal (get_count g2) 2;
+  Unix.sleepf 0.01;
   assert (Unix.gettimeofday () > start_time g)
 
 let test_undo _ =
