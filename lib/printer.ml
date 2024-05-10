@@ -255,13 +255,13 @@ let slice_from_index_to_end str index =
 (*TODO: output tuple should be bool * Game. Functions called in Game should
   return game * string option *)
 
-let winning_statement t =
+let winning_statement g =
   "\nYou won the game in "
-  ^ string_of_int (Game.get_count ())
+  ^ string_of_int (Game.get_count g)
   ^ " valid moves without undos, and in "
-  ^ string_of_int (Game.get_count () + Game.get_undos ())
+  ^ string_of_int (Game.get_count g + Game.get_undos g)
   ^ " moves including undos.\nTotal time spent is "
-  ^ string_of_int (int_of_float (Unix.gettimeofday () -. t))
+  ^ string_of_int (int_of_float (Unix.gettimeofday () -. Game.start_time g))
   ^ " seconds.\nType 'New Game' to play a new game."
 
 let display_theme g q =
@@ -350,17 +350,13 @@ let match_statements q g =
       ( g,
         Some
           ("Moves: "
-          ^ string_of_int (Game.get_count ())
+          ^ string_of_int (Game.get_count g)
           ^ "\nMoves including Undos: "
-          ^ string_of_int (Game.get_count () + Game.get_undos ())) )
+          ^ string_of_int (Game.get_count g + Game.get_undos g)) )
   | "help" | "commands" -> (g, Some help_str)
   | "rules" -> (g, Some rules_str)
-  | "new game" ->
-      Game.update_three_opt None;
-      (Game.new_game (), None)
-  | "new game 3" ->
-      Game.update_three_opt (Some "3");
-      (Game.new_game (), None)
+  | "new game" -> (Game.new_game (), None)
+  | "new game 3" -> (Game.update_three_opt (Some "3") (Game.new_game ()), None)
   | other ->
       if Game.check_win g then (g, Some game_ended_str) else match_other other g
 
@@ -376,6 +372,6 @@ let round g =
   else
     let g2, error = match_statements q g in
     if Game.check_win g2 && not has_won_alr then
-      print_endline (winning_statement !Game.timer);
+      print_endline (winning_statement g2);
     print_error error;
     (true, g2)

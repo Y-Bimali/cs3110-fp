@@ -16,21 +16,29 @@ type t = {
   f : Foundation.t;
   s : Stockwaste.t;
   b : Tableau.t;
+  counter : int;
+  undos : int;
+  previous : t list;
+  start_time : float;
+  draw_style : string option;
 }
 
-(*three_opt is a string option ref which represents if the user wants to play
-  with drawing 3 cards or not.*)
-let three_opt = ref None
+let game_from_parts fn sn bn =
+  {
+    f = fn;
+    s = sn;
+    b = bn;
+    counter = 0;
+    undos = 0;
+    previous = [];
+    start_time = Unix.gettimeofday ();
+    draw_style = None;
+  }
 
-(*counter is a int ref that counts how many moves have been made.*)
-let counter = ref 0
-
-(*previous and undo are refs that are used in undo functionality.*)
-let previous = ref []
-let undos = ref 0
-
-(*timer is a float ref that is used to see how long a game is played for.*)
-let timer = ref (Unix.gettimeofday ())
+let update_three_opt o g =
+  match o with
+  | None | Some "3" -> { g with draw_style = o }
+  | _ -> raise (Failure "three-opt must be None or Some 3")
 
 let generate_deck =
   let suits = [ Spades; Hearts; Clubs; Diamonds ] in
@@ -66,10 +74,6 @@ let rec select_random_elements k lst acc =
 (**[new_game ()] initializes the game_state. foundation must be empty, and
    tableau adds 28 cards and the rest goes to Stockwaste *)
 let new_game () =
-  counter := 0;
-  previous := [];
-  timer := Unix.gettimeofday ();
-  undos := 0;
   let card_data = shuffle_list generate_deck in
 
   (* Initialize Foundation *)
@@ -83,45 +87,39 @@ let new_game () =
 
   let a = add_sw (shuffle_list remaining_cards) empty_sw in
 
-  { f = foundation; s = a; b = tableau }
+  game_from_parts foundation a tableau
 
-let game_from_parts fn sn bn = { f = fn; s = sn; b = bn }
+(* Call this with the previous game state and desired component modifications at
+   the end of a successful move to modify it accordingly, increment the counter,
+   and add the previous game state to [previous]*)
+let routine game f s b =
+  {
+    game with
+    f;
+    s;
+    b;
+    counter = game.counter + 1;
+    previous = game :: game.previous;
+  }
 
-(* Call this with the previous game state at the end of a successful move to
-   increment the counter and add the previous game state to [previous]*)
-let routine game =
-  incr counter;
-  previous := game :: !previous
-
-(* Can be used to reverse the effects of routine.*)
-let partial_undo () =
-  match !previous with
-  | [] -> failwith "No previous game state to return to."
-  | h :: t ->
-      previous := t;
-      decr counter;
-      h
-
+(* Gets the previous game with the modification that the number of undos is now
+   the number of undos of the current game + 1*)
 let undo game =
-  try
-    let g2 = partial_undo () in
-    incr undos;
-    (g2, None)
-  with Failure _ ->
-    (game, Some "This is the original game, there is nothing left to undo.")
+  match game.previous with
+  | [] ->
+      (game, Some "This is the original game, there is nothing left to undo.")
+  | h :: _ -> ({ h with undos = game.undos + 1 }, None)
 
 (**[draw_card fsb] draws a card and moves it from the stock to the waste in
    stockwaste (s)*)
 let draw_card fsb =
-  match draw (fun () -> !three_opt) fsb.s with
+  match draw (fun () -> fsb.draw_style) fsb.s with
   | None ->
       ( fsb,
         Some
           "There are no cards in the waste or stock, \n\
           \    so this move is not valid." )
-  | Some h ->
-      routine fsb;
-      ({ f = fsb.f; s = h; b = fsb.b }, None)
+  | Some h -> (routine fsb fsb.f h fsb.b, None)
 
 let formatted fsb =
   let s_empty = check_stock_empty fsb.s in
@@ -144,28 +142,21 @@ let s_to_f (game : t) =
            foundation from it." )
   | Some card ->
       let foundation = game.f in
-      if valid_move foundation card then (
-        routine game;
-        ( {
-            f = put foundation card;
-            s = remove_opt (remove_top game.s);
-            b = game.b;
-          },
-          None ))
+      if valid_move foundation card then
+        ( routine game (put foundation card)
+            (remove_opt (remove_top game.s))
+            game.b,
+          None )
       else (game, Some "This card cannot go in the foundation.")
 
 let valid_stock_to_tableau_movement game tab_index card =
   let tableau = game.b in
   try
-    routine game;
-    ( {
-        f = game.f;
-        s = remove_opt (remove_top game.s);
-        b = card_to_col tableau tab_index card;
-      },
+    ( routine game game.f
+        (remove_opt (remove_top game.s))
+        (card_to_col tableau tab_index card),
       None )
   with IllegalMove ->
-    ignore (partial_undo ());
     ( game,
       Some
         ("This card cannot go in column "
@@ -190,9 +181,7 @@ let s_to_t (game : t) tab_index =
 let update_game_with_move game tab_index foundation_card =
   let updated_tableau = card_to_col game.b tab_index foundation_card in
   let updated_foundation = remove game.f foundation_card in
-  let updated_game =
-    { f = updated_foundation; s = game.s; b = updated_tableau }
-  in
+  let updated_game = routine game updated_foundation game.s updated_tableau in
   (updated_game, None)
 
 let move_tableau_card_to_foundation game col_index =
@@ -208,10 +197,7 @@ let move_tableau_card_to_foundation game col_index =
 
           let t, _ = pop_col_card game.b col_index in
 
-          let final_game =
-            routine game;
-            { f = updated_foundation; s = game.s; b = t }
-          in
+          let final_game = routine game updated_foundation game.s t in
           (final_game, None)
         else (game, Some "You can not make this move.")
   else (game, Some (string_of_int col_index ^ " is not a valid index."))
@@ -231,17 +217,13 @@ let valid_foundation_to_tableau_movement game tab_index foundation_columns
   let foundation_card = List.nth foundation_columns found_index in
   match (foundation_card, card) with
   | top_c, None ->
-      if num_of top_c = 13 then (
-        routine game;
-        update_game_with_move game tab_index top_c)
+      if num_of top_c = 13 then update_game_with_move game tab_index top_c
       else (game, Some "You can not make this move.")
   | top_card, Some c ->
       if num_of top_card = 0 then
         (game, Some "There is no card in this foundation column.")
       else if num_of top_card - num_of c = -1 && color_of c <> color_of top_card
-      then (
-        routine game;
-        update_game_with_move game tab_index top_card)
+      then update_game_with_move game tab_index top_card
       else (game, Some "You can not make this move.")
 
 let move_card_from_foundation_to_tableau game found_index tab_index =
@@ -266,12 +248,10 @@ let t_to_t g c1 c2 =
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception IllegalMove -> (g, Some "Illegal Move.")
     | exception _ -> (g, Some "Unknown error from tableau.ml.")
-    | newb ->
-        routine g;
-        ({ f = g.f; s = g.s; b = newb }, None)
+    | newb -> (routine g g.f g.s newb, None)
 
 let check_win g = is_complete g.f
-let won_game = { f = won_foundation; s = empty_sw; b = empty_tab }
+let won_game = game_from_parts won_foundation empty_sw empty_tab
 
 let autowin g =
   if check_stock_empty g.s && top_sw g.s = None && winnable g.b then
@@ -302,10 +282,6 @@ let cheat g coli cardi =
     | exception _ -> (g, Some "Unknown error from tableau.ml.")
     | card -> (g, Some ("The specified card is " ^ to_string card ^ "."))
 
-let update_three_opt o =
-  match o with
-  | None | Some "3" -> three_opt := o
-  | _ -> raise (Failure "three-opt must be None or Some 3")
-
-let get_count () = !counter
-let get_undos () = !undos
+let get_count g = g.counter
+let get_undos g = g.undos
+let start_time g = g.start_time

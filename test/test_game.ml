@@ -229,8 +229,10 @@ let test_counter _ =
 let test_undo _ =
   let g1 = game_from_parts foundation1 stockwaste1 tableau1 in
   let g2 = fst (s_to_f g1) in
-  assert_equal (undo g2) (g1, None);
+  assert_equal (undo g2 |> snd) None;
   let g3 = fst (undo g2) in
+  assert_equal (formatted g3) (formatted g1);
+  (* They are equal except for the undo value *)
   assert_equal (get_undos g3) 1;
   assert_equal (get_count g3) 0;
   let g4 = new_game () in

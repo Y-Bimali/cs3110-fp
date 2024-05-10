@@ -2,8 +2,8 @@ type t
 (** [t] represents the game (stockwaste, tableau, and foundation).*)
 
 val new_game : unit -> t
-(**[new_game] is game of solitaire in the starting position, with cards
-   randomized.*)
+(**[new_game] is game of draw-1 solitaire in the starting position, with cards
+   randomized. *)
 
 val game_from_parts : Foundation.t -> Stockwaste.t -> Tableau.t -> t
 (** [game_from_parts] is a game of solitaire initialized from a foundation,
@@ -81,15 +81,15 @@ val cheat : t -> string -> string -> t * string option
 val won_game : t
 (** [won_game] is the won game. *)
 
-val update_three_opt : string option -> unit
-(** [update_three_opt o] sets whether the game is draw 3 or draw 1. Requires:
-    [o] is [None] or [Some "3"].*)
+val update_three_opt : string option -> t -> t
+(** [update_three_opt o g] is game [g] with the draw style set to draw 3 or draw
+    1 (depending on [o]). Requires: [o] is [None] or [Some "3"].*)
 
-val get_count : unit -> int
-(** [get_count] is the number of moves made in this game.*)
+val get_count : t -> int
+(** [get_count g] is the number of moves made in game [g].*)
 
-val get_undos : unit -> int
-(** [get_undos] is the number of undos made in this game.*)
+val get_undos : t -> int
+(** [get_undos g] is the number of undos made in game [g].*)
 
-val timer : float ref
-(** [timer] is the reference to how long the game runs*)
+val start_time : t -> float
+(** [start_time g] is the start time (in Unix time) of game [g] *)
