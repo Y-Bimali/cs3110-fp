@@ -255,7 +255,17 @@ let won_game = game_from_parts won_foundation empty_sw empty_tab
 
 let autowin g =
   if check_stock_empty g.s && top_sw g.s = None && winnable g.b then
-    (won_game, None)
+    ( {
+        won_game with
+        start_time = g.start_time;
+        undos = g.undos;
+        counter =
+          g.counter
+          + List.fold_left
+              (fun acc lst -> acc + List.length lst)
+              0 (to_cd_lst g.b);
+      },
+      None )
   else
     ( g,
       Some
