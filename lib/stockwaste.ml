@@ -8,19 +8,16 @@ type t = {
   waste : Card.t list;
 }
 
-(**[check_three three_opt] is a helper function that is a bool representing if
-   the user wants to draw 3*)
-let check_three three_opt =
-  match three_opt with
-  | Some _ -> true
-  | None -> false
-
+(**[get_stock_3 sw] is the result of drawing from the stock when there is less
+   than 3 cards remaining.*)
 let get_stock_3 (sw : t) =
   match List.length sw.stock with
-  | 2 -> List.tl (List.tl sw.stock)
-  | 1 -> List.tl sw.stock
+  | 2 -> []
+  | 1 -> []
   | _ -> List.tl (List.tl (List.tl sw.stock))
 
+(**[get_waste_3 sw] is the result of drawing from the stock when there is less
+   than 3 cards remaining.*)
 let get_waste_3 (sw : t) =
   match List.length sw.stock with
   | 2 -> List.nth sw.stock 1 :: List.nth sw.stock 0 :: sw.waste
@@ -37,7 +34,7 @@ let redraw sw = { stock = List.rev sw.waste; waste = sw.stock }
 let draw three_opt sw =
   if List.is_empty sw.stock && List.is_empty sw.waste then None
   else if List.is_empty sw.stock then Some (redraw sw)
-  else if check_three (three_opt ()) then
+  else if three_opt () <> None then
     Some { stock = get_stock_3 sw; waste = get_waste_3 sw }
   else Some { stock = List.tl sw.stock; waste = List.hd sw.stock :: sw.waste }
 

@@ -19,10 +19,6 @@ val draw : (unit -> string option) -> t -> t option
 val top_sw : t -> Card.t option
 (**[top] is Some top card in the waste pile. Is None if the waste pile is empty.*)
 
-(* Desmond used this to test his code . May be needed sometime. do not delete
-   except for Desmond *)
-(* val getStock : t -> Card.t list *)
-
 val remove_top : t -> t option
 (** [remove_top sw] is [Some sw] with [top sw] removed and with a new top card.
     None if the waste pile is empty*)
