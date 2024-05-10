@@ -218,13 +218,14 @@ let test_king_movement _ =
   in
   assert_equal (snd updated_g14) None
 
-let test_counter _ =
+let test_counter_and_start_time _ =
   let g = new_game () in
   let g1 = draw_card g |> fst in
   let g2 = draw_card g1 |> fst in
   assert_equal (get_count g) 0;
   assert_equal (get_count g1) 1;
-  assert_equal (get_count g2) 2
+  assert_equal (get_count g2) 2;
+  assert (Unix.gettimeofday () > start_time g)
 
 let test_undo _ =
   let g1 = game_from_parts foundation1 stockwaste1 tableau1 in
@@ -312,7 +313,7 @@ let game_tests =
          "invalid moves test_s_to_ft" >:: test_s_to_ft_err;
          "test_tab_to_foundation" >:: test_tableau_to_foundation_works;
          "test_king_to_foundation" >:: test_king_movement;
-         "test_counter" >:: test_counter;
+         "test_counter" >:: test_counter_and_start_time;
          "test_undo" >:: test_undo;
          "test_t_to_t" >:: test_t_to_t;
          "test_check_win" >:: test_check_win;

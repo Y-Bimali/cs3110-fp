@@ -60,16 +60,10 @@ let shuffle_list lst =
 let rec select_random_elements k lst acc =
   if k = 0 then (acc, lst)
   else
-    match lst with
-    | [] -> (acc, [])
-    | _ ->
-        let selected_index = Random.int (List.length lst) in
-        let selected_element = List.nth lst selected_index in
-        let remaining_elements =
-          List.filter (fun x -> x <> selected_element) lst
-        in
-        select_random_elements (k - 1) remaining_elements
-          (selected_element :: acc)
+    let selected_index = Random.int (List.length lst) in
+    let selected_element = List.nth lst selected_index in
+    let remaining_elements = List.filter (fun x -> x <> selected_element) lst in
+    select_random_elements (k - 1) remaining_elements (selected_element :: acc)
 
 (**[new_game ()] initializes the game_state. foundation must be empty, and
    tableau adds 28 cards and the rest goes to Stockwaste *)
@@ -247,7 +241,6 @@ let t_to_t g c1 c2 =
     match move_col_to_col g.b (Option.get nc1 - 1) (Option.get nc2 - 1) with
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception IllegalMove -> (g, Some "Illegal Move.")
-    | exception _ -> (g, Some "Unknown error from tableau.ml.")
     | newb -> (routine g g.f g.s newb, None)
 
 let check_win g = is_complete g.f
@@ -289,7 +282,6 @@ let cheat g coli cardi =
     match cheat_col_card g.b (Option.get coli - 1) (Option.get cardi) with
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception InvalidCardID -> (g, Some "Invalid Card ID.")
-    | exception _ -> (g, Some "Unknown error from tableau.ml.")
     | card -> (g, Some ("The specified card is " ^ to_string card ^ "."))
 
 let get_count g = g.counter
