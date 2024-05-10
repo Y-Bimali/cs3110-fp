@@ -218,17 +218,13 @@ let test_king_movement _ =
   in
   assert_equal (snd updated_g14) None
 
-let test_counter _ =
+let test_counter_and_start_time _ =
   let g = new_game () in
   let g1 = draw_card g |> fst in
   let g2 = draw_card g1 |> fst in
   assert_equal (get_count g) 0;
   assert_equal (get_count g1) 1;
-  assert_equal (get_count g2) 2
-
-let test_start_time _ =
-  let g = new_game () in
-
+  assert_equal (get_count g2) 2;
   assert (Unix.gettimeofday () > start_time g)
 
 let test_undo _ =
@@ -324,7 +320,6 @@ let game_tests =
          "test_autowin" >:: test_autowin;
          "test_autowin_gamelist" >:: test_autowin_gamelist;
          "test_cheat" >:: test_cheat;
-         "test_start_time" >:: test_start_time;
        ]
 
 let () = run_test_tt_main game_tests
