@@ -7,6 +7,8 @@ Help/Commands: Show commands.
 
 Count: Show count of moves made so far.
 
+Undo: Undo the previous move.
+
 New Game: Start a new game with draw 1.
 
 New Game 3: Start a new game with draw 3.

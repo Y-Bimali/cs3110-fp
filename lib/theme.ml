@@ -8,6 +8,7 @@ type t = {
   faces : ANSITerminal.style;
   backs : ANSITerminal.style;
   back_pattern : ANSITerminal.style;
+  text : ANSITerminal.style;
 }
 
 exception UnknownTheme
@@ -47,6 +48,7 @@ let make data =
       faces = color_parser false (List.nth data 4);
       backs = color_parser true (List.nth data 5);
       back_pattern = color_parser false (List.nth data 6);
+      text = color_parser true (List.nth data 7);
     }
     :: !theme_list
 

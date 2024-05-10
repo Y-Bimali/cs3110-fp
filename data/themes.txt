@@ -1,4 +1,4 @@
-Classic,green,red,black,white,blue,white
-Spaceship,white,cyan,yellow,black,white,black
-Under The Sea,blue,green,cyan,white,black,white
-April Fools,green,black,red,white,blue,white
+Classic,green,red,black,white,blue,white,blue
+Spaceship,white,cyan,yellow,black,white,black,black
+Under The Sea,blue,green,cyan,white,black,white,white
+April Fools,green,black,red,white,blue,white,blue

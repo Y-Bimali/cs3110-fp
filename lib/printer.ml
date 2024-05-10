@@ -5,6 +5,7 @@ let help_str =
     (BatFile.lines_of "data/help.txt")
 
 let theme = ref (Theme.theme_of_string "classic")
+let indices = ref false
 
 (* A few utility functions common to multiple sections. *)
 let rec t_helper out_lst in_lst =
@@ -51,7 +52,7 @@ let reformat_card c =
   let s = Card.to_string c in
   if Card.num_of c <> 10 then " " ^ s else s
 
-let blank x = String.make x (String.get " " 0)
+let blank x = String.make x ' '
 let back_blank x = ([ !theme.bg ], blank x)
 let blank_row () = back_blank 49
 let norm_card_strings c = [ reformat_card c ^ "  "; " XXX "; " XXX "; "     " ]
@@ -82,6 +83,13 @@ let card_tagged style c =
 (* * * * *)
 (* The following section implements the mechanics of printing the top bar
    (stock, waste, and foundation) of the board. *)
+
+let top_indices () =
+  let x = ref (blank 22) in
+  for i = 1 to 4 do
+    x := !x ^ blank 5 ^ string_of_int i
+  done;
+  ([ !theme.bg; !theme.text ], !x ^ blank 3)
 
 let stock_app s =
   if s then card_tagged NoneFull (Card.empty_card Card.Spades)
@@ -157,6 +165,7 @@ let rec top_help lst s w_lst f_lst =
     the board (stock, waste, and foundation), with a margin above and below. *)
 let format_top s w f =
   [ [ blank_row () ] ]
+  @ (if !indices then [ [ top_indices () ] ] else [])
   @ top_help [] (stock_app s) (waste_app w) (found_app f)
   @ [ [ blank_row () ] ]
 
@@ -166,6 +175,13 @@ let print_top g =
 
 (* * * * *)
 (* The following section implements the mechanics of printing the tableau. *)
+
+let tab_indices () =
+  let x = ref (blank 3) in
+  for i = 1 to 6 do
+    x := !x ^ string_of_int i ^ blank 6
+  done;
+  ([ !theme.bg; !theme.text ], !x ^ "7" ^ blank 3)
 
 (** [list_collapse lst] is the list resulting from collapsing the elements of a
     list of lists into a single list*)
@@ -215,10 +231,12 @@ let tab_bool_tags col = tab_bool_tags_helper [] col
 let format_tab t =
   let flipped_t = List.map List.rev t in
   let booled_t = List.map tab_bool_tags flipped_t in
-  List.map
-    (fun x ->
-      (back_blank 1 :: alternate (back_blank 2) [] x) @ (back_blank 1 :: []))
-    (tab_app booled_t)
+
+  (if !indices then [ [ tab_indices () ] ] else [])
+  @ List.map
+      (fun x ->
+        (back_blank 1 :: alternate (back_blank 2) [] x) @ (back_blank 1 :: []))
+      (tab_app booled_t)
   @ [ [ blank_row () ] ]
 
 let print_tab g =
@@ -355,6 +373,9 @@ let match_statements q g =
           ^ string_of_int (Game.get_count g + Game.get_undos g)) )
   | "help" | "commands" -> (g, Some help_str)
   | "rules" -> (g, Some rules_str)
+  | "index" ->
+      indices := not !indices;
+      (g, None)
   | "new game" -> (Game.new_game (), None)
   | "new game 3" -> (Game.update_three_opt (Some "3") (Game.new_game ()), None)
   | other ->

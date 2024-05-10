@@ -6,6 +6,7 @@ type t = {
   faces : ANSITerminal.style;
   backs : ANSITerminal.style;
   back_pattern : ANSITerminal.style;
+  text : ANSITerminal.style;
 }
 (** Exposed dictionary type of theme, so external functions may retrieve data
     from it with just the [.] notation. [red], [black], [back_pattern] are
