@@ -60,16 +60,10 @@ let shuffle_list lst =
 let rec select_random_elements k lst acc =
   if k = 0 then (acc, lst)
   else
-    match lst with
-    | [] -> (acc, [])
-    | _ ->
-        let selected_index = Random.int (List.length lst) in
-        let selected_element = List.nth lst selected_index in
-        let remaining_elements =
-          List.filter (fun x -> x <> selected_element) lst
-        in
-        select_random_elements (k - 1) remaining_elements
-          (selected_element :: acc)
+    let selected_index = Random.int (List.length lst) in
+    let selected_element = List.nth lst selected_index in
+    let remaining_elements = List.filter (fun x -> x <> selected_element) lst in
+    select_random_elements (k - 1) remaining_elements (selected_element :: acc)
 
 (**[new_game ()] initializes the game_state. foundation must be empty, and
    tableau adds 28 cards and the rest goes to Stockwaste *)
