@@ -313,7 +313,7 @@ let game_tests =
          "invalid moves test_s_to_ft" >:: test_s_to_ft_err;
          "test_tab_to_foundation" >:: test_tableau_to_foundation_works;
          "test_king_to_foundation" >:: test_king_movement;
-         "test_counter" >:: test_counter;
+         "test_counter" >:: test_counter_and_start_time;
          "test_undo" >:: test_undo;
          "test_t_to_t" >:: test_t_to_t;
          "test_check_win" >:: test_check_win;
