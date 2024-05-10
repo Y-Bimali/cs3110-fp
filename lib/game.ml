@@ -241,7 +241,6 @@ let t_to_t g c1 c2 =
     match move_col_to_col g.b (Option.get nc1 - 1) (Option.get nc2 - 1) with
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception IllegalMove -> (g, Some "Illegal Move.")
-    | exception _ -> (g, Some "Unknown error from tableau.ml.")
     | newb -> (routine g g.f g.s newb, None)
 
 let check_win g = is_complete g.f
