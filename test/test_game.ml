@@ -279,8 +279,13 @@ let tableau_kings =
 
 let test_autowin _ =
   assert_equal
-    (autowin (game_from_parts foundation_queens stockwaste0 tableau_kings))
-    (won_game, None);
+    (autowin (game_from_parts foundation_queens stockwaste0 tableau_kings)
+    |> snd)
+    None;
+  assert_equal
+    (autowin (game_from_parts foundation_queens stockwaste0 tableau_kings)
+    |> fst |> formatted)
+    (won_game |> formatted);
   let g1 = game_from_parts foundation1 stockwaste0 tableau1 in
   assert_equal (autowin g1)
     ( g1,
