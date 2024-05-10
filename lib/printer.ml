@@ -341,7 +341,7 @@ let autowin_animation g =
       let () = print_top newg in
       print_tab newg;
       print_endline "";
-      Unix.sleepf 0.04)
+      Unix.sleepf 0.5)
     () (Game.autowin_gamelist g)
 
 let match_other other g =
