@@ -272,7 +272,6 @@ let cheat g coli cardi =
     match cheat_col_card g.b (Option.get coli - 1) (Option.get cardi) with
     | exception InvalidColID -> (g, Some "Invalid Column ID.")
     | exception InvalidCardID -> (g, Some "Invalid Card ID.")
-    | exception _ -> (g, Some "Unknown error from tableau.ml.")
     | card -> (g, Some ("The specified card is " ^ to_string card ^ "."))
 
 let get_count g = g.counter

@@ -226,6 +226,11 @@ let test_counter _ =
   assert_equal (get_count g1) 1;
   assert_equal (get_count g2) 2
 
+let test_start_time _ =
+  let g = new_game () in
+
+  assert (Unix.gettimeofday () > start_time g)
+
 let test_undo _ =
   let g1 = game_from_parts foundation1 stockwaste1 tableau1 in
   let g2 = fst (s_to_f g1) in
@@ -319,6 +324,7 @@ let game_tests =
          "test_autowin" >:: test_autowin;
          "test_autowin_gamelist" >:: test_autowin_gamelist;
          "test_cheat" >:: test_cheat;
+         "test_start_time" >:: test_start_time;
        ]
 
 let () = run_test_tt_main game_tests
