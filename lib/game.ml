@@ -6,11 +6,13 @@ open Tableau
 open Card
 
 (* AF: The game (t) is a record of the form: { f : Foundation.t; s :
-   Stockwaste.t; b : Tableau.t } where the first entry is a foundation, the
-   second entry is a stockwaste, and the third entry is a tableau. The
-   respective abstraction functions are located in stockwaste.ml, tableau.ml and
-   foundation.ml*)
-(* RI: None.*)
+   Stockwaste.t; b : Tableau.t; counter : int; undos : int; previous : t list;
+   start_time : float; draw_style : string option }. The first three fields
+   represent the state of the tableau, foundation, and tableau. The respective
+   abstraction functions are located in stockwaste.ml, tableau.ml and
+   foundation.ml. The other fields represent more permanent data, with counter
+   equaling the number of valid moves since the game's first instantiation, *)
+(* RI: counter, undos > 0, start time > 0. draw_style = None or Some "3"*)
 
 type t = {
   f : Foundation.t;
@@ -22,6 +24,13 @@ type t = {
   start_time : float;
   draw_style : string option;
 }
+
+(* NB: In "normal" gameplay, that is, games instantiated with [new game] and
+   only reach through a set of normal function calls (no other [game_from_parts]
+   calls) corresponding to moves, [counter] = [List.length previous]. This is
+   not in the RI because games created through other means for other purposes
+   may violate the equality, however, it is good practice to ensure functions
+   implementing game moves would maintain it.*)
 
 let game_from_parts fn sn bn =
   {
@@ -65,15 +74,11 @@ let rec select_random_elements k lst acc =
     let remaining_elements = List.filter (fun x -> x <> selected_element) lst in
     select_random_elements (k - 1) remaining_elements (selected_element :: acc)
 
-(**[new_game ()] initializes the game_state. foundation must be empty, and
-   tableau adds 28 cards and the rest goes to Stockwaste *)
 let new_game () =
   let card_data = shuffle_list generate_deck in
 
-  (* Initialize Foundation *)
   let foundation = Foundation.initialize in
 
-  (* Initialize Tableau *)
   let selected_cards, remaining_cards =
     select_random_elements 28 card_data []
   in
@@ -104,8 +109,6 @@ let undo game =
       (game, Some "This is the original game, there is nothing left to undo.")
   | h :: _ -> ({ h with undos = game.undos + 1 }, None)
 
-(**[draw_card fsb] draws a card and moves it from the stock to the waste in
-   stockwaste (s)*)
 let draw_card fsb =
   match draw (fun () -> fsb.draw_style) fsb.s with
   | None ->

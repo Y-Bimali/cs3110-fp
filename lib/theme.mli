@@ -9,8 +9,8 @@ type t = {
   text : ANSITerminal.style;
 }
 (** Exposed dictionary type of theme, so external functions may retrieve data
-    from it with just the [.] notation. [red], [black], [back_pattern] are
-    foreground styles (in ANSITERMINAL) and [bg], [faces], [backs] are
+    from it with just the [.] notation. [red], [black], [back_pattern], [text]
+    are foreground styles (in ANSITERMINAL) and [bg], [faces], [backs] are
     background styles. *)
 
 exception UnknownTheme
