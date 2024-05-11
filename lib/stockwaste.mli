@@ -1,4 +1,5 @@
 type t
+(**[t] is the type of the data structure representing a stockwaste.*)
 
 val empty_sw : t
 (**[empty_sw] is the empty stock and the empty waste*)
