@@ -1,5 +1,18 @@
 open ANSITerminal
 
+(** AF: The dictionary
+    [{ name : string; bg : ANSITerminal.style; red : ANSITerminal.style; 
+    black : ANSITerminal.style; faces : ANSITerminal.style; 
+    backs : ANSITerminal.style; back_pattern : ANSITerminal.style;
+     text : ANSITerminal.style;}]
+    represents the theme with name [name], the card playing background [bg], red
+    symbols [red], black symbols [black] card face color [faces], card back
+    (base) colors [backs], patterning on the back [back_pattern], and text color
+    (for text on the background) [text]. *)
+
+(** RI: [red], [black], [back_pattern], [text] are foreground styles (in
+    ANSITERMINAL) and [bg], [faces], [backs] are background styles.*)
+
 type t = {
   name : string;
   bg : ANSITerminal.style;

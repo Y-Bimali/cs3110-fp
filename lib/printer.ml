@@ -140,33 +140,31 @@ let found_app_mod c =
 
 let found_app f = transpose (List.map found_app_mod f)
 
+let top_help_helper bb hs hw hf =
+  [
+    bb;
+    hs;
+    bb;
+    List.nth hw 0;
+    List.nth hw 1;
+    List.nth hw 2;
+    back_blank 5;
+    List.nth hf 0;
+    bb;
+    List.nth hf 1;
+    bb;
+    List.nth hf 2;
+    bb;
+    List.nth hf 3;
+    bb;
+  ]
+
 let rec top_help lst s w_lst f_lst =
   match (s, w_lst, f_lst) with
   | [], [], [] -> lst
   | hs :: ts, hw :: tw, hf :: tf ->
       let bb = back_blank 1 in
-      top_help
-        (lst
-        @ [
-            [
-              bb;
-              hs;
-              bb;
-              List.nth hw 0;
-              List.nth hw 1;
-              List.nth hw 2;
-              back_blank 5;
-              List.nth hf 0;
-              bb;
-              List.nth hf 1;
-              bb;
-              List.nth hf 2;
-              bb;
-              List.nth hf 3;
-              bb;
-            ];
-          ])
-        ts tw tf
+      top_help (lst @ [ top_help_helper bb hs hw hf ]) ts tw tf
   | _ -> failwith "Incompatible Formats"
 
 (** [format_top s w f] returns a print-ready representation of the top bar of

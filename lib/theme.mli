@@ -8,10 +8,10 @@ type t = {
   back_pattern : ANSITerminal.style;
   text : ANSITerminal.style;
 }
-(** Exposed dictionary type of theme, so external functions may retrieve data
-    from it with just the [.] notation. [red], [black], [back_pattern], [text]
-    are foreground styles (in ANSITERMINAL) and [bg], [faces], [backs] are
-    background styles. *)
+(** [type t] is the exposed dictionary type of theme, so external functions may
+    retrieve data from it with just the [.] notation. [red], [black],
+    [back_pattern], [text] are foreground styles (in ANSITERMINAL) and [bg],
+    [faces], [backs] are background styles. *)
 
 exception UnknownTheme
 (** [UnknownTheme] indicates that a theme attempted to be referenced does not
