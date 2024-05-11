@@ -1,12 +1,20 @@
+(** AF/RI: None. This module does not have an associated type.*)
+
 let help_str =
   BatEnum.fold
     (fun acc x -> acc ^ "\n" ^ x)
     ""
     (BatFile.lines_of "data/help.txt")
 
+(** [!theme] Determines the colors that different parts of the card/board will
+    be printed with.*)
 let theme = ref (Theme.theme_of_string "classic")
+
+(** [!indices] Is true if the board will be printed with indices above the
+    foundation/tableau, and false if not.*)
 let indices = ref false
 
+(* * * * *)
 (* A few utility functions common to multiple sections. *)
 let rec t_helper out_lst in_lst =
   match List.nth in_lst 0 with
@@ -46,8 +54,8 @@ type card_style =
   | BackTop
 
 (** [reformat_card c] inserts a whitespace to the left of [c]'s string
-    representation if it is only two characters long, or returns [c]'s string
-    representation otherwise.*)
+    representation if it is only two characters long (i.e. not of rank 10), or
+    returns [c]'s string representation otherwise.*)
 let reformat_card c =
   let s = Card.to_string c in
   if Card.num_of c <> 10 then " " ^ s else s
@@ -211,6 +219,9 @@ let tab_app booled_t =
        (List.map (fun x -> list_collapse (List.map tab_app_mod x)) booled_t)
        (List.hd (card_tagged NoneTop (Card.empty_card Card.Spades))))
 
+(** [alternate sep [] in_lst] is a list that alternates the values of [in_lst]
+    with [sep], for a final list with the n elements of [in_lst] and n-1
+    elements being [sep] (or an empty list if [in_lst] is empty).*)
 let rec alternate sep out_lst in_lst =
   match in_lst with
   | [] -> []
@@ -270,21 +281,18 @@ let remove_excess_whitespace str =
 let slice_from_index_to_end str index =
   String.sub str index (String.length str - index)
 
-(*TODO: output tuple should be bool * Game. Functions called in Game should
-  return game * string option *)
-
 let winning_statement g =
   "\nYou won the game in "
   ^ string_of_int (Game.get_count g)
   ^ " valid moves without undos, and in "
   ^ string_of_int (Game.get_count g + Game.get_undos g)
-  ^ " moves including undos.\nTotal time spent is "
+  ^ " moves including undos.\nYour total time spent was "
   ^ string_of_int (int_of_float (Unix.gettimeofday () -. Game.start_time g))
   ^ " seconds.\nType 'New Game' to play a new game."
 
 let display_theme g q =
   (theme :=
-     try Theme.theme_of_string (String.sub q 6 (String.length q - 6))
+     try Theme.theme_of_string (slice_from_index_to_end q 6)
      with Theme.UnknownTheme ->
        print_endline
          "Unrecognizable Theme. Enter \"help\" to view the list of themes.";
@@ -304,17 +312,14 @@ let tableau_to_tableau_helper g x y =
   let c2 = slice_from_index_to_end y 1 in
   Game.t_to_t g c1 c2
 
-(* let snd_tableau_to_tableau_helper g x y i = let c1 = slice_from_index_to_end
-   x 1 in let c2 = slice_from_index_to_end y 1 in Game.t_to_t g c1 c2 i *)
-
 let tableau_to_foundation_helper g x =
   let col_index = slice_from_index_to_end x 1 in
 
   Game.move_tableau_card_to_foundation g (int_of_string col_index - 1)
 
 let game_ended_str =
-  "The game has ended. Type New game to start a new game or quit to end the \
-   game!"
+  "The game has ended. Type \"new game\" to start a new game or quit to end \
+   the game!"
 
 let check_conditions_for_three_word_commands g x y =
   if not (Game.check_win g) then
@@ -333,7 +338,7 @@ let check_conditions_for_three_word_commands g x y =
   else (g, Some game_ended_str)
 
 let invalid_command_str =
-  "The command is not valid. Enter help for more information."
+  "The command is not valid. Enter \"help\" for a list of valid commands."
 
 let autowin_animation g =
   List.fold_left
@@ -344,6 +349,7 @@ let autowin_animation g =
       Unix.sleepf 0.5)
     () (Game.autowin_gamelist g)
 
+(* These commands should only be used during a game.*)
 let match_other other g =
   match other with
   | "draw" | "d" -> Game.draw_card g
@@ -362,6 +368,7 @@ let match_other other g =
         | _ -> (g, Some invalid_command_str)
       with Failure _ -> (g, Some invalid_command_str))
 
+(* These commands are valid even if the game has ended.*)
 let match_statements q g =
   match q with
   | "count" ->
@@ -381,6 +388,9 @@ let match_statements q g =
   | other ->
       if Game.check_win g then (g, Some game_ended_str) else match_other other g
 
+(** The round function leaves other functions to parse most possible commands
+    (see [match_statements] and [match_other]), with the exception of "quit" and
+    "theme_".*)
 let round g =
   let () = print_top g in
   print_tab g;
