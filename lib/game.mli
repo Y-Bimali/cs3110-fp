@@ -42,7 +42,7 @@ val move_tableau_card_to_foundation : t -> int -> t * string option
 (** [move_tableau_card_to_foundation g idx] is (g, opt) where g is the game that
     could have been updated by moving the bottom card from column [idx] to the
     right column in the foundation. opt is the option where None means the
-    card(s) successfully moved and Some h means that the card did not
+    card successfully moved and Some h means that the card did not
     successfully move and h is the reason why, represented as a string.*)
 
 val move_card_from_foundation_to_tableau : t -> int -> int -> t * string option

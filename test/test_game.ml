@@ -228,6 +228,12 @@ let test_counter_and_start_time _ =
   Unix.sleepf 0.01;
   assert (Unix.gettimeofday () > start_time g)
 
+let test_start_time _ =
+  let g = new_game () in
+  let g1 = draw_card g |> fst in
+  Unix.sleepf 0.01;
+  assert (Unix.gettimeofday () > start_time g1)
+
 let test_undo _ =
   let g1 = game_from_parts foundation1 stockwaste1 tableau1 in
   let g2 = fst (s_to_f g1) in
@@ -320,6 +326,7 @@ let game_tests =
          "test_tab_to_foundation" >:: test_tableau_to_foundation_works;
          "test_king_to_foundation" >:: test_king_movement;
          "test_counter" >:: test_counter_and_start_time;
+         "test_counter" >:: test_start_time;
          "test_undo" >:: test_undo;
          "test_t_to_t" >:: test_t_to_t;
          "test_check_win" >:: test_check_win;

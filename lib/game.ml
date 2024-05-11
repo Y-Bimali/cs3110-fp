@@ -65,15 +65,14 @@ let rec select_random_elements k lst acc =
     let remaining_elements = List.filter (fun x -> x <> selected_element) lst in
     select_random_elements (k - 1) remaining_elements (selected_element :: acc)
 
-(**[new_game ()] initializes the game_state. foundation must be empty, and
-   tableau adds 28 cards and the rest goes to Stockwaste *)
+
 let new_game () =
   let card_data = shuffle_list generate_deck in
 
-  (* Initialize Foundation *)
+
   let foundation = Foundation.initialize in
 
-  (* Initialize Tableau *)
+
   let selected_cards, remaining_cards =
     select_random_elements 28 card_data []
   in
@@ -104,8 +103,7 @@ let undo game =
       (game, Some "This is the original game, there is nothing left to undo.")
   | h :: _ -> ({ h with undos = game.undos + 1 }, None)
 
-(**[draw_card fsb] draws a card and moves it from the stock to the waste in
-   stockwaste (s)*)
+
 let draw_card fsb =
   match draw (fun () -> fsb.draw_style) fsb.s with
   | None ->
