@@ -124,11 +124,6 @@ let formatted fsb =
   let b_cds = to_cd_lst fsb.b in
   ((s_empty, s_cds), f_cds, b_cds)
 
-let remove_opt opt =
-  match opt with
-  | Some h -> h
-  | None -> failwith "None"
-
 let s_to_f (game : t) =
   match top_sw game.s with
   | None ->
@@ -140,7 +135,7 @@ let s_to_f (game : t) =
       let foundation = game.f in
       if valid_move foundation card then
         ( routine game (put foundation card)
-            (remove_opt (remove_top game.s))
+            (Option.get (remove_top game.s))
             game.b,
           None )
       else (game, Some "This card cannot go in the foundation.")
@@ -149,7 +144,7 @@ let valid_stock_to_tableau_movement game tab_index card =
   let tableau = game.b in
   try
     ( routine game game.f
-        (remove_opt (remove_top game.s))
+        (Option.get (remove_top game.s))
         (card_to_col tableau tab_index card),
       None )
   with IllegalMove ->
