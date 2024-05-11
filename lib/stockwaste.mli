@@ -15,10 +15,11 @@ val draw : (unit -> string option) -> t -> t option
 (** [draw sw three_opt] is [Some sw] with the top card(s) in stock removed and
     placed as the new top card(s) in waste. If the stock is empty, it will put
     the cards from waste back into stock. If the stock and the waste are empty,
-    it be None*)
+    it be [None]*)
 
 val top_sw : t -> Card.t option
-(**[top] is Some top card in the waste pile. Is None if the waste pile is empty.*)
+(**[top] is Some top card in the waste pile. Is [None] if the waste pile is
+   empty.*)
 
 val remove_top : t -> t option
 (** [remove_top sw] is [Some sw] with [top sw] removed and with a new top card.
