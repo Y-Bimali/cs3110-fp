@@ -1,18 +1,17 @@
 open Foundation
 open Stockwaste
 open Tableau
-
-(* open Random *)
 open Card
 
-(* AF: The game (t) is a record of the form: { f : Foundation.t; s :
+(** AF: The game (t) is a record of the form: { f : Foundation.t; s :
    Stockwaste.t; b : Tableau.t; counter : int; undos : int; previous : t list;
    start_time : float; draw_style : string option }. The first three fields
    represent the state of the tableau, foundation, and tableau. The respective
    abstraction functions are located in stockwaste.ml, tableau.ml and
    foundation.ml. The other fields represent more permanent data, with counter
    equaling the number of valid moves since the game's first instantiation, *)
-(* RI: counter, undos > 0, start time > 0. draw_style = None or Some "3"*)
+
+(** RI: counter, undos > 0, start_time > 0. draw_style = None or Some "3"*)
 
 type t = {
   f : Foundation.t;
@@ -30,7 +29,7 @@ type t = {
    calls) corresponding to moves, [counter] = [List.length previous]. This is
    not in the RI because games created through other means for other purposes
    may violate the equality, however, it is good practice to ensure functions
-   implementing game moves would maintain it.*)
+   implementing game moves would maintain this equality.*)
 
 let game_from_parts fn sn bn =
   {

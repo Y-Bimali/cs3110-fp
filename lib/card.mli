@@ -57,6 +57,7 @@ val empty_card : suit -> t
     rank [Zero] *)
 
 exception UnusableRank
+(** [UnusableRank] is called if a supplied rank is not between 0 and 13.*)
 
 val new_card : suit -> int -> t
 (** [new_card s n] is a card of suit [s] and the rank corresponding to [n].
