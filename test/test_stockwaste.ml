@@ -43,6 +43,10 @@ let test_top_sw_nonempty _ =
   let many_cards = draw (fun () -> None) (add_sw four_card_deck empty_sw) in
   assert_equal Clubs (suit_of (get (top_sw (get many_cards))))
 
+let test_draw_none _ =
+  (*draw when the stock and waste are both empty*)
+  assert_equal None (draw (fun () -> None) (add_sw [] empty_sw))
+
 let test_draw_1_basic _ =
   (*draw one card from stock with one card- draw 1*)
   let one_card_1 =
@@ -168,6 +172,7 @@ let sw_tests =
          "test_add_sw" >:: test_add_sw;
          "test_top_sw_empty" >:: test_top_sw_empty;
          "test_top_sw_nonempty" >:: test_top_sw_nonempty;
+         "test_draw_none" >:: test_draw_none;
          "test_draw_1_basic" >:: test_draw_1_basic;
          "test_draw_1_redraw" >:: test_draw_1_redraw;
          "test_draw_3" >:: test_draw_3_basic;
