@@ -257,7 +257,10 @@ let test_t_to_t _ =
   assert_equal (snd (t_to_t (fst (t_to_t g2 "3" "4")) "4" "5")) None;
   assert_equal
     (snd (t_to_t (fst (t_to_t (fst (t_to_t g2 "3" "4")) "4" "5")) "7" "2"))
-    None;
+    None
+
+let test_t_to_t_invalid _ =
+  let g = game_from_parts foundation1 stockwaste0 tableau1 in
   assert_equal (snd (t_to_t g "2" "5")) (Some "Illegal Move.");
   assert_equal (snd (t_to_t g "9" "8")) (Some "Invalid Column ID.");
   assert_equal (snd (t_to_t g "ai49" "3")) (Some "Unrecognizable Command.");
@@ -329,6 +332,7 @@ let game_tests =
          "test_counter" >:: test_start_time;
          "test_undo" >:: test_undo;
          "test_t_to_t" >:: test_t_to_t;
+         "test_t_to_t_invalid" >:: test_t_to_t_invalid;
          "test_check_win" >:: test_check_win;
          "test_autowin" >:: test_autowin;
          "test_autowin_gamelist" >:: test_autowin_gamelist;

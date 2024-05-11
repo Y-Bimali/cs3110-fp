@@ -54,7 +54,7 @@ val to_string : t -> string
 
 val empty_card : suit -> t
 (** [empty_card suit] is an [empty_card s] is an "empty" card of suit [s] and
-    rank [Zero] *)
+    rank [Zero]. *)
 
 exception UnusableRank
 (** [UnusableRank] is called if a supplied rank is not between 0 and 13.*)

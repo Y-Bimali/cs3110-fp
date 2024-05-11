@@ -1,4 +1,3 @@
-(* @author *)
 open Fp.Game
 open Fp.Printer
 
@@ -16,7 +15,5 @@ let instructions () =
   print_endline help_str
 
 let _ =
-  (* print_endline ("Number of valid moves: " ^ string_of_int !counter); *)
   instructions ();
-  (* game_loop (new_game ()) (Unix.gettimeofday ()) *)
   game_loop (new_game ())
