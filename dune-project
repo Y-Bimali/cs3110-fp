@@ -5,11 +5,12 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github "https://github.coecis.cornell.edu/yb272/cs3110-final-project"))
 
-(authors "Author Name")
+(authors
+ "Malli Gutta(mg2395), Desmond Ababio(dna35), Yinghui Bimali(yb272), Aruni Chenxi(ac2552)")
 
-(maintainers "Maintainer Name")
+(maintainers "None")
 
 (license LICENSE)
 
@@ -17,10 +18,10 @@
 
 (package
  (name fp)
- (synopsis "A short synopsis")
- (description "A longer description")
+ (synopsis "Solitare")
+ (description "Draw 3 and Draw 1 Solitare")
  (depends ocaml dune)
  (tags
-  (topics "to describe" your project)))
+  (topics "" your project)))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
