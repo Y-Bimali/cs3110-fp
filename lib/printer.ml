@@ -103,37 +103,45 @@ let stock_app s =
   if s then card_tagged NoneFull (Card.empty_card Card.Spades)
   else card_tagged Back (Card.empty_card Card.Spades)
 
+let tag_change_0 emp =
+  transpose
+    [
+      card_tagged NoneLeft emp;
+      card_tagged NoneLeft emp;
+      card_tagged NoneFull emp;
+    ]
+
+let tag_change_1 emp w =
+  transpose
+    [
+      card_tagged NoneLeft emp;
+      card_tagged NoneLeft emp;
+      card_tagged Full (List.nth w 0);
+    ]
+
+let tag_change_2 emp w =
+  transpose
+    [
+      card_tagged NoneLeft emp;
+      card_tagged Left (List.nth w 1);
+      card_tagged Full (List.nth w 0);
+    ]
+
+let tag_change_other w =
+  transpose
+    [
+      card_tagged Left (List.nth w 2);
+      card_tagged Left (List.nth w 1);
+      card_tagged Full (List.nth w 0);
+    ]
+
 let waste_app w =
   let emp = Card.empty_card Card.Spades in
   match List.length w with
-  | 0 ->
-      transpose
-        [
-          card_tagged NoneLeft emp;
-          card_tagged NoneLeft emp;
-          card_tagged NoneFull emp;
-        ]
-  | 1 ->
-      transpose
-        [
-          card_tagged NoneLeft emp;
-          card_tagged NoneLeft emp;
-          card_tagged Full (List.nth w 0);
-        ]
-  | 2 ->
-      transpose
-        [
-          card_tagged NoneLeft emp;
-          card_tagged Left (List.nth w 1);
-          card_tagged Full (List.nth w 0);
-        ]
-  | _ ->
-      transpose
-        [
-          card_tagged Left (List.nth w 2);
-          card_tagged Left (List.nth w 1);
-          card_tagged Full (List.nth w 0);
-        ]
+  | 0 -> tag_change_0 emp
+  | 1 -> tag_change_1 emp w
+  | 2 -> tag_change_2 emp w
+  | _ -> tag_change_other w
 
 let found_app_mod c =
   if Card.num_of c = 0 then card_tagged NoneFull c else card_tagged Full c
