@@ -1,6 +1,9 @@
+(* @author Aruni Chenxi (ac2552), Malli Gutta (mg2395), Yinghui Bimali (yb272),
+   Desmond Ababio (dna35)*)
 open Fp.Game
 open Fp.Printer
 
+(** [game_loop g] is a new loop of the game starting with game [g].*)
 let rec game_loop g =
   let b, g2 = round g in
   match b with

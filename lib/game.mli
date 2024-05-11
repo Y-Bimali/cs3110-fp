@@ -21,7 +21,7 @@ val formatted : t -> (bool * Card.t list) * Card.t list * Card.t list list
     [empty_card]. *)
 
 val draw_card : t -> t * string option
-(**[draw_card g] is [g] with the draw function applied to the stockwaste.*)
+(** [draw_card g] is [g] with the draw function applied to the stockwaste.*)
 
 val undo : t -> t * string option
 (** [undo g] is [(g', opt)] where, if the previous game state exists, [g'] is

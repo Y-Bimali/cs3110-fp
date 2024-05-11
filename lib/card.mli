@@ -2,11 +2,11 @@ type suit =
   | Spades
   | Hearts
   | Clubs
-  | Diamonds  (**[suit] represents the suit of a card deck*)
+  | Diamonds  (**[suit] represents the suit of a card deck.*)
 
 type color =
   | Red
-  | Black  (**[color] represents the color of a card*)
+  | Black  (**[color] represents the color of a card.*)
 
 type rank =
   | Ace
@@ -22,7 +22,7 @@ type rank =
   | Jack
   | Queen
   | King
-  | Zero  (**[rank] represents the rank of the card*)
+  | Zero  (**[rank] represents the rank of the card.*)
 
 type t = {
   rank : rank;

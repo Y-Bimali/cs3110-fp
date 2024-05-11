@@ -29,5 +29,6 @@ desc: >
   play by entering moves through terminal, which are executed if and only if 
   they are legal.
   
-  Additional features may include variants such as draw-three, a cheat mode, 
-  an easy mode, customizable colors and decks, and audio feedback.
+  Additional features include variants such as draw-three, a cheat ability, 
+  customizable color themes, an undo ability, auto-win features, move counters,
+  and a timer.
