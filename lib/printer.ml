@@ -274,7 +274,7 @@ let slice_from_index_to_end str index =
   return game * string option *)
 
 let winning_statement g =
-  "\nYou won the game in "
+  "\nCongratulations! You won the game in "
   ^ string_of_int (Game.get_count g)
   ^ " valid moves without undos, and in "
   ^ string_of_int (Game.get_count g + Game.get_undos g)
