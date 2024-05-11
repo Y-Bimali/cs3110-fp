@@ -5,7 +5,7 @@
 (generate_opam_files true)
 
 (source
- (github "https://github.coecis.cornell.edu/yb272/cs3110-final-project"))
+ (github "yb272/cs3110-final-project"))
 
 (authors
  "Malli Gutta(mg2395), Desmond Ababio(dna35), Yinghui Bimali(yb272), Aruni Chenxi(ac2552)")
