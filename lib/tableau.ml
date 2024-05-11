@@ -2,18 +2,17 @@ open Card
 open BatList
 
 module Column = struct
+  (** AF: [c.cards] is a list [[c0;c1;...c6]] of columns of cards where the cards
+     are listed from bottom to top. [c.vis] is how many cards are visible.*)
+  (** RI: The bottom [c.vis] cards must be a compatible stack. If [c.cards = []],
+     then [c.vis = 0]. Otherwise, 1 <= [t.vis] <= [List.length c.cards].*)
   type c = {
     cards : Card.t list;
     vis : int;
   }
-  (* AF: [c.cards] is a list [[c0;c1;...c6]] of columns of cards where the cards
-     are listed from bottom to top. [c.vis] is how many cards are visible.*)
-  (* RI: The bottom [c.vis] cards must be a compatible stack. If [c.cards = []],
-     then [c.vis = 0]. Otherwise, 1 <= [t.vis] <= [List.length c.cards].*)
 
-  (* [comp_stack lst] checks if the list of cards [lst], ordered from bottom to
+  (** [comp_stack lst] checks if the list of cards [lst], ordered from bottom to
      top, is a valid stack.*)
-
   let rec comp_stack lst =
     match lst with
     | [] -> true
@@ -48,9 +47,9 @@ end
 
 open Column
 
+(** AF: [t] is a list of columns of cards [[c0;c1;...c6]].*)
+(** RI: [List.length t] = 7.*)
 type t = c list
-(* AF: [t] is a list of columns of cards [[c0;c1;...c6]].*)
-(* RI: [List.length t] = 7.*)
 
 exception InvalidColID
 exception InvalidCardID
