@@ -148,23 +148,43 @@ let test_tableau_to_foundation_works _ =
   let updated_g2 = move_tableau_card_to_foundation (fst updated_g1) 0 in
 
   assert_equal (snd updated_g1) None;
-  assert_equal (snd updated_g2) (Some "No card is present here.");
-  assert_equal
-    (snd (move_tableau_card_to_foundation g1 (-2)))
-    (Some "-2 is not a valid index.");
+
   assert_equal
     (snd (move_tableau_card_to_foundation g1 5))
     (Some "You can not make this move.");
   assert_equal (snd (move_tableau_card_to_foundation g1 6)) None;
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) 1 1))
-    None;
-  assert_equal
-    (snd (move_card_from_foundation_to_tableau (fst updated_g2) 1 0))
-    (Some "You can not make this move.");
+    None
+
+let tableau_for_invalid =
+  init_tab
+    (List.flatten
+       [
+         [ d1; d1; d1; d1; d1; d1; d1 ];
+         [ d8; d1; d1; d1; d1; d12 ];
+         [ c3; c3; c3; c3; c3 ];
+         [ h2; h2; h2; h2 ];
+         [ c1; d1; s1 ];
+         [ s2; s2 ];
+         [ h1 ];
+       ])
+
+let test_tableau_to_foundation_invalid _ =
+  let g1 = game_from_parts foundation3 stockwaste0 tableau_for_invalid in
+  let updated_g1 = move_tableau_card_to_foundation g1 0 in
+  let updated_g2 = move_tableau_card_to_foundation (fst updated_g1) 0 in
+  assert_equal (snd updated_g2) (Some "No card is present here.");
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) 0 6))
     (Some "There is no card in this foundation column.");
+
+  assert_equal
+    (snd (move_tableau_card_to_foundation g1 (-2)))
+    (Some "-2 is not a valid index.");
+  assert_equal
+    (snd (move_card_from_foundation_to_tableau (fst updated_g2) 1 0))
+    (Some "You can not make this move.");
   assert_equal
     (snd (move_card_from_foundation_to_tableau (fst updated_g2) 1 6))
     (Some "You can not make this move.");
@@ -191,7 +211,7 @@ let tableau4 =
          [ d4; d5; d6; d7; d8; d9; d10 ];
          [ s10; d1; d1; d1; d1; s10 ];
          [ c3; c3; c3; c3; c3 ];
-         [ h2; h2; h2; h2 ];
+         [ h2; h2; c11; h2 ];
          [ d11; d12; d13 ];
          [ d2; d3 ];
          [ d1 ];
@@ -218,7 +238,7 @@ let test_king_movement _ =
   in
   assert_equal (snd updated_g14) None
 
-let test_counter_and_start_time _ =
+let test_counter _ =
   let g = new_game () in
   let g1 = draw_card g |> fst in
   let g2 = draw_card g1 |> fst in
@@ -327,9 +347,11 @@ let game_tests =
          "valid moves test_s_to_ft" >:: test_s_to_ft_works;
          "invalid moves test_s_to_ft" >:: test_s_to_ft_err;
          "test_tab_to_foundation" >:: test_tableau_to_foundation_works;
+         "test_tableau_to_foundation_invalid "
+         >:: test_tableau_to_foundation_invalid;
          "test_king_to_foundation" >:: test_king_movement;
-         "test_counter" >:: test_counter_and_start_time;
-         "test_counter" >:: test_start_time;
+         "test_counter" >:: test_counter;
+         "test_start_time" >:: test_start_time;
          "test_undo" >:: test_undo;
          "test_t_to_t" >:: test_t_to_t;
          "test_t_to_t_invalid" >:: test_t_to_t_invalid;
