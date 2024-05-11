@@ -24,6 +24,9 @@ type rank =
   | King
   | Zero
 
+(*AF: t is a record of a rank and suit. [t.rank] is of type rank and [t.suit] is
+  of type suit.*)
+(*RI: None.*)
 type t = {
   rank : rank;
   suit : suit;
